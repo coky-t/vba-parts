@@ -379,8 +379,3 @@ End Function
 Private Sub Debug_Print(Str)
     Debug.Print Str
 End Sub
-
-
-
-
-
