@@ -264,8 +264,11 @@ Private Sub Test_TextFileA()
     Debug_Print Text
 End Sub
 
-Private Function GetOpenFileName()
-    GetOpenFileName = Application.GetOpenFileName()
+Private Function GetOpenFileName() As String
+    Dim OpenFileName As Variant
+    OpenFileName = Application.GetOpenFileName()
+    If OpenFileName = False Then Exit Function
+    GetOpenFileName = CStr(OpenFileName)
     'GetOpenFileName = InputBox("OpenFileName")
 End Function
 

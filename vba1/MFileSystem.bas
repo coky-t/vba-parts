@@ -522,11 +522,15 @@ Private Sub Test_TextFileA()
     Debug_Print Text
 End Sub
 
-Private Function GetSaveAsFileName()
-    GetSaveAsFileName = Application.GetSaveAsFileName()
+Private Function GetSaveAsFileName() As String
+    Dim SaveAsFileName As Variant
+    SaveAsFileName = Application.GetSaveAsFileName()
+    If SaveAsFileName = False Then Exit Function
+    GetSaveAsFileName = CStr(SaveAsFileName)
     'GetSaveAsFileName = InputBox("SaveAsFileName")
 End Function
 
 Private Sub Debug_Print(Str As String)
     Debug.Print Str
 End Sub
+

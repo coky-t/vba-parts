@@ -532,7 +532,10 @@ Private Sub Test_TextFileA()
 End Sub
 
 Private Function GetSaveAsFileName()
-    GetSaveAsFileName = Application.GetSaveAsFileName()
+    Dim SaveAsFileName
+    SaveAsFileName = Application.GetSaveAsFileName()
+    If SaveAsFileName = False Then Exit Function
+    GetSaveAsFileName = CStr(SaveAsFileName)
     'GetSaveAsFileName = InputBox("SaveAsFileName")
 End Function
 
