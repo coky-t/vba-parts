@@ -84,7 +84,7 @@ End Function
 '   Optional. The value is False if the search is case-sensitive,
 '   True if it is not. Default is False.
 '
-' GlobalMatches:
+' GlobalMatch:
 '   Optional. The value is True if the search applies to the entire string,
 '   False if it does not. Default is False.
 '
@@ -100,7 +100,7 @@ Public Function RegExp_Execute( _
     SourceString As String, _
     Pattern As String, _
     Optional IgnoreCase As Boolean, _
-    Optional GlobalMatches As Boolean, _
+    Optional GlobalMatch As Boolean, _
     Optional MultiLine As Boolean, _
     Optional RegExpObject As Object) _
     As Object
@@ -110,7 +110,7 @@ Public Function RegExp_Execute( _
     With GetRegExp(RegExpObject)
         .Pattern = Pattern
         .IgnoreCase = IgnoreCase
-        .Global = GlobalMatches
+        .Global = GlobalMatch
         .MultiLine = MultiLine
         Set RegExp_Execute = .Execute(SourceString)
     End With
@@ -121,7 +121,7 @@ Public Function RegExp_Replace( _
     ReplaceString As String, _
     Pattern As String, _
     Optional IgnoreCase As Boolean, _
-    Optional GlobalMatches As Boolean, _
+    Optional GlobalMatch As Boolean, _
     Optional MultiLine As Boolean, _
     Optional RegExpObject As Object) _
     As String
@@ -131,7 +131,7 @@ Public Function RegExp_Replace( _
     With GetRegExp(RegExpObject)
         .Pattern = Pattern
         .IgnoreCase = IgnoreCase
-        .Global = GlobalMatches
+        .Global = GlobalMatch
         .MultiLine = MultiLine
         RegExp_Replace = .Replace(SourceString, ReplaceString)
     End With
@@ -201,8 +201,8 @@ Private Sub Test_RegExp_Replace()
     Dim IgnoreCase As Boolean
     IgnoreCase = (MsgBox("IgnoreCase", vbYesNo) = vbYes)
     
-    Dim GlobalMatches As Boolean
-    GlobalMatches = (MsgBox("GlobalMatches", vbYesNo) = vbYes)
+    Dim GlobalMatch As Boolean
+    GlobalMatch = (MsgBox("GlobalMatch", vbYesNo) = vbYes)
     
     Dim MultiLine As Boolean
     MultiLine = (MsgBox("MultiLine", vbYesNo) = vbYes)
@@ -214,7 +214,7 @@ Private Sub Test_RegExp_Replace()
             ReplaceString, _
             Pattern, _
             IgnoreCase, _
-            GlobalMatches, _
+            GlobalMatch, _
             MultiLine)
     
     Debug_Print "=== RegExp_Replace ==="
@@ -222,7 +222,7 @@ Private Sub Test_RegExp_Replace()
     Debug_Print "ReplaceString: " & ReplaceString
     Debug_Print "Pattern: " & Pattern
     Debug_Print "IgnoreCase: " & CStr(IgnoreCase)
-    Debug_Print "GlobalMatches: " & CStr(GlobalMatches)
+    Debug_Print "GlobalMatch: " & CStr(GlobalMatch)
     Debug_Print "MultiLine: " & CStr(MultiLine)
     Debug_Print "Replace - result: " & Result
 End Sub
@@ -239,8 +239,8 @@ Private Sub Test_RegExp_Execute()
     Dim IgnoreCase As Boolean
     IgnoreCase = (MsgBox("IgnoreCase", vbYesNo) = vbYes)
     
-    Dim GlobalMatches As Boolean
-    GlobalMatches = (MsgBox("GlobalMatches", vbYesNo) = vbYes)
+    Dim GlobalMatch As Boolean
+    GlobalMatch = (MsgBox("GlobalMatch", vbYesNo) = vbYes)
     
     Dim MultiLine As Boolean
     MultiLine = (MsgBox("MultiLine", vbYesNo) = vbYes)
@@ -248,13 +248,13 @@ Private Sub Test_RegExp_Execute()
     Dim Matches As Object
     Set Matches = _
         RegExp_Execute( _
-            SourceString, Pattern, IgnoreCase, GlobalMatches, MultiLine)
+            SourceString, Pattern, IgnoreCase, GlobalMatch, MultiLine)
     
     Debug_Print "=== RegExp_Execute ==="
     Debug_Print "SourceString: " & SourceString
     Debug_Print "Pattern: " & Pattern
     Debug_Print "IgnoreCase: " & CStr(IgnoreCase)
-    Debug_Print "GlobalMatches: " & CStr(GlobalMatches)
+    Debug_Print "GlobalMatch: " & CStr(GlobalMatch)
     Debug_Print "MultiLine: " & CStr(MultiLine)
     Debug_Print "--- Execute ---"
     
