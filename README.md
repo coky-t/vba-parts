@@ -51,7 +51,7 @@ Microsoft XML, vX.X
 
 ## Text Processing
 
-### MRegExp.bas - HTTP GET/POST
+### MRegExp.bas - Regular Expression - Test/Execute/Replace
 
 - [Early Binding](vba1/MRegExp.bas)
 - [Late Binding](vba2/MRegExp.bas)
