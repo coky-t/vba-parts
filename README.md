@@ -37,6 +37,30 @@ Microsoft Scripting Runtime
 Microsoft ActiveX Data Objects X.X Library
 - [ADODB.Stream](https://docs.microsoft.com/en-us/office/client-developer/access/desktop-database-reference/stream-object-ado)
 
+## File System
+
+### MFileSystem.bas - Create Folder
+
+- [Early Binding](vba1/MFileSystem.bas)
+- [Late Binding](vba2/MFileSystem.bas)
+- [Late Binding without explicit type declaration](vba3/MFileSystem.bas)
+
+#### Reference
+
+Microsoft Scripting Runtime
+- [Scripting.FileSystemObject](https://docs.microsoft.com/en-us/office/vba/Language/Reference/User-Interface-Help/filesystemobject-object)
+
+### MFolder.bas - Get Folders/Files
+
+- [Early Binding](vba1/MFolder.bas)
+- [Late Binding](vba2/MFolder.bas)
+- [Late Binding without explicit type declaration](vba3/MFolder.bas)
+
+#### Reference
+
+Microsoft Scripting Runtime
+- [Scripting.Folder](https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/folder-object)
+
 ## Network
 
 ### MXMLHTTP.bas - HTTP GET/POST
@@ -50,7 +74,7 @@ Microsoft ActiveX Data Objects X.X Library
 Microsoft XML, vX.X
 - [MSXML2.XMLHTTP](https://docs.microsoft.com/en-us/previous-versions/windows/desktop/ms759148(v=vs.85))
 
-## Text Processing
+## Text String
 
 ### MRegExp.bas - Regular Expression - Test/Execute/Replace
 
