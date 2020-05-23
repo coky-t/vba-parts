@@ -147,6 +147,38 @@ Public Function GetSaveAsFileName( _
 End Function
 
 '
+' --- Folder Dialog Box ---
+'
+
+'
+' GetFolderName
+' - Displays the standard Open dialog box and gets a folder name.
+'
+
+'
+' ExcelApplication:
+'   Optional. The name of a Excel.Application object.
+'
+' Title:
+'   Optional. Specifies the title of the dialog box.
+'   If this argument is omitted, the default title is used.
+'
+
+Public Function GetFolderName( _
+    ExcelApplication, _
+    Title)
+    
+    On Error Resume Next
+    
+    With GetExcelApplication(ExcelApplication)
+        With .FileDialog(4) '4: msoFileDialogFolderPicker
+            If Title <> "" Then .Title = Title
+            If .Show = -1 Then GetFolderName = CStr(.SelectedItems(1))
+        End With
+    End With
+End Function
+
+'
 ' --- Test ---
 '
 
@@ -160,6 +192,12 @@ Private Sub Test_GetSaveAsFileName()
     Dim FileName
     FileName = GetSaveAsFileName(Nothing, "", "", 0, "")
     Debug_Print FileName
+End Sub
+
+Private Sub Test_GetFolderName()
+    Dim FolderName
+    FolderName = GetFolderName(Nothing, "")
+    Debug_Print FolderName
 End Sub
 
 Private Sub Debug_Print(Str)

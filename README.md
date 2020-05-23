@@ -89,7 +89,7 @@ Microsoft VBScript Regular Expression 5.5
 
 ## Dialog Box
 
-### MExcelApp.bas - File Dialog Box
+### MExcelApp.bas - File/Folder Dialog Box
 
 - [Early Binding](vba1/MExcelApp.bas)
 - [Late Binding](vba2/MExcelApp.bas)
@@ -99,3 +99,4 @@ Microsoft VBScript Regular Expression 5.5
 
 Microsoft Excel X.X Object Library
 - [Excel.Application](https://docs.microsoft.com/en-us/office/vba/api/excel.application(object))
+- [Office.FileDialog](https://docs.microsoft.com/en-us/office/vba/api/office.filedialog)
