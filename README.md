@@ -86,3 +86,16 @@ Microsoft XML, vX.X
 
 Microsoft VBScript Regular Expression 5.5
 - [VBScript_RegExp_55.RegExp](https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/scripting-articles/6wzad2b2(v=vs.84))
+
+## Dialog Box
+
+### MExcelApp.bas - File Dialog Box
+
+- [Early Binding](vba1/MExcelApp.bas)
+- [Late Binding](vba2/MExcelApp.bas)
+- [Late Binding without explicit type declaration](vba3/MExcelApp.bas)
+
+#### Reference
+
+Microsoft Excel X.X Object Library
+- [Excel.Application](https://docs.microsoft.com/en-us/office/vba/api/excel.application(object))
