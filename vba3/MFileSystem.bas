@@ -38,6 +38,8 @@ Public Const Scripting_ForReading = 1
 Public Const Scripting_ForWriting = 2
 Public Const Scripting_ForAppending = 8
 
+Private FileSystemObject
+
 '
 ' === TextFile ===
 '
@@ -161,7 +163,7 @@ End Sub
 '
 
 Public Function GetFileSystemObject()
-    Static FileSystemObject
+    'Static FileSystemObject
     If IsEmpty(FileSystemObject) Then
         Set FileSystemObject = CreateObject("Scripting.FileSystemObject")
     End If
