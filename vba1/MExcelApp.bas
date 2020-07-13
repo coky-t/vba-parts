@@ -37,20 +37,12 @@ Option Explicit
 ' - Returns a Excel.Application object.
 '
 
-'
-' ExcelApplication:
-'   Optional. The name of a Excel.Application object.
-'
-
-Public Function GetExcelApplication( _
-    Optional ExcelApplication As Excel.Application) _
-    As Excel.Application
-    
+Public Function GetExcelApplication() As Excel.Application
+    Static ExcelApplication As Excel.Application
     If ExcelApplication Is Nothing Then
-        Set GetExcelApplication = New Excel.Application
-    Else
-        Set GetExcelApplication = ExcelApplication
+        Set ExcelApplication = New Excel.Application
     End If
+    Set GetExcelApplication = ExcelApplication
 End Function
 
 '
@@ -63,9 +55,6 @@ End Function
 '   without actually opening any files.
 '
 
-'
-' ExcelApplication:
-'   Optional. The name of a Excel.Application object.
 '
 ' FileFilter:
 '   Optional. A string specifying file filtering criteria.
@@ -82,7 +71,6 @@ End Function
 '
 
 Public Function GetOpenFileName( _
-    Optional ExcelApplication As Excel.Application, _
     Optional FileFilter As String, _
     Optional FilterIndex As Integer, _
     Optional Title As String) As String
@@ -91,8 +79,7 @@ Public Function GetOpenFileName( _
     
     Dim OpenFileName As Variant
     OpenFileName = _
-        GetExcelApplication(ExcelApplication) _
-        .GetOpenFileName(FileFilter, FilterIndex, Title)
+        GetExcelApplication().GetOpenFileName(FileFilter, FilterIndex, Title)
     If OpenFileName = False Then
         ' nop
     Else
@@ -106,9 +93,6 @@ End Function
 '   the user without actually saving any files.
 '
 
-'
-' ExcelApplication:
-'   Optional. The name of a Excel.Application object.
 '
 ' InitialFileName:
 '   Optional. Specifies the suggested file name.
@@ -128,7 +112,6 @@ End Function
 '
 
 Public Function GetSaveAsFileName( _
-    Optional ExcelApplication As Excel.Application, _
     Optional InitialFileName As String, _
     Optional FileFilter As String, _
     Optional FilterIndex As Integer, _
@@ -138,7 +121,7 @@ Public Function GetSaveAsFileName( _
     
     Dim SaveAsFileName As Variant
     SaveAsFileName = _
-        GetExcelApplication(ExcelApplication) _
+        GetExcelApplication() _
         .GetSaveAsFileName(InitialFileName, FileFilter, FilterIndex, Title)
     If SaveAsFileName = False Then
         ' nop
@@ -157,21 +140,15 @@ End Function
 '
 
 '
-' ExcelApplication:
-'   Optional. The name of a Excel.Application object.
-'
 ' Title:
 '   Optional. Specifies the title of the dialog box.
 '   If this argument is omitted, the default title is used.
 '
 
-Public Function GetFolderName( _
-    Optional ExcelApplication As Excel.Application, _
-    Optional Title As String) As String
-    
+Public Function GetFolderName(Optional Title As String) As String
     On Error Resume Next
     
-    With GetExcelApplication(ExcelApplication)
+    With GetExcelApplication()
         With .FileDialog(msoFileDialogFolderPicker)
             If Title <> "" Then .Title = Title
             If .Show = -1 Then GetFolderName = CStr(.SelectedItems(1))
