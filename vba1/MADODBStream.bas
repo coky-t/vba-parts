@@ -29,30 +29,6 @@ Option Explicit
 '
 
 '
-' --- ADODB.Stream ---
-'
-
-'
-' GetADODBStream
-' - Returns a ADODB.Stream object.
-'
-
-'
-' ADODBStream:
-'   Optional. The name of a ADODB.Stream object.
-'
-
-Public Function GetADODBStream( _
-    Optional ADODBStream As ADODB.Stream) As ADODB.Stream
-    
-    If ADODBStream Is Nothing Then
-        Set GetADODBStream = New ADODB.Stream
-    Else
-        Set GetADODBStream = ADODBStream
-    End If
-End Function
-
-'
 ' === TextFile ===
 '
 
@@ -72,50 +48,26 @@ End Function
 '   Required. A String value that contains the name of a file.
 '   FileName can contain any valid path and name in UNC format.
 '
-' ADODBStream:
-'   Optional. The name of a ADODB.Stream object.
-'
 
-Public Function ReadTextFileW( _
-    FileName As String, _
-    Optional ADODBStream As ADODB.Stream) As String
-    
-    ReadTextFileW = ReadTextFileT(FileName, "unicode", ADODBStream)
+Public Function ReadTextFileW(FileName As String) As String
+    ReadTextFileW = ReadTextFile(FileName, "unicode")
 End Function
 
-Public Function ReadTextFileA( _
-    FileName As String, _
-    Optional ADODBStream As ADODB.Stream) As String
-    
-    ReadTextFileA = ReadTextFileT(FileName, "iso-8859-1", ADODBStream)
+Public Function ReadTextFileA(FileName As String) As String
+    ReadTextFileA = ReadTextFile(FileName, "iso-8859-1")
 End Function
 
-Public Function ReadTextFileUTF8( _
-    FileName As String, _
-    Optional ADODBStream As ADODB.Stream) As String
-    
-    ReadTextFileUTF8 = ReadTextFileT(FileName, "utf-8", ADODBStream)
-End Function
-
-Public Function ReadTextFileT( _
-    FileName As String, _
-    Optional Charset As String, _
-    Optional ADODBStream As ADODB.Stream) As String
-    
-    ReadTextFileT = _
-        ReadTextFile(GetADODBStream(ADODBStream), FileName, Charset)
+Public Function ReadTextFileUTF8(FileName As String) As String
+    ReadTextFileUTF8 = ReadTextFile(FileName, "utf-8")
 End Function
 
 Private Function ReadTextFile( _
-    ADODBStream As ADODB.Stream, _
     FileName As String, _
     Optional Charset As String) As String
     
-    If ADODBStream Is Nothing Then Exit Function
-    
     If FileName = "" Then Exit Function
     
-    ReadTextFile = LoadFromFileAndReadText(ADODBStream, FileName, Charset)
+    ReadTextFile = LoadFromFileAndReadText(FileName, Charset)
 End Function
 
 '
@@ -149,96 +101,78 @@ End Function
 '   Required. A String value that contains the text in characters to be
 '   written.
 '
-' ADODBStream:
-'   Optional. The name of a ADODB.Stream object.
-'
 
-Public Sub WriteTextFileW( _
-    FileName As String, _
-    Text As String, _
-    Optional ADODBStream As ADODB.Stream)
-    
-    WriteTextFileT FileName, Text, 0, "unicode", ADODBStream
+Public Sub WriteTextFileW(FileName As String, Text As String)
+    WriteTextFile FileName, Text, 0, "unicode"
 End Sub
 
-Public Sub WriteTextFileA( _
-    FileName As String, _
-    Text As String, _
-    Optional ADODBStream As ADODB.Stream)
-    
-    WriteTextFileT FileName, Text, 0, "iso-8859-1", ADODBStream
+Public Sub WriteTextFileA(FileName As String, Text As String)
+    WriteTextFile FileName, Text, 0, "iso-8859-1"
 End Sub
 
 Public Sub WriteTextFileUTF8( _
     FileName As String, _
     Text As String, _
-    Optional BOM As Boolean = True, _
-    Optional ADODBStream As ADODB.Stream)
+    Optional BOM As Boolean = True)
     
-    WriteTextFileT FileName, Text, 0, "utf-8", ADODBStream
+    WriteTextFile FileName, Text, 0, "utf-8"
     
     If Not BOM Then
         Dim Data() As Byte
-        Data = ReadBinaryFile(FileName, 3, ADODBStream)
-        WriteBinaryFile FileName, Data, ADODBStream
+        Data = ReadBinaryFile(FileName, 3)
+        WriteBinaryFile FileName, Data
     End If
 End Sub
 
-Public Sub AppendTextFileW( _
-    FileName As String, _
-    Text As String, _
-    Optional ADODBStream As ADODB.Stream)
-    
-    WriteTextFileT FileName, Text, -1, "unicode", ADODBStream
+Public Sub AppendTextFileW(FileName As String, Text As String)
+    WriteTextFile FileName, Text, -1, "unicode"
 End Sub
 
-Public Sub AppendTextFileA( _
-    FileName As String, _
-    Text As String, _
-    Optional ADODBStream As ADODB.Stream)
-    
-    WriteTextFileT FileName, Text, -1, "iso-8859-1", ADODBStream
+Public Sub AppendTextFileA(FileName As String, Text As String)
+    WriteTextFile FileName, Text, -1, "iso-8859-1"
 End Sub
 
 Public Sub AppendTextFileUTF8( _
     FileName As String, _
     Text As String, _
-    Optional BOM As Boolean = True, _
-    Optional ADODBStream As ADODB.Stream)
+    Optional BOM As Boolean = True)
     
-    WriteTextFileT FileName, Text, -1, "utf-8", ADODBStream
+    WriteTextFile FileName, Text, -1, "utf-8"
     
     If Not BOM Then
         Dim Data() As Byte
-        Data = ReadBinaryFile(FileName, 3, ADODBStream)
-        WriteBinaryFile FileName, Data, ADODBStream
+        Data = ReadBinaryFile(FileName, 3)
+        WriteBinaryFile FileName, Data
     End If
 End Sub
 
-Public Sub WriteTextFileT( _
-    FileName As String, _
-    Text As String, _
-    Optional Position As Long, _
-    Optional Charset As String, _
-    Optional ADODBStream As ADODB.Stream)
-    
-    WriteTextFile _
-        GetADODBStream(ADODBStream), FileName, Text, Position, Charset
-End Sub
-
 Private Sub WriteTextFile( _
-    ADODBStream As ADODB.Stream, _
     FileName As String, _
     Text As String, _
     Optional Position As Long, _
     Optional Charset As String)
     
-    If ADODBStream Is Nothing Then Exit Sub
-    
     If FileName = "" Then Exit Sub
     
-    WriteTextAndSaveToFile ADODBStream, FileName, Text, Position, Charset
+    WriteTextAndSaveToFile FileName, Text, Position, Charset
 End Sub
+
+'
+' --- ADODB.Stream ---
+'
+
+'
+' GetADODBStream
+' - Returns a ADODB.Stream object.
+'
+
+Public Function GetADODBStream() As ADODB.Stream
+    Static ADODBStream As ADODB.Stream
+    If ADODBStream Is Nothing Then
+        Set ADODBStream = New ADODB.Stream
+    End If
+    Set GetADODBStream = ADODBStream
+End Function
 
 '
 ' --- TextFile ---
@@ -249,9 +183,6 @@ End Sub
 ' - Reads an entire file and returns the resulting string.
 '
 
-'
-' ADODBStream:
-'   Required. The name of a ADODB.Stream object.
 '
 ' FileName:
 '   Required. A String value that contains the name of a file.
@@ -270,14 +201,13 @@ End Sub
 '
 
 Public Function LoadFromFileAndReadText( _
-    ADODBStream As ADODB.Stream, _
     FileName As String, _
     Optional Charset As String) As String
     
     On Error Resume Next
     
-    With ADODBStream
-        .Type = adTypeText
+    With GetADODBStream()
+        .Type = ADODB.adTypeText
         If Charset <> "" Then .Charset = Charset
         .Open
         .LoadFromFile FileName
@@ -291,9 +221,6 @@ End Function
 ' - Writes a specified string to a file.
 '
 
-'
-' ADODBStream:
-'   Required. The name of a ADODB.Stream object.
 '
 ' FileName:
 '   Required. A String value that contains the fully-qualified name of
@@ -323,7 +250,6 @@ End Function
 '
 
 Public Sub WriteTextAndSaveToFile( _
-    ADODBStream As ADODB.Stream, _
     FileName As String, _
     Text As String, _
     Optional Position As Long, _
@@ -331,8 +257,8 @@ Public Sub WriteTextAndSaveToFile( _
     
     On Error Resume Next
     
-    With ADODBStream
-        .Type = adTypeText
+    With GetADODBStream()
+        .Type = ADODB.adTypeText
         If Charset <> "" Then .Charset = Charset
         .Open
         If Position = 0 Then
@@ -371,29 +297,14 @@ End Sub
 '   bytes, of the current position from the beginning of the stream.
 '   The default is 0, which represents the first byte in the stream.
 '
-' ADODBStream:
-'   Optional. The name of a ADODB.Stream object.
-'
 
 Public Function ReadBinaryFile( _
     FileName As String, _
-    Optional Position As Long, _
-    Optional ADODBStream As ADODB.Stream) As Variant
-    
-    ReadBinaryFile = _
-        ReadBinaryFileT(GetADODBStream(ADODBStream), FileName, Position)
-End Function
-
-Private Function ReadBinaryFileT( _
-    ADODBStream As ADODB.Stream, _
-    FileName As String, _
     Optional Position As Long) As Variant
-    
-    If ADODBStream Is Nothing Then Exit Function
     
     If FileName = "" Then Exit Function
     
-    ReadBinaryFileT = LoadFromFileAndRead(ADODBStream, FileName, Position)
+    ReadBinaryFile = LoadFromFileAndRead(FileName, Position)
 End Function
 
 '
@@ -414,37 +325,23 @@ End Function
 ' Buffer:
 '   Required. A Variant that contains an array of bytes to be written.
 '
-' ADODBStream:
-'   Optional. The name of a ADODB.Stream object.
-'
 
-Public Sub WriteBinaryFile( _
-    FileName As String, _
-    Buffer() As Byte, _
-    Optional ADODBStream As ADODB.Stream)
-    
-    WriteBinaryFileT GetADODBStream(ADODBStream), FileName, Buffer, 0
+Public Sub WriteBinaryFile(FileName As String, Buffer() As Byte)
+    WriteBinaryFileT FileName, Buffer, 0
 End Sub
 
-Public Sub AppendBinaryFile( _
-    FileName As String, _
-    Buffer() As Byte, _
-    Optional ADODBStream As ADODB.Stream)
-    
-    WriteBinaryFileT GetADODBStream(ADODBStream), FileName, Buffer, -1
+Public Sub AppendBinaryFile(FileName As String, Buffer() As Byte)
+    WriteBinaryFileT FileName, Buffer, -1
 End Sub
 
 Private Sub WriteBinaryFileT( _
-    ADODBStream As ADODB.Stream, _
     FileName As String, _
     Buffer() As Byte, _
     Optional Position As Long)
     
-    If ADODBStream Is Nothing Then Exit Sub
-    
     If FileName = "" Then Exit Sub
     
-    WriteAndSaveToFile ADODBStream, FileName, Buffer, Position
+    WriteAndSaveToFile FileName, Buffer, Position
 End Sub
 
 '
@@ -457,9 +354,6 @@ End Sub
 '
 
 '
-' ADODBStream:
-'   Required. The name of a ADODB.Stream object.
-'
 ' FileName:
 '   Required. A String value that contains the name of a file.
 '   FileName can contain any valid path and name in UNC format.
@@ -471,13 +365,12 @@ End Sub
 '
 
 Public Function LoadFromFileAndRead( _
-    ADODBStream As ADODB.Stream, _
     FileName As String, _
     Optional Position As Long) As Variant
     
     On Error Resume Next
     
-    With ADODBStream
+    With GetADODBStream()
         .Type = ADODB.adTypeBinary
         .Open
         .LoadFromFile FileName
@@ -492,9 +385,6 @@ End Function
 ' - Writes a binary data to a file.
 '
 
-'
-' ADODBStream:
-'   Required. The name of a ADODB.Stream object.
 '
 ' FileName:
 '   Required. A String value that contains the fully-qualified name of
@@ -512,14 +402,13 @@ End Function
 '
 
 Public Sub WriteAndSaveToFile( _
-    ADODBStream As ADODB.Stream, _
     FileName As String, _
     Buffer() As Byte, _
     Optional Position As Long)
     
     On Error Resume Next
     
-    With ADODBStream
+    With GetADODBStream()
         .Type = ADODB.adTypeBinary
         .Open
         If Position = 0 Then
