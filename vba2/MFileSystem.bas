@@ -41,31 +41,6 @@ Public Enum Scripting_IOMode
 End Enum
 
 '
-' --- FileSystemObject ---
-'
-
-'
-' GetFileSystemObject
-' - Returns a FileSystemObject object.
-'
-
-'
-' FileSystemObject:
-'   Optional. The name of a FileSystemObject object.
-'
-
-Public Function GetFileSystemObject( _
-    Optional FileSystemObject As Object) _
-    As Object
-    
-    If FileSystemObject Is Nothing Then
-        Set GetFileSystemObject = CreateObject("Scripting.FileSystemObject")
-    Else
-        Set GetFileSystemObject = FileSystemObject
-    End If
-End Function
-
-'
 ' === TextFile ===
 '
 
@@ -81,46 +56,23 @@ End Function
 ' FileName:
 '   Required. String expression that identifies the file to open.
 '
-' FileSystemObject:
-'   Optional. The name of a FileSystemObject object.
-'
 
-Public Function ReadTextFileW( _
-    FileName As String, _
-    Optional FileSystemObject As Object) As String
-    
-    ReadTextFileW = _
-        ReadTextFileT(FileName, Scripting_TristateTrue, FileSystemObject)
+Public Function ReadTextFileW(FileName As String) As String
+    ReadTextFileW = ReadTextFile(FileName, Scripting_TristateTrue)
 End Function
 
-Public Function ReadTextFileA( _
-    FileName As String, _
-    Optional FileSystemObject As Object) As String
-    
-    ReadTextFileA = _
-        ReadTextFileT(FileName, Scripting_TristateFalse, FileSystemObject)
-End Function
-
-Private Function ReadTextFileT( _
-    FileName As String, _
-    Optional Format As Scripting_Tristate, _
-    Optional FileSystemObject As Object) As String
-    
-    ReadTextFileT = _
-        ReadTextFile(GetFileSystemObject(FileSystemObject), FileName, Format)
+Public Function ReadTextFileA(FileName As String) As String
+    ReadTextFileA = ReadTextFile(FileName, Scripting_TristateFalse)
 End Function
 
 Private Function ReadTextFile( _
-    FileSystemObject As Object, _
     FileName As String, _
     Optional Format As Scripting_Tristate) As String
     
-    If FileSystemObject Is Nothing Then Exit Function
-    
     If FileName = "" Then Exit Function
-    If Not FileSystemObject.FileExists(FileName) Then Exit Function
+    If Not GetFileSystemObject().FileExists(FileName) Then Exit Function
     
-    ReadTextFile = OpenTextFileAndReadAll(FileSystemObject, FileName, Format)
+    ReadTextFile = OpenTextFileAndReadAll(FileName, Format)
 End Function
 
 '
@@ -144,106 +96,79 @@ End Function
 ' Text:
 '   Required. The text you want to write to the file.
 '
-' FileSystemObject:
-'   Optional. The name of a FileSystemObject object.
-'
 
-Public Sub WriteTextFileW( _
-    FileName As String, _
-    Text As String, _
-    Optional FileSystemObject As Object)
-    
-    WriteTextFileT _
-        FileName, _
-        Text, _
-        Scripting_ForWriting, _
-        Scripting_TristateTrue, _
-        FileSystemObject
-End Sub
-
-Public Sub WriteTextFileA( _
-    FileName As String, _
-    Text As String, _
-    Optional FileSystemObject As Object)
-    
-    WriteTextFileT _
-        FileName, _
-        Text, _
-        Scripting_ForWriting, _
-        Scripting_TristateFalse, _
-        FileSystemObject
-End Sub
-
-Public Sub AppendTextFileW( _
-    FileName As String, _
-    Text As String, _
-    Optional FileSystemObject As Object)
-    
-    WriteTextFileT _
-        FileName, _
-        Text, _
-        Scripting_ForAppending, _
-        Scripting_TristateTrue, _
-        FileSystemObject
-End Sub
-
-Public Sub AppendTextFileA( _
-    FileName As String, _
-    Text As String, _
-    Optional FileSystemObject As Object)
-    
-    WriteTextFileT _
-        FileName, _
-        Text, _
-        Scripting_ForAppending, _
-        Scripting_TristateFalse, _
-        FileSystemObject
-End Sub
-
-Private Sub WriteTextFileT( _
-    FileName As String, _
-    Text As String, _
-    Optional IOMode As Scripting_IOMode = Scripting_ForWriting, _
-    Optional Format As Scripting_Tristate, _
-    Optional FileSystemObject As Object)
-    
+Public Sub WriteTextFileW(FileName As String, Text As String)
     WriteTextFile _
-        GetFileSystemObject(FileSystemObject), _
         FileName, _
         Text, _
-        IOMode, _
-        Format
+        Scripting_ForWriting, _
+        Scripting_TristateTrue
+End Sub
+
+Public Sub WriteTextFileA(FileName As String, Text As String)
+    WriteTextFile _
+        FileName, _
+        Text, _
+        Scripting_ForWriting, _
+        Scripting_TristateFalse
+End Sub
+
+Public Sub AppendTextFileW(FileName As String, Text As String)
+    WriteTextFile _
+        FileName, _
+        Text, _
+        Scripting_ForAppending, _
+        Scripting_TristateTrue
+End Sub
+
+Public Sub AppendTextFileA(FileName As String, Text As String)
+    WriteTextFile _
+        FileName, _
+        Text, _
+        Scripting_ForAppending, _
+        Scripting_TristateFalse
 End Sub
 
 Private Sub WriteTextFile( _
-    FileSystemObject As Object, _
     FileName As String, _
     Text As String, _
     Optional IOMode As Scripting_IOMode = Scripting_ForWriting, _
     Optional Format As Scripting_Tristate)
     
-    If FileSystemObject Is Nothing Then Exit Sub
-    
     If FileName = "" Then Exit Sub
-    If FileSystemObject.FolderExists(FileName) Then Exit Sub
+    If GetFileSystemObject().FolderExists(FileName) Then Exit Sub
     
     If IOMode = Scripting_ForReading Then Exit Sub
     
-    MakeFolder _
-        FileSystemObject, _
-        GetParentFolderName(FileSystemObject, FileName)
+    MakeDirectory GetParentFolderName(FileName)
     
     If IOMode = Scripting_ForWriting Then
         CreateTextFileAndWrite _
-            FileSystemObject, _
             FileName, _
             Text, _
             (Format = Scripting_TristateTrue)
         Exit Sub
     End If
     
-    OpenTextFileAndWrite FileSystemObject, FileName, Text, IOMode, Format
+    OpenTextFileAndWrite FileName, Text, IOMode, Format
 End Sub
+
+'
+' --- FileSystemObject ---
+'
+
+'
+' GetFileSystemObject
+' - Returns a FileSystemObject object.
+'
+
+Public Function GetFileSystemObject() As Object
+    Static FileSystemObject As Object
+    If FileSystemObject Is Nothing Then
+        Set FileSystemObject = CreateObject("Scripting.FileSystemObject")
+    End If
+    Set GetFileSystemObject = FileSystemObject
+End Function
 
 '
 ' --- TextFile ---
@@ -254,9 +179,6 @@ End Sub
 ' - Reads an entire file and returns the resulting string.
 '
 
-'
-' FileSystemObject:
-'   Required. The name of a FileSystemObject object.
 '
 ' FileName:
 '   Required. String expression that identifies the file to open.
@@ -270,15 +192,16 @@ End Sub
 '
 
 Public Function OpenTextFileAndReadAll( _
-    FileSystemObject As Object, _
     FileName As String, _
     Optional Format As Scripting_Tristate) As String
     
     On Error Resume Next
     
-    With FileSystemObject.OpenTextFile(FileName, Format:=Format)
-        OpenTextFileAndReadAll = .ReadAll
-        .Close
+    With GetFileSystemObject()
+        With .OpenTextFile(FileName, Format:=Format)
+            OpenTextFileAndReadAll = .ReadAll
+            .Close
+        End With
     End With
 End Function
 
@@ -287,9 +210,6 @@ End Function
 ' - Writes a specified string to a file.
 '
 
-'
-' FileSystemObject:
-'   Required. The name of a FileSystemObject object.
 '
 ' FileName:
 '   Required. String expression that identifies the file to create.
@@ -310,7 +230,6 @@ End Function
 '
 
 Public Sub OpenTextFileAndWrite( _
-    FileSystemObject As Object, _
     FileName As String, _
     Text As String, _
     Optional IOMode As Scripting_IOMode = Scripting_ForWriting, _
@@ -318,9 +237,11 @@ Public Sub OpenTextFileAndWrite( _
     
     On Error Resume Next
     
-    With FileSystemObject.OpenTextFile(FileName, IOMode, True, Format)
-        .Write (Text)
-        .Close
+    With GetFileSystemObject()
+        With .OpenTextFile(FileName, IOMode, True, Format)
+            .Write (Text)
+            .Close
+        End With
     End With
 End Sub
 
@@ -329,9 +250,6 @@ End Sub
 ' - Writes a specified string to a file.
 '
 
-'
-' FileSystemObject:
-'   Required. The name of a FileSystemObject object.
 '
 ' FileName:
 '   Required. String expression that identifies the file to create.
@@ -348,16 +266,17 @@ End Sub
 '
 
 Public Sub CreateTextFileAndWrite( _
-    FileSystemObject As Object, _
     FileName As String, _
     Text As String, _
     Optional Unicode As Boolean)
     
     On Error Resume Next
     
-    With FileSystemObject.CreateTextFile(FileName, True, Unicode)
-        .Write (Text)
-        .Close
+    With GetFileSystemObject()
+        With .CreateTextFile(FileName, True, Unicode)
+            .Write (Text)
+            .Close
+        End With
     End With
 End Sub
 
@@ -374,28 +293,18 @@ End Sub
 ' DirName:
 '   Required. String expression that identifies the directory to create.
 '
-' FileSystemObject:
-'   Optional. The name of a FileSystemObject object.
-'
 
-Public Sub MakeDirectory( _
-    DirName As String, _
-    Optional FileSystemObject As Object)
-    
-    MakeFolder GetFileSystemObject(FileSystemObject), DirName
-End Sub
-
-Private Sub MakeFolder( _
-    FileSystemObject As Object, _
-    FolderName As String)
+Public Sub MakeDirectory(DirName As String)
+    Dim FileSystemObject As Object
+    Set FileSystemObject = GetFileSystemObject()
     
     If FileSystemObject Is Nothing Then Exit Sub
     
-    If FolderName = "" Then Exit Sub
-    If FileSystemObject.FolderExists(FolderName) Then Exit Sub
+    If DirName = "" Then Exit Sub
+    If FileSystemObject.FolderExists(DirName) Then Exit Sub
     
     Dim FolderPath As String
-    FolderPath = FileSystemObject.GetAbsolutePathName(FolderName)
+    FolderPath = FileSystemObject.GetAbsolutePathName(DirName)
     If FolderPath = "" Then Exit Sub
     
     Dim DriveName As String
@@ -404,7 +313,7 @@ Private Sub MakeFolder( _
         If Not FileSystemObject.DriveExists(DriveName) Then Exit Sub
     End If
     
-    CreateFolder FileSystemObject, FolderPath
+    CreateFolder FolderPath
 End Sub
 
 '
@@ -417,25 +326,19 @@ End Sub
 '
 
 '
-' FileSystemObject:
-'   Required. The name of a FileSystemObject object.
-'
 ' FolderPath:
 '   Required. String expression that identifies the folder to create.
 '
 
-Public Sub CreateFolder( _
-    FileSystemObject As Object, _
-    FolderPath As String)
-    
+Public Sub CreateFolder(FolderPath As String)
     On Error Resume Next
     
     If FolderPath = "" Then Exit Sub
     
-    With FileSystemObject
+    With GetFileSystemObject()
         If .FolderExists(FolderPath) Then Exit Sub
         
-        CreateFolder FileSystemObject, .GetParentFolderName(FolderPath)
+        CreateFolder .GetParentFolderName(FolderPath)
         .CreateFolder FolderPath
     End With
 End Sub
@@ -447,20 +350,14 @@ End Sub
 '
 
 '
-' FileSystemObject:
-'   Required. The name of a FileSystemObject object.
-'
 ' Path:
 '   Required. String expression that identifies the folder.
 '
 
-Public Function GetParentFolderName( _
-    FileSystemObject As Object, _
-    Path As String) As String
-    
+Public Function GetParentFolderName(Path As String) As String
     On Error Resume Next
     
-    With FileSystemObject
+    With GetFileSystemObject()
         GetParentFolderName = .GetParentFolderName(.GetAbsolutePathName(Path))
     End With
 End Function
@@ -475,21 +372,15 @@ End Function
 '
 
 '
-' FileSystemObject:
-'   Required. The name of a FileSystemObject object.
-'
 ' Path:
 '   Required. The path specification for the component whose drive name is
 '   to be returned.
 '
 
-Public Function GetDriveName( _
-    FileSystemObject As Object, _
-    Path As String) As String
-    
+Public Function GetDriveName(Path As String) As String
     On Error Resume Next
     
-    With FileSystemObject
+    With GetFileSystemObject()
         GetDriveName = .GetDriveName(.GetAbsolutePathName(Path))
     End With
 End Function
