@@ -28,6 +28,8 @@ Option Explicit
 ' - ADODB.Stream
 '
 
+Private ADODBStream
+
 '
 ' === TextFile ===
 '
@@ -167,7 +169,7 @@ End Sub
 '
 
 Public Function GetADODBStream()
-    Static ADODBStream
+    'Static ADODBStream
     If IsEmpty(ADODBStream) Then
         Set ADODBStream = CreateObject("ADODB.Stream")
     End If
@@ -341,7 +343,20 @@ Private Sub WriteBinaryFileT( _
     
     If FileName = "" Then Exit Sub
     
-    WriteAndSaveToFile FileName, Buffer, Position
+    'WriteAndSaveToFile FileName, Buffer, Position
+    
+    Dim Buf
+    Dim Index
+    For Index = 1 To LenB(Buffer)
+        Buf = Buf & ChrW(AscB(MidB(Buffer, Index, 1)))
+    Next
+    If Position = 0 Then
+        WriteTextFileA FileName, Buf
+    ElseIf Position < 0 Then
+        AppendTextFileA FileName, Buf
+    Else
+        ' To Do
+    End If
 End Sub
 
 '
@@ -509,10 +524,10 @@ Private Sub Test_BinaryFile()
     FileName = GetSaveAsFileName()
     If FileName = "" Then Exit Sub
     
-    Dim Buffer(0 To 255) As Byte
+    Dim Buffer
     Dim Index
     For Index = 0 To 255
-        Buffer(Index) = Index
+        Buffer = Buffer & ChrB(Index)
     Next
     
     WriteBinaryFile FileName, Buffer
@@ -522,10 +537,11 @@ Private Sub Test_BinaryFile()
     
     Dim Text
     Dim Index1
-    For Index1 = LBound(Data) To UBound(Data) Step 16
+    For Index1 = 1 To LenB(Data) Step 16
         Dim Index2
         For Index2 = Index1 To Index1 + 15
-            Text = Text & Right("0" & Hex(Data(Index2)), 2) & " "
+            Text = _
+                Text & Right("0" & Hex(AscB(MidB(Data, Index2, 1))), 2) & " "
         Next
         Text = Text & vbNewLine
     Next
@@ -536,9 +552,10 @@ Private Sub Test_BinaryFile()
     Data = ReadBinaryFile(FileName, 0)
     
     Text = ""
-    For Index1 = LBound(Data) To UBound(Data) Step 16
+    For Index1 = 1 To LenB(Data) Step 16
         For Index2 = Index1 To Index1 + 15
-            Text = Text & Right("0" & Hex(Data(Index2)), 2) & " "
+            Text = _
+                Text & Right("0" & Hex(AscB(MidB(Data, Index2, 1))), 2) & " "
         Next
         Text = Text & vbNewLine
     Next
