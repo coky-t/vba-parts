@@ -37,20 +37,12 @@ Option Explicit
 ' - Returns a RegExp object.
 '
 
-'
-' RegExpObject:
-'   Optional. The name of a RegExp object.
-'
-
-Public Function GetRegExp( _
-    Optional RegExpObject As VBScript_RegExp_55.RegExp) _
-    As VBScript_RegExp_55.RegExp
-    
+Public Function GetRegExp() As VBScript_RegExp_55.RegExp
+    Static RegExpObject As VBScript_RegExp_55.RegExp
     If RegExpObject Is Nothing Then
-        Set GetRegExp = New VBScript_RegExp_55.RegExp
-    Else
-        Set GetRegExp = RegExpObject
+        Set RegExpObject = New VBScript_RegExp_55.RegExp
     End If
+    Set GetRegExp = RegExpObject
 End Function
 
 '
@@ -92,22 +84,18 @@ End Function
 '   Optional. The value is False if the search is single-line mode,
 '   True if it is multi-line mode. Default is False.
 '
-' RegExpObject:
-'   Optional. The name of a RegExp object.
-'
 
 Public Function RegExp_Execute( _
     SourceString As String, _
     Pattern As String, _
     Optional IgnoreCase As Boolean, _
     Optional GlobalMatch As Boolean, _
-    Optional MultiLine As Boolean, _
-    Optional RegExpObject As VBScript_RegExp_55.RegExp) _
+    Optional MultiLine As Boolean) _
     As VBScript_RegExp_55.MatchCollection
     
     On Error Resume Next
     
-    With GetRegExp(RegExpObject)
+    With GetRegExp()
         .Pattern = Pattern
         .IgnoreCase = IgnoreCase
         .Global = GlobalMatch
@@ -122,13 +110,12 @@ Public Function RegExp_Replace( _
     Pattern As String, _
     Optional IgnoreCase As Boolean, _
     Optional GlobalMatch As Boolean, _
-    Optional MultiLine As Boolean, _
-    Optional RegExpObject As VBScript_RegExp_55.RegExp) _
+    Optional MultiLine As Boolean) _
     As String
     
     On Error Resume Next
     
-    With GetRegExp(RegExpObject)
+    With GetRegExp()
         .Pattern = Pattern
         .IgnoreCase = IgnoreCase
         .Global = GlobalMatch
@@ -141,13 +128,12 @@ Public Function RegExp_Test( _
     SourceString As String, _
     Pattern As String, _
     Optional IgnoreCase As Boolean, _
-    Optional MultiLine As Boolean, _
-    Optional RegExpObject As VBScript_RegExp_55.RegExp) _
+    Optional MultiLine As Boolean) _
     As Boolean
     
     On Error Resume Next
     
-    With GetRegExp(RegExpObject)
+    With GetRegExp()
         .Pattern = Pattern
         .IgnoreCase = IgnoreCase
         .MultiLine = MultiLine

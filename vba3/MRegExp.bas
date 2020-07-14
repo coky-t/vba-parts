@@ -28,6 +28,8 @@ Option Explicit
 ' - VBScript_RegExp_55.RegExp
 '
 
+Private RegExpObject
+
 '
 ' --- RegExp ---
 '
@@ -37,19 +39,12 @@ Option Explicit
 ' - Returns a RegExp object.
 '
 
-'
-' RegExpObject:
-'   Optional. The name of a RegExp object.
-'
-
-Public Function GetRegExp( _
-    RegExpObject)
-    
-    If RegExpObject Is Nothing Then
-        Set GetRegExp = CreateObject("VBScript.RegExp")
-    Else
-        Set GetRegExp = RegExpObject
+Public Function GetRegExp()
+    'Static RegExpObject
+    If IsEmpty(RegExpObject) Then
+        Set RegExpObject = CreateObject("VBScript.RegExp")
     End If
+    Set GetRegExp = RegExpObject
 End Function
 
 '
@@ -91,22 +86,17 @@ End Function
 '   Optional. The value is False if the search is single-line mode,
 '   True if it is multi-line mode. Default is False.
 '
-' RegExpObject:
-'   Optional. The name of a RegExp object.
-'
 
 Public Function RegExp_Execute( _
     SourceString, _
     Pattern, _
     IgnoreCase, _
     GlobalMatch, _
-    MultiLine, _
-    RegExpObject) _
-   
+    MultiLine)
     
     On Error Resume Next
     
-    With GetRegExp(RegExpObject)
+    With GetRegExp()
         .Pattern = Pattern
         .IgnoreCase = IgnoreCase
         .Global = GlobalMatch
@@ -121,13 +111,11 @@ Public Function RegExp_Replace( _
     Pattern, _
     IgnoreCase, _
     GlobalMatch, _
-    MultiLine, _
-    RegExpObject) _
-   
+    MultiLine)
     
     On Error Resume Next
     
-    With GetRegExp(RegExpObject)
+    With GetRegExp()
         .Pattern = Pattern
         .IgnoreCase = IgnoreCase
         .Global = GlobalMatch
@@ -140,13 +128,11 @@ Public Function RegExp_Test( _
     SourceString, _
     Pattern, _
     IgnoreCase, _
-    MultiLine, _
-    RegExpObject) _
-   
+    MultiLine)
     
     On Error Resume Next
     
-    With GetRegExp(RegExpObject)
+    With GetRegExp()
         .Pattern = Pattern
         .IgnoreCase = IgnoreCase
         .MultiLine = MultiLine
@@ -174,8 +160,7 @@ Private Sub Test_RegExp_Test()
     MultiLine = (MsgBox("MultiLine", vbYesNo) = vbYes)
     
     Dim Result
-    Result = _
-        RegExp_Test(SourceString, Pattern, IgnoreCase, MultiLine, Nothing)
+    Result = RegExp_Test(SourceString, Pattern, IgnoreCase, MultiLine)
     
     Debug_Print "=== RegExp_Test ==="
     Debug_Print "SourceString: " & SourceString
@@ -215,8 +200,7 @@ Private Sub Test_RegExp_Replace()
             Pattern, _
             IgnoreCase, _
             GlobalMatch, _
-            MultiLine, _
-            Nothing)
+            MultiLine)
     
     Debug_Print "=== RegExp_Replace ==="
     Debug_Print "SourceString: " & SourceString
@@ -249,12 +233,7 @@ Private Sub Test_RegExp_Execute()
     Dim Matches
     Set Matches = _
         RegExp_Execute( _
-            SourceString, _
-            Pattern, _
-            IgnoreCase, _
-            GlobalMatch, _
-            MultiLine, _
-            Nothing)
+            SourceString, Pattern, IgnoreCase, GlobalMatch, MultiLine)
     
     Debug_Print "=== RegExp_Execute ==="
     Debug_Print "SourceString: " & SourceString
