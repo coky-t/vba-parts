@@ -343,7 +343,23 @@ Private Sub WriteBinaryFileT( _
     
     If FileName = "" Then Exit Sub
     
-    'WriteAndSaveToFile FileName, Buffer, Position
+    WriteAndSaveToFile FileName, Buffer, Position
+End Sub
+
+Public Sub WriteBinaryFileFromString(FileName, Buffer)
+    WriteBinaryFileFromStringT FileName, Buffer, 0
+End Sub
+
+Public Sub AppendBinaryFileFromString(FileName, Buffer)
+    WriteBinaryFileFromStringT FileName, Buffer, -1
+End Sub
+
+Private Sub WriteBinaryFileFromStringT( _
+    FileName, _
+    Buffer, _
+    Position)
+    
+    If FileName = "" Then Exit Sub
     
     Dim Buf
     Dim Index
@@ -530,7 +546,7 @@ Private Sub Test_BinaryFile()
         Buffer = Buffer & ChrB(Index)
     Next
     
-    WriteBinaryFile FileName, Buffer
+    WriteBinaryFileFromString FileName, Buffer
     
     Dim Data
     Data = ReadBinaryFile(FileName, 0)
@@ -548,7 +564,7 @@ Private Sub Test_BinaryFile()
     
     Debug_Print Text
     
-    AppendBinaryFile FileName, Buffer
+    AppendBinaryFileFromString FileName, Buffer
     Data = ReadBinaryFile(FileName, 0)
     
     Text = ""
