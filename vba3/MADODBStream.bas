@@ -120,9 +120,9 @@ Public Sub WriteTextFileUTF8( _
     WriteTextFile FileName, Text, 0, "utf-8"
     
     If Not BOM Then
-        Dim Data
-        Data = ReadBinaryFile(FileName, 3)
-        WriteBinaryFile FileName, Data
+        Dim Binary
+        Binary = ReadBinaryFile(FileName, 3)
+        WriteBinaryFile FileName, Binary, 0
     End If
 End Sub
 
@@ -142,9 +142,9 @@ Public Sub AppendTextFileUTF8( _
     WriteTextFile FileName, Text, -1, "utf-8"
     
     If Not BOM Then
-        Dim Data
-        Data = ReadBinaryFile(FileName, 3)
-        WriteBinaryFile FileName, Data
+        Dim Binary
+        Binary = ReadBinaryFile(FileName, 3)
+        WriteBinaryFile FileName, Binary, 0
     End If
 End Sub
 
@@ -324,56 +324,55 @@ End Function
 '   You can save to any valid local location, or any location you have
 '   access to via a UNC value.
 '
-' Buffer:
+' Binary:
 '   Required. A Variant that contains an array of bytes to be written.
 '
+' Position:
+'   Optional. Sets a Long value that specifies the offset, in number of
+'   bytes, of the current position from the beginning of the stream.
+'   The default is 0, which represents the first byte in the stream.
+'
 
-Public Sub WriteBinaryFile(FileName, Buffer)
-    WriteBinaryFileT FileName, Buffer, 0
-End Sub
-
-Public Sub AppendBinaryFile(FileName, Buffer)
-    WriteBinaryFileT FileName, Buffer, -1
-End Sub
-
-Private Sub WriteBinaryFileT( _
+Public Sub WriteBinaryFile( _
     FileName, _
-    Buffer, _
+    Binary, _
     Position)
     
     If FileName = "" Then Exit Sub
     
-    WriteAndSaveToFile FileName, Buffer, Position
+    WriteAndSaveToFile FileName, Binary, Position
 End Sub
 
-Public Sub WriteBinaryFileFromString(FileName, Buffer)
-    WriteBinaryFileFromStringT FileName, Buffer, 0
+Public Sub AppendBinaryFile(FileName, Binary)
+    WriteBinaryFile FileName, Binary, -1
 End Sub
 
-Public Sub AppendBinaryFileFromString(FileName, Buffer)
-    WriteBinaryFileFromStringT FileName, Buffer, -1
-End Sub
-
-Private Sub WriteBinaryFileFromStringT( _
-    FileName, _
-    Buffer, _
-    Position)
-    
+Public Sub WriteBinaryFileFromStringB(FileName, StringB)
     If FileName = "" Then Exit Sub
     
-    Dim Buf
+    Dim StringWB
+    StringWB = GetStringWBFromStringB(StringB)
+    
+    WriteTextFileA FileName, StringWB
+End Sub
+
+Public Sub AppendBinaryFileFromStringB(FileName, StringB)
+    If FileName = "" Then Exit Sub
+    
+    Dim StringWB
+    StringWB = GetStringWBFromStringB(StringB)
+    
+    AppendTextFileA FileName, StringWB
+End Sub
+
+Private Function GetStringWBFromStringB(StringB)
+    Dim StringWB
     Dim Index
-    For Index = 1 To LenB(Buffer)
-        Buf = Buf & ChrW(AscB(MidB(Buffer, Index, 1)))
+    For Index = 1 To LenB(StringB)
+        StringWB = StringWB & ChrW(AscB(MidB(StringB, Index, 1)))
     Next
-    If Position = 0 Then
-        WriteTextFileA FileName, Buf
-    ElseIf Position < 0 Then
-        AppendTextFileA FileName, Buf
-    Else
-        ' To Do
-    End If
-End Sub
+    GetStringWBFromStringB = StringWB
+End Function
 
 '
 ' --- BinaryFile ---
@@ -423,7 +422,7 @@ End Function
 '   You can save to any valid local location, or any location you have
 '   access to via a UNC value.
 '
-' Buffer:
+' Binary:
 '   Required. A Variant that contains an array of bytes to be written.
 '
 ' Position:
@@ -434,7 +433,7 @@ End Function
 
 Public Sub WriteAndSaveToFile( _
     FileName, _
-    Buffer, _
+    Binary, _
     Position)
     
     On Error Resume Next
@@ -453,11 +452,99 @@ Public Sub WriteAndSaveToFile( _
                 .Position = .Size
             End If
         End If
-        .Write Buffer
+        .Write Binary
         .SaveToFile FileName, 2 'ADODB.adSaveCreateOverWrite
         .Close
     End With
 End Sub
+
+'
+' --- Text / Binary ---
+'
+
+'
+' GetTextFromBinary
+' - Return a string value that contains the text in characters.
+'
+
+'
+' Binary:
+'   Required. A Variant that contains an array of bytes.
+'
+' Charset:
+'   Required. A String value that specifies the character set into
+'   which the contents of the Stream will be translated.
+'   The default value is Unicode.
+'   Allowed values are typical strings passed over the interface as
+'   Internet character set names (for example, "iso-8859-1", "Windows-1252",
+'   and so on).
+'   For a list of the character set names that are known by a system,
+'   see the subkeys of HKEY_CLASSES_ROOT\MIME\Database\Charset
+'   in the Windows Registry.
+'
+
+Public Function GetTextFromBinary(Binary, Charset)
+    On Error Resume Next
+    
+    With GetADODBStream()
+        .Open
+        
+        .Type = 1 'ADODB.adTypeBinary
+        .Write Binary
+        
+        .Position = 0
+        .Type = 2 'ADODB.adTypeText
+        .Charset = Charset
+        GetTextFromBinary = .ReadText
+        
+        .Close
+    End With
+End Function
+
+'
+' GetBinaryFromText
+' - Return a variant that contains an array of bytes.
+'
+
+'
+' Text:
+'   Required. A String value that contains the text in characters.
+'
+' Charset:
+'   Required. A String value that specifies the character set into
+'   which the contents of the Stream will be translated.
+'   The default value is Unicode.
+'   Allowed values are typical strings passed over the interface as
+'   Internet character set names (for example, "iso-8859-1", "Windows-1252",
+'   and so on).
+'   For a list of the character set names that are known by a system,
+'   see the subkeys of HKEY_CLASSES_ROOT\MIME\Database\Charset
+'   in the Windows Registry.
+'
+
+Public Function GetBinaryFromText(Text, Charset)
+    On Error Resume Next
+    
+    With GetADODBStream()
+        .Open
+        
+        .Type = 2 'ADODB.adTypeText
+        .Charset = Charset
+        .WriteText Text
+        
+        .Position = 0
+        .Type = 1 'ADODB.adTypeBinary
+        Select Case Charset
+        Case "unicode"
+            .Position = 2
+        Case "utf-8"
+            .Position = 3
+        End Select
+        GetBinaryFromText = .Read
+        
+        .Close
+    End With
+End Function
 
 '
 ' --- Test ---
@@ -540,45 +627,77 @@ Private Sub Test_BinaryFile()
     FileName = GetSaveAsFileName()
     If FileName = "" Then Exit Sub
     
-    Dim Buffer
+    Dim StringB
+    Dim Binary
+    
+    StringB = GetTestStringB()
+    WriteBinaryFileFromStringB FileName, StringB
+    Binary = ReadBinaryFile(FileName, 0)
+    Debug_Print_Binary Binary
+    
+    StringB = GetTestStringB()
+    AppendBinaryFileFromStringB FileName, StringB
+    Binary = ReadBinaryFile(FileName, 0)
+    Debug_Print_Binary Binary
+End Sub
+
+Private Function GetTestStringB()
+    Dim StringB
     Dim Index
     For Index = 0 To 255
-        Buffer = Buffer & ChrB(Index)
+        StringB = StringB & ChrB(Index)
     Next
+    GetTestStringB = StringB
+End Function
+
+Private Sub Test_GetBinaryGetTextA()
+    Test_GetBinaryGetTextT "iso-8859-1"
+End Sub
+
+Private Sub Test_GetBinaryGetTextW()
+    Test_GetBinaryGetTextT "unicode"
+End Sub
+
+Private Sub Test_GetBinaryGetTextUTF8()
+    Test_GetBinaryGetTextT "utf-8"
+End Sub
+
+Private Sub Test_GetBinaryGetTextT(Charset)
+    Dim Text0
+    Text0 = "abcdefghijklmnopqrstuvwxyz"
     
-    WriteBinaryFileFromString FileName, Buffer
-    
-    Dim Data
-    Data = ReadBinaryFile(FileName, 0)
+    Dim Binary
+    Binary = GetBinaryFromText(Text0, Charset)
+    Debug_Print_Binary Binary
     
     Dim Text
-    Dim Index1
-    For Index1 = 1 To LenB(Data) Step 16
-        Dim Index2
-        For Index2 = Index1 To Index1 + 15
-            Text = _
-                Text & Right("0" & Hex(AscB(MidB(Data, Index2, 1))), 2) & " "
-        Next
-        Text = Text & vbNewLine
-    Next
-    
-    Debug_Print Text
-    
-    AppendBinaryFileFromString FileName, Buffer
-    Data = ReadBinaryFile(FileName, 0)
-    
-    Text = ""
-    For Index1 = 1 To LenB(Data) Step 16
-        For Index2 = Index1 To Index1 + 15
-            Text = _
-                Text & Right("0" & Hex(AscB(MidB(Data, Index2, 1))), 2) & " "
-        Next
-        Text = Text & vbNewLine
-    Next
-    
-    Debug_Print "---"
+    Text = GetTextFromBinary(Binary, Charset)
     Debug_Print Text
 End Sub
+
+Private Sub Debug_Print_Binary(Binary)
+    Dim Text
+    Dim Index1
+    Dim Index2
+    For Index1 = LBound(Binary) To UBound(Binary) Step 16
+        For Index2 = Index1 To MinL(Index1 + 15, UBound(Binary))
+            Text = Text & Right("0" & Hex(Binary(Index2)), 2) & " "
+        Next
+        Text = Text & vbNewLine
+    Next
+    
+    Debug_Print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+    Debug_Print Text
+    Debug_Print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
+End Sub
+
+Private Function MinL(Value1, Value2)
+    If Value1 < Value2 Then
+        MinL = Value1
+    Else
+        MinL = Value2
+    End If
+End Function
 
 Private Function GetSaveAsFileName()
     Dim SaveAsFileName
