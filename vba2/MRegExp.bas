@@ -244,10 +244,10 @@ Private Sub Test_RegExp_Execute()
     Debug_Print "MultiLine: " & CStr(MultiLine)
     Debug_Print "--- Execute ---"
     
-    Test_RegExp_Execute_Matches Matches
+    Debug_Print_Matches Matches
 End Sub
 
-Private Sub Test_RegExp_Execute_Matches( _
+Private Sub Debug_Print_Matches( _
     Matches As Object)
     
     If Matches Is Nothing Then
@@ -262,19 +262,19 @@ Private Sub Test_RegExp_Execute_Matches( _
     
     Dim Match As Object
     For Each Match In Matches
-        Test_RegExp_Execute_Match Match
+        Debug_Print_Match Match
     Next
 End Sub
 
-Private Sub Test_RegExp_Execute_Match(Match As Object)
+Private Sub Debug_Print_Match(Match As Object)
     Debug_Print "---"
     Debug_Print "FirstIndex: " & CStr(Match.FirstIndex)
     Debug_Print "Length: " & CStr(Match.Length)
     Debug_Print "Value: " & Match.Value
-    Test_RegExp_Execute_SubMatches Match.SubMatches
+    Debug_Print_SubMatches Match.SubMatches
 End Sub
 
-Private Sub Test_RegExp_Execute_SubMatches( _
+Private Sub Debug_Print_SubMatches( _
     SubMatches As Object)
     
     If SubMatches Is Nothing Then
