@@ -459,6 +459,62 @@ Public Sub WriteAndSaveToFile( _
 End Sub
 
 '
+' === Text / Binary ===
+'
+
+'
+' GetTextWFromBinary
+' - Return a string value (Unicode) that contains the text in characters.
+'
+' GetTextAFromBinary
+' - Return a string value (ASCII) that contains the text in characters.
+'
+' GetTextUTF8FromBinary
+' - Return a string value (UTF-8) that contains the text in characters.
+'
+
+'
+' Binary:
+'   Required. A Variant that contains an array of bytes.
+'
+
+Public Function GetTextWFromBinary(Binary)
+    GetTextWFromBinary = GetTextFromBinary(Binary, "unicode")
+End Function
+
+Public Function GetTextAFromBinary(Binary)
+    GetTextAFromBinary = GetTextFromBinary(Binary, "iso-8859-1")
+End Function
+
+Public Function GetTextUTF8FromBinary(Binary)
+    GetTextUTF8FromBinary = GetTextFromBinary(Binary, "utf-8")
+End Function
+
+'
+' GetBinaryFromTextW
+' GetBinaryFromTextA
+' GetBinaryFromTextUTF8
+' - Return a variant that contains an array of bytes.
+'
+
+'
+' Text:
+'   Required. A String value that contains the text in characters.
+'
+
+Public Function GetBinaryFromTextW(Text)
+    GetBinaryFromTextW = GetBinaryFromText(Text, "unicode")
+End Function
+
+Public Function GetBinaryFromTextA(Text)
+    GetBinaryFromTextA = GetBinaryFromText(Text, "iso-8859-1")
+End Function
+
+Public Function GetBinaryFromTextUTF8(Text)
+    GetBinaryFromTextUTF8 = GetBinaryFromText(Text, "utf-8")
+End Function
+
+'
 ' --- Text / Binary ---
 '
 
@@ -545,168 +601,3 @@ Public Function GetBinaryFromText(Text, Charset)
         .Close
     End With
 End Function
-
-'
-' --- Test ---
-'
-
-Private Sub Test_TextFileW()
-    Dim FileName
-    FileName = GetSaveAsFileName()
-    If FileName = "" Then Exit Sub
-    
-    Dim Text
-    
-    Text = "WriteTextFileW" & vbNewLine
-    WriteTextFileW FileName, Text
-    Text = ReadTextFileW(FileName)
-    Debug_Print Text
-    
-    Text = "AppendTextFileW" & vbNewLine
-    AppendTextFileW FileName, Text
-    Text = ReadTextFileW(FileName)
-    Debug_Print Text
-End Sub
-
-Private Sub Test_TextFileA()
-    Dim FileName
-    FileName = GetSaveAsFileName()
-    If FileName = "" Then Exit Sub
-    
-    Dim Text
-    
-    Text = "WriteTextFileA" & vbNewLine
-    WriteTextFileA FileName, Text
-    Text = ReadTextFileA(FileName)
-    Debug_Print Text
-    
-    Text = "AppendTextFileA" & vbNewLine
-    AppendTextFileA FileName, Text
-    Text = ReadTextFileA(FileName)
-    Debug_Print Text
-End Sub
-
-Private Sub Test_TextFileUTF8()
-    Dim FileName
-    FileName = GetSaveAsFileName()
-    If FileName = "" Then Exit Sub
-    
-    Dim Text
-    
-    Text = "WriteTextFileUTF8" & vbNewLine
-    WriteTextFileUTF8 FileName, Text, True
-    Text = ReadTextFileUTF8(FileName)
-    Debug_Print Text
-    
-    Text = "AppendTextFileUTF8" & vbNewLine
-    AppendTextFileUTF8 FileName, Text, True
-    Text = ReadTextFileUTF8(FileName)
-    Debug_Print Text
-End Sub
-
-Private Sub Test_TextFileUTF8_withoutBOM()
-    Dim FileName
-    FileName = GetSaveAsFileName()
-    If FileName = "" Then Exit Sub
-    
-    Dim Text
-    
-    Text = "WriteTextFileUTF8 (w/o BOM)" & vbNewLine
-    WriteTextFileUTF8 FileName, Text, False
-    Text = ReadTextFileUTF8(FileName)
-    Debug_Print Text
-    
-    Text = "AppendTextFileUTF8 (w/o BOM)" & vbNewLine
-    AppendTextFileUTF8 FileName, Text, False
-    Text = ReadTextFileUTF8(FileName)
-    Debug_Print Text
-End Sub
-
-Private Sub Test_BinaryFile()
-    Dim FileName
-    FileName = GetSaveAsFileName()
-    If FileName = "" Then Exit Sub
-    
-    Dim StringB
-    Dim Binary
-    
-    StringB = GetTestStringB()
-    WriteBinaryFileFromStringB FileName, StringB
-    Binary = ReadBinaryFile(FileName, 0)
-    Debug_Print_Binary Binary
-    
-    StringB = GetTestStringB()
-    AppendBinaryFileFromStringB FileName, StringB
-    Binary = ReadBinaryFile(FileName, 0)
-    Debug_Print_Binary Binary
-End Sub
-
-Private Function GetTestStringB()
-    Dim StringB
-    Dim Index
-    For Index = 0 To 255
-        StringB = StringB & ChrB(Index)
-    Next
-    GetTestStringB = StringB
-End Function
-
-Private Sub Test_GetBinaryGetTextA()
-    Test_GetBinaryGetTextT "iso-8859-1"
-End Sub
-
-Private Sub Test_GetBinaryGetTextW()
-    Test_GetBinaryGetTextT "unicode"
-End Sub
-
-Private Sub Test_GetBinaryGetTextUTF8()
-    Test_GetBinaryGetTextT "utf-8"
-End Sub
-
-Private Sub Test_GetBinaryGetTextT(Charset)
-    Dim Text0
-    Text0 = "abcdefghijklmnopqrstuvwxyz"
-    
-    Dim Binary
-    Binary = GetBinaryFromText(Text0, Charset)
-    Debug_Print_Binary Binary
-    
-    Dim Text
-    Text = GetTextFromBinary(Binary, Charset)
-    Debug_Print Text
-End Sub
-
-Private Sub Debug_Print_Binary(Binary)
-    Dim Text
-    Dim Index1
-    Dim Index2
-    For Index1 = LBound(Binary) To UBound(Binary) Step 16
-        For Index2 = Index1 To MinL(Index1 + 15, UBound(Binary))
-            Text = Text & Right("0" & Hex(Binary(Index2)), 2) & " "
-        Next
-        Text = Text & vbNewLine
-    Next
-    
-    Debug_Print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
-    Debug_Print Text
-    Debug_Print "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --"
-End Sub
-
-Private Function MinL(Value1, Value2)
-    If Value1 < Value2 Then
-        MinL = Value1
-    Else
-        MinL = Value2
-    End If
-End Function
-
-Private Function GetSaveAsFileName()
-    Dim SaveAsFileName
-    SaveAsFileName = Application.GetSaveAsFileName()
-    If SaveAsFileName = False Then Exit Function
-    GetSaveAsFileName = CStr(SaveAsFileName)
-    'GetSaveAsFileName = InputBox("GetSaveAsFileName")
-End Function
-
-Private Sub Debug_Print(Str)
-    Debug.Print Str
-End Sub

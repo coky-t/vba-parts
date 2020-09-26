@@ -99,35 +99,3 @@ Public Function OpenAndSendAndResponseText( _
         End If
     End With
 End Function
-
-'
-' --- Test ---
-'
-
-Private Sub Test_HttpGet()
-    Dim Url As String
-    Url = InputBox("Url:")
-    If Url = "" Then Exit Sub
-    
-    Dim Text As String
-    Text = HttpGet(Url)
-    Debug_Print Text
-End Sub
-
-Private Sub Test_HttpPost()
-    Dim Url As String
-    Url = InputBox("Url:")
-    If Url = "" Then Exit Sub
-    
-    Dim Body As String
-    Body = InputBox("Body:")
-    If Body = "" Then Exit Sub
-    
-    Dim Text As String
-    Text = HttpPost(Url, Body)
-    Debug_Print Text
-End Sub
-
-Private Sub Debug_Print(Str As String)
-    Debug.Print Str
-End Sub

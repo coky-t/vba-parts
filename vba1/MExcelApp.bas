@@ -28,6 +28,8 @@ Option Explicit
 ' - Excel.Application
 '
 
+#Const UseCurrentInstance = True
+
 '
 ' --- Excel.Application ---
 '
@@ -40,7 +42,11 @@ Option Explicit
 Public Function GetExcelApplication() As Excel.Application
     Static ExcelApplication As Excel.Application
     If ExcelApplication Is Nothing Then
+#If UseCurrentInstance Then
+        Set ExcelApplication = Excel.Application
+#Else
         Set ExcelApplication = New Excel.Application
+#End If
     End If
     Set GetExcelApplication = ExcelApplication
 End Function
@@ -155,29 +161,3 @@ Public Function GetFolderName(Optional Title As String) As String
         End With
     End With
 End Function
-
-'
-' --- Test ---
-'
-
-Private Sub Test_GetOpenFileName()
-    Dim FileName As String
-    FileName = GetOpenFileName()
-    Debug_Print FileName
-End Sub
-
-Private Sub Test_GetSaveAsFileName()
-    Dim FileName As String
-    FileName = GetSaveAsFileName()
-    Debug_Print FileName
-End Sub
-
-Private Sub Test_GetFolderName()
-    Dim FolderName As String
-    FolderName = GetFolderName()
-    Debug_Print FolderName
-End Sub
-
-Private Sub Debug_Print(Str As String)
-    Debug.Print Str
-End Sub
