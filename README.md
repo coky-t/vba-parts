@@ -130,3 +130,9 @@ Microsoft Excel X.X Object Library
 - [Early Binding](vba1/SpdxLicenseText.bas)
 - [Late Binding](vba2/SpdxLicenseText.bas)
 - [Late Binding without explicit type declaration](vba3/SpdxLicenseText.bas)
+
+### SpdxLicenseTemplateText.bas - RegExp Matching Pattern Generator
+
+- [Early Binding](vba1/SpdxLicenseTemplateText.bas)
+- [Late Binding](vba2/SpdxLicenseTemplateText.bas)
+- [Late Binding without explicit type declaration](vba3/SpdxLicenseTemplateText.bas)
