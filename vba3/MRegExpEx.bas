@@ -48,7 +48,7 @@ Option Explicit
 '
 ' ParametersListString:
 '   For Execute, Test:
-'     (Title)(Tab)Pattern(Tab)IgnoreCase(Tab)GlobalMatch(Tab)MultiLine(Newline)
+'     PatternName(Tab)Pattern(Tab)IgnoreCase(Tab)GlobalMatch(Tab)MultiLine(Newline)
 '   For Replace:
 '     ReplaceString(Tab)Pattern(Tab)IgnoreCase(Tab)GlobalMatch(Tab)MultiLine(Newline)
 '
@@ -119,13 +119,13 @@ Public Function RegExp_Params_Execute( _
     LB = LBound(Params)
     UB = UBound(Params)
     
-    Dim Title
+    Dim PatternName
     Dim Pattern
     Dim IgnoreCase
     Dim GlobalMatch
     Dim MultiLine
     
-    Title = CStr(Params(LB))
+    PatternName = CStr(Params(LB))
     If LB + 1 <= UB Then Pattern = CStr(Params(LB + 1))
     If LB + 2 <= UB Then IgnoreCase = CBool(Params(LB + 2))
     If LB + 3 <= UB Then GlobalMatch = CBool(Params(LB + 3))
@@ -134,7 +134,7 @@ Public Function RegExp_Params_Execute( _
     Dim RegExpMatches
     Set RegExpMatches = New CRegExpMatches
     With RegExpMatches
-        .Title = Title
+        .PatternName = PatternName
         Set .Matches = MRegExp.RegExp_Execute( _
             SourceString, _
             Pattern, _
@@ -255,19 +255,19 @@ Public Function RegExp_Params_Test( _
     LB = LBound(Params)
     UB = UBound(Params)
     
-    Dim Title
+    Dim PatternName
     Dim Pattern
     Dim IgnoreCase
     'Dim GlobalMatch
     Dim MultiLine
     
-    Title = CStr(Params(LB))
+    PatternName = CStr(Params(LB))
     If LB + 1 <= UB Then Pattern = CStr(Params(LB + 1))
     If LB + 2 <= UB Then IgnoreCase = CBool(Params(LB + 2))
     'If LB + 3 <= UB Then GlobalMatch = CBool(Params(LB + 3))
     If LB + 4 <= UB Then MultiLine = CBool(Params(LB + 4))
     
-    RegExp_Params_Test = Title & vbTab & _
+    RegExp_Params_Test = PatternName & vbTab & _
         CStr(MRegExp.RegExp_Test( _
             SourceString, _
             Pattern, _

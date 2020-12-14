@@ -194,7 +194,7 @@ Public Sub Debug_Print_RegExpMatches(RegExpMatches)
     If RegExpMatches Is Nothing Then
         Debug_Print "RegExpMatches: Nothing"
     Else
-        Debug_Print "Title: " & RegExpMatches.Title
+        Debug_Print "PatternName: " & RegExpMatches.PatternName
         Debug_Print_Matches RegExpMatches.Matches
     End If
 End Sub

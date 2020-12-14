@@ -31,5 +31,5 @@ Option Explicit
 ' IN THE SOFTWARE.
 '
 
-Public Title
+Public PatternName
 Public Matches

@@ -31,5 +31,5 @@ Option Explicit
 ' IN THE SOFTWARE.
 '
 
-Public Title As String
+Public PatternName As String
 Public Matches As Object
