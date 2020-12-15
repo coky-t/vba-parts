@@ -121,8 +121,7 @@ End Sub
 
 Public Function CRegExps_Execute( _
     CRegExps, _
-    SourceString) _
-   
+    SourceString)
     
     If CRegExps Is Nothing Then Exit Function
     If CRegExps.Count = 0 Then Exit Function
