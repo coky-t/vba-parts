@@ -153,7 +153,7 @@ Public Sub Test_BinaryFile_Core( _
     Binary = ReadBinaryFile(FileName, 0)
     Debug_Print_Binary Binary
     
-    AppendBinaryFileFromStringB FileName, StringB1
+    AppendBinaryFileFromStringB FileName, StringB2
     Binary = ReadBinaryFile(FileName, 0)
     Debug_Print_Binary Binary
 End Sub
