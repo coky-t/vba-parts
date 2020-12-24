@@ -31,3 +31,24 @@ Public Function GetTestBinary() As Variant
     Next
     GetTestBinary = Binary
 End Function
+
+Public Function GetTestStringB() As String
+    Dim StringB As String
+    Dim Index As Integer
+    For Index = 0 To 255
+        StringB = StringB & ChrB(Index)
+    Next
+    GetTestStringB = StringB
+End Function
+
+Public Function GetTestHexText() As String
+    Dim HexText As String
+    Dim Index As String
+    For Index = 0 To 15
+        HexText = HexText & "0" & Hex(Index)
+    Next
+    For Index = 16 To 255
+        HexText = HexText & Hex(Index)
+    Next
+    GetTestHexText = HexText
+End Function

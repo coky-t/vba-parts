@@ -23,6 +23,17 @@ Option Explicit
 ' IN THE SOFTWARE.
 '
 
+Public Function GetTestBinary()
+    Dim HexText
+    HexText = GetTestHexText()
+    
+    With CreateObject("MSXML2.DOMDocument").createElement("tmp")
+        .DataType = "bin.hex"
+        .Text = HexText
+        GetTestBinary = .nodeTypedValue
+    End With
+End Function
+
 Public Function GetTestStringB()
     Dim StringB
     Dim Index
