@@ -97,14 +97,15 @@ Public Sub Test_CFile_File_Core(FileName As String)
     End With
     With New CFile
         Set .File = File
+        Debug_Print "-----"
         Debug_Print "Attributes: " & .Attributes
-        ' BaseName
+        Debug_Print "BaseName: " & .BaseName
         Debug_Print "DateCreated: " & .DateCreated
         Debug_Print "DateLastAccessed: " & .DateLastAccessed
         Debug_Print "DateLastModified: " & .DateLastModified
         Debug_Print "Drive.Path: " & .Drive.Path
         Debug_Print "DriveName: " & .DriveName
-        ' ExtensionName
+        Debug_Print "ExtensionName: " & .ExtensionName
         Debug_Print "Name: " & .Name
         Debug_Print "ParentFolder.Path: " & .ParentFolder.Path
         Debug_Print "ParentFolderName: " & .ParentFolderName
@@ -118,21 +119,22 @@ End Sub
 Public Sub Test_CFile_Path_Core(FileName As String)
     With New CFile
         .Path = FileName
+        Debug_Print "-----"
         Debug_Print "Attributes: " & .Attributes
         Debug_Print "BaseName: " & .BaseName
-        ' DateCreated
-        ' DateLastAccessed
-        ' DateLastModified
+        Debug_Print "DateCreated: " & .DateCreated
+        Debug_Print "DateLastAccessed: " & .DateLastAccessed
+        Debug_Print "DateLastModified: " & .DateLastModified
         Debug_Print "Drive.Path: " & .Drive.Path
         Debug_Print "DriveName: " & .DriveName
         Debug_Print "ExtensionName: " & .ExtensionName
         Debug_Print "Name: " & .Name
         Debug_Print "ParentFolder.Path: " & .ParentFolder.Path
         Debug_Print "ParentFolderName: " & .ParentFolderName
-        ' ShortName
-        ' ShortPath
-        ' Size
-        ' TypeName
+        Debug_Print "ShortName: " & .ShortName
+        Debug_Print "ShortPath: " & .ShortPath
+        Debug_Print "Size: " & .Size
+        Debug_Print "TypeName: " & .TypeName
     End With
 End Sub
 

@@ -142,6 +142,7 @@ End Property
 ' Reference:
 ' https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/attributes-property
 ' https://docs.microsoft.com/en-us/office/vba/Language/Reference/user-interface-help/getattr-function
+' https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/setattr-statement
 '
 
 Public Property Get Attributes()
@@ -153,7 +154,11 @@ Public Property Get Attributes()
 End Property
 
 Public Property Let Attributes(Attributes_)
-    File.Attributes = Attributes_
+    If Not m_File Is Nothing Then
+        m_File.Attributes = Attributes_
+    ElseIf Not m_Path = "" Then
+        SetAttr m_Path, Attributes
+    End If
 End Property
 
 '
@@ -270,11 +275,11 @@ End Property
 '
 
 Public Property Get File()
-    If IsEmpty(m_File) Then
-        If m_Path = "" Then Exit Property
-        Set m_File = FileSystemObject.GetFile(m_Path)
+    If Not IsEmpty(m_File) Then
+        Set File = m_File
+    ElseIf Not m_Path = "" Then
+        Set File = FileSystemObject.GetFile(m_Path)
     End If
-    Set File = m_File
 End Property
 
 Public Property Set File(File_)
@@ -284,7 +289,7 @@ End Property
 
 '
 ' Name
-' - Sets or returns the name of a specified file or folder.
+' - Sets or returns the name of a specified file.
 '
 ' Reference:
 ' https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/name-property-filesystemobject-object
@@ -301,7 +306,7 @@ End Property
 
 Public Property Let Name(Name_)
     Reset
-    File.Name = Name_
+    m_Path = FileSystemObject.GetAbsolutePathName(Name_)
 End Property
 
 '
@@ -352,11 +357,11 @@ End Property
 '
 
 Public Property Get Path()
-    If m_Path = "" Then
-        If IsEmpty(m_File) Then Exit Property
-        m_Path = m_File.Path
+    If Not IsEmpty(m_File) Then
+        Path = m_File.Path
+    ElseIf Not m_Path = "" Then
+        Path = m_Path
     End If
-    Path = m_Path
 End Property
 
 Public Property Let Path(Path_)
@@ -703,7 +708,7 @@ End Sub
 
 '
 ' Copy
-' - Copies a specified file or folder from one location to another.
+' - Copies a specified file from one location to another.
 '
 ' Reference:
 ' https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/copy-method-visual-basic-for-applications
@@ -815,7 +820,7 @@ End Sub
 
 '
 ' Move
-' - Moves a specified file or folder from one location to another.
+' - Moves a specified file from one location to another.
 '
 ' Reference:
 ' https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/move-method-filesystemobject-object
@@ -827,8 +832,8 @@ Public Sub Move(Destination)
         m_File.Move Destination
     ElseIf Not m_Path = "" Then
         FileSystemObject.MoveFile m_Path, Destination
+        m_Path = FileSystemObject.GetAbsolutePathName(Destination)
     End If
-    m_Path = Destination
 End Sub
 
 '
