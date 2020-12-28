@@ -726,6 +726,20 @@ Public Sub Copy( _
 End Sub
 
 '
+' Create
+' - Creates a specified file.
+'
+' Reference:
+' https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/createtextfile-method
+'
+
+Public Sub Create()
+    With FileSystemObject.CreateTextFile(Path)
+        .Close
+    End With
+End Sub
+
+'
 ' CreateTextFile
 ' - Creates a specified file name and returns a TextStream object
 ' that can be used to read from or write to the file.
@@ -816,6 +830,22 @@ Public Sub GetSaveAsFileName( _
     
     Reset
     m_Path = SaveAsFileName
+End Sub
+
+'
+' GetTempName
+' - Returns a randomly generated temporary file name that is useful
+'   for performing operations that require a temporary file.
+'
+' Reference:
+' https://docs.microsoft.com/en-us/office/vba/language/reference/user-interface-help/gettempname-method
+'
+
+Public Sub GetTempName()
+    Reset
+    With FileSystemObject
+        m_Path = .GetAbsolutePathName(.GetTempName())
+    End With
 End Sub
 
 '
