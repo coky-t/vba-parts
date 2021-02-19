@@ -2,7 +2,7 @@ Attribute VB_Name = "Test_MRegExps"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2021 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -82,6 +82,16 @@ Public Sub Test_CRegExp_Execute()
         "alpha" & vbTab & _
             "([a-z]+)" & vbTab & _
             "True" & vbTab & "True" & vbTab & "True"
+End Sub
+
+Public Sub Test_CRegExp_GetCRegExpMatches()
+    Test_CRegExp_GetCRegExpMatches_Core _
+        "abc 123 xyz #$%", "alpha", "([a-z]+)", True, True, True
+End Sub
+
+Public Sub Test_CRegExp_GetCRegExpMatch()
+    Test_CRegExp_GetCRegExpMatch_Core _
+        "abc 123 xyz #$%", "alpha", "([a-z]+)", True, False, False
 End Sub
 
 '
@@ -190,6 +200,74 @@ Public Sub Test_CRegExp_Execute_Core( _
     Debug_Print "--- Execute ---"
     
     Debug_Print_RegExpMatches RegExpMatches
+End Sub
+
+Public Sub Test_CRegExp_GetCRegExpMatches_Core( _
+    SourceString As String, _
+    PatternName As String, _
+    Pattern As String, _
+    IgnoreCase As Boolean, _
+    GlobalMatch As Boolean, _
+    MultiLine As Boolean)
+    
+    Dim CRegExp_ As CRegExp
+    Set CRegExp_ = New CRegExp
+    With CRegExp_
+        .PatternName = PatternName
+        .Pattern = Pattern
+        .IgnoreCase = IgnoreCase
+        .GlobalMatch = GlobalMatch
+        .MultiLine = MultiLine
+    End With
+    
+    Dim CRegExpMatches_ As CRegExpMatches
+    Set CRegExpMatches_ = CRegExp_.GetCRegExpMatches(SourceString)
+    
+    Debug_Print "=== RegExp_GetCRegExpMatches ==="
+    Debug_Print "SourceString: " & SourceString
+    Debug_Print "PatternName: " & PatternName
+    Debug_Print "Pattern: " & Pattern
+    Debug_Print "IgnoreCase: " & CStr(IgnoreCase)
+    Debug_Print "GlobalMatch: " & CStr(GlobalMatch)
+    Debug_Print "MultiLine: " & CStr(MultiLine)
+    Debug_Print "--- GetCRegExpMatches ---"
+    
+    Debug_Print "PatternName: " & CRegExpMatches_.PatternName
+    Debug_Print_Matches CRegExpMatches_.Matches
+End Sub
+
+Public Sub Test_CRegExp_GetCRegExpMatch_Core( _
+    SourceString As String, _
+    PatternName As String, _
+    Pattern As String, _
+    IgnoreCase As Boolean, _
+    GlobalMatch As Boolean, _
+    MultiLine As Boolean)
+    
+    Dim CRegExp_ As CRegExp
+    Set CRegExp_ = New CRegExp
+    With CRegExp_
+        .PatternName = PatternName
+        .Pattern = Pattern
+        .IgnoreCase = IgnoreCase
+        .GlobalMatch = GlobalMatch
+        .MultiLine = MultiLine
+    End With
+    
+    Dim CRegExpMatch_ As CRegExpMatch
+    Set CRegExpMatch_ = CRegExp_.GetCRegExpMatch(SourceString)
+    
+    Debug_Print "=== RegExp_GetCRegExpMatch ==="
+    Debug_Print "SourceString: " & SourceString
+    Debug_Print "PatternName: " & PatternName
+    Debug_Print "Pattern: " & Pattern
+    Debug_Print "IgnoreCase: " & CStr(IgnoreCase)
+    Debug_Print "GlobalMatch: " & CStr(GlobalMatch)
+    Debug_Print "MultiLine: " & CStr(MultiLine)
+    Debug_Print "--- GetCRegExpMatch ---"
+    
+    Debug_Print "PatternName: " & CRegExpMatch_.PatternName
+    Debug_Print_Match CRegExpMatch_.Match
 End Sub
 
 Public Sub Debug_Print_RegExpMatchesCollection( _

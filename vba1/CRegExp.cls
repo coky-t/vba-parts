@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2021 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -157,4 +157,42 @@ End Function
 Public Function Test(SourceString As String) As Boolean
     If m_RegExp Is Nothing Then Exit Function
     Test = m_RegExp.Test(SourceString)
+End Function
+
+Public Function GetCRegExpMatches(SourceString As String) As CRegExpMatches
+    If m_RegExp Is Nothing Then Exit Function
+    If SourceString = "" Then Exit Function
+    
+    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Set Matches = m_RegExp.Execute(SourceString)
+    If Matches Is Nothing Then Exit Function
+    If Matches.Count = 0 Then Exit Function
+    
+    Dim RegExpMatches As CRegExpMatches
+    Set RegExpMatches = New CRegExpMatches
+    With RegExpMatches
+        .PatternName = m_PatternName
+        Set .Matches = Matches
+    End With
+    
+    Set GetCRegExpMatches = RegExpMatches
+End Function
+
+Public Function GetCRegExpMatch(SourceString As String) As CRegExpMatch
+    If m_RegExp Is Nothing Then Exit Function
+    If SourceString = "" Then Exit Function
+    
+    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Set Matches = m_RegExp.Execute(SourceString)
+    If Matches Is Nothing Then Exit Function
+    If Matches.Count = 0 Then Exit Function
+    
+    Dim RegExpMatch As CRegExpMatch
+    Set RegExpMatch = New CRegExpMatch
+    With RegExpMatch
+        .PatternName = m_PatternName
+        Set .Match = Matches.Item(0)
+    End With
+    
+    Set GetCRegExpMatch = RegExpMatch
 End Function
