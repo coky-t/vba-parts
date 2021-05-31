@@ -51,6 +51,42 @@ Public Sub Test_LeftShiftLongFFFFFFFF()
     Test_LeftShiftLongX &HFFFFFFFF
 End Sub
 
+Public Sub Test_RightArithmeticShiftByte80()
+    Test_RightArithmeticShiftByteX &H80
+End Sub
+
+Public Sub Test_RightArithmeticShiftByte7F()
+    Test_RightArithmeticShiftByteX &H7F
+End Sub
+
+Public Sub Test_RightArithmeticShiftByteBF()
+    Test_RightArithmeticShiftByteX &HBF
+End Sub
+
+Public Sub Test_RightArithmeticShiftInteger8000()
+    Test_RightArithmeticShiftIntegerX &H8000
+End Sub
+
+Public Sub Test_RightArithmeticShiftInteger7FFF()
+    Test_RightArithmeticShiftIntegerX &H7FFF
+End Sub
+
+Public Sub Test_RightArithmeticShiftIntegerBFFF()
+    Test_RightArithmeticShiftIntegerX &HBFFF
+End Sub
+
+Public Sub Test_RightArithmeticShiftLong80000000()
+    Test_RightArithmeticShiftLongX &H80000000
+End Sub
+
+Public Sub Test_RightArithmeticShiftLong7FFFFFFF()
+    Test_RightArithmeticShiftLongX &H7FFFFFFF
+End Sub
+
+Public Sub Test_RightArithmeticShiftLongBFFFFFFF()
+    Test_RightArithmeticShiftLongX &HBFFFFFFF
+End Sub
+
 Public Sub Test_RightShiftByte80()
     Test_RightShiftByteX &H80
 End Sub
@@ -129,84 +165,105 @@ End Sub
 
 Public Sub Test_LeftShiftByteX(ByVal Value)
     Dim Count
-    For Count = 0 To 8
+    For Count = -1 To 8
         Test_LeftShiftByte_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_LeftShiftIntegerX(ByVal Value)
     Dim Count
-    For Count = 0 To 16
+    For Count = -1 To 16
         Test_LeftShiftInteger_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_LeftShiftLongX(ByVal Value)
     Dim Count
-    For Count = 0 To 32
+    For Count = -1 To 32
         Test_LeftShiftLong_Core Value, Count
+    Next
+End Sub
+
+Public Sub Test_RightArithmeticShiftByteX(ByVal Value)
+    Dim Count
+    For Count = -1 To 8
+        Test_RightArithmeticShiftByte_Core Value, Count
+    Next
+End Sub
+
+Public Sub Test_RightArithmeticShiftIntegerX(ByVal Value)
+    Dim Count
+    For Count = -1 To 16
+        Test_RightArithmeticShiftInteger_Core Value, Count
+    Next
+End Sub
+
+Public Sub Test_RightArithmeticShiftLongX(ByVal Value)
+    Dim Count
+    For Count = -1 To 32
+        Test_RightArithmeticShiftLong_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_RightShiftByteX(ByVal Value)
     Dim Count
-    For Count = 0 To 8
+    For Count = -1 To 8
         Test_RightShiftByte_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_RightShiftIntegerX(ByVal Value)
     Dim Count
-    For Count = 0 To 16
+    For Count = -1 To 16
         Test_RightShiftInteger_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_RightShiftLongX(ByVal Value)
     Dim Count
-    For Count = 0 To 32
+    For Count = -1 To 32
         Test_RightShiftLong_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_LeftRotateByteX(ByVal Value)
     Dim Count
-    For Count = 0 To 8
+    For Count = -1 To 8
         Test_LeftRotateByte_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_LeftRotateIntegerX(ByVal Value)
     Dim Count
-    For Count = 0 To 16
+    For Count = -1 To 16
         Test_LeftRotateInteger_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_LeftRotateLongX(ByVal Value)
     Dim Count
-    For Count = 0 To 32
+    For Count = -1 To 32
         Test_LeftRotateLong_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_RightRotateByteX(ByVal Value)
     Dim Count
-    For Count = 0 To 8
+    For Count = -1 To 8
         Test_RightRotateByte_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_RightRotateIntegerX(ByVal Value)
     Dim Count
-    For Count = 0 To 16
+    For Count = -1 To 16
         Test_RightRotateInteger_Core Value, Count
     Next
 End Sub
 
 Public Sub Test_RightRotateLongX(ByVal Value)
     Dim Count
-    For Count = 0 To 32
+    For Count = -1 To 32
         Test_RightRotateLong_Core Value, Count
     Next
 End Sub
@@ -237,6 +294,30 @@ Public Sub Test_LeftShiftLong_Core( _
     Dim Result
     Result = LeftShiftLong(Value, Count)
     DebugPrintBinOpLong Value, "<<", Count, Result
+End Sub
+
+Public Sub Test_RightArithmeticShiftByte_Core( _
+    ByVal Value, ByVal Count)
+    
+    Dim Result
+    Result = RightArithmeticShiftByte(Value, Count)
+    DebugPrintBinOpByte Value, ">>", Count, Result
+End Sub
+
+Public Sub Test_RightArithmeticShiftInteger_Core( _
+    ByVal Value, ByVal Count)
+    
+    Dim Result
+    Result = RightArithmeticShiftInteger(Value, Count)
+    DebugPrintBinOpInteger Value, ">>", Count, Result
+End Sub
+
+Public Sub Test_RightArithmeticShiftLong_Core( _
+    ByVal Value, ByVal Count)
+    
+    Dim Result
+    Result = RightArithmeticShiftLong(Value, Count)
+    DebugPrintBinOpLong Value, ">>", Count, Result
 End Sub
 
 Public Sub Test_RightShiftByte_Core( _

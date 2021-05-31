@@ -36,68 +36,81 @@ Public Function LeftShiftByte( _
     ByVal Value As Byte, _
     ByVal Count As Integer) As Byte
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        LeftShiftByte = RightShiftByte(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 8) + 8
+    ElseIf Count >= 8 Then
+        Cnt = Count Mod 8
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         LeftShiftByte = Value
-        Exit Function
-    ElseIf Count > 7 Then
-        LeftShiftByte = 0
         Exit Function
     End If
     
     Dim BitMask
     BitMask = Array(&H7F, &H3F, &H1F, &HF, &H7, &H3, &H1)
     
-    LeftShiftByte = (Value And BitMask(Count - 1)) * 2 ^ Count
+    LeftShiftByte = (Value And BitMask(Cnt - 1)) * 2 ^ Cnt
 End Function
 
 Public Function LeftShiftInteger( _
     ByVal Value As Integer, _
     ByVal Count As Integer) As Integer
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        LeftShiftInteger = RightShiftInteger(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 16) + 16
+    ElseIf Count >= 16 Then
+        Cnt = Count Mod 16
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         LeftShiftInteger = Value
-        Exit Function
-    ElseIf Count > 15 Then
-        LeftShiftInteger = 0
         Exit Function
     End If
     
     Dim BitMask1
-    BitMask1 = Array(&H3FFF, &H1FFF, &HFFF, &H7FF, &H3FF, &H1FF, _
-        &HFF, &H7F, &H3F, &H1F, &HF, &H7, &H3, &H1, &H0)
+    BitMask1 = Array(&H3FFF, &H1FFF, _
+        &HFFF, &H7FF, &H3FF, &H1FF, _
+        &HFF, &H7F, &H3F, &H1F, _
+        &HF, &H7, &H3, &H1, &H0)
         
-    Dim LeftShiftIntegerTemp As Integer
-    LeftShiftIntegerTemp = (Value And BitMask1(Count - 1)) * 2 ^ Count
+    Dim Temp As Integer
+    Temp = (Value And BitMask1(Cnt - 1)) * 2 ^ Cnt
     
     Dim BitMask2
-    BitMask2 = Array(&H4000, &H2000, &H1000, &H800, &H400, &H200, _
-        &H100, &H80, &H40, &H20, &H10, &H8, &H4, &H2, &H1)
+    BitMask2 = Array(&H4000, &H2000, _
+        &H1000, &H800, &H400, &H200, _
+        &H100, &H80, &H40, &H20, _
+        &H10, &H8, &H4, &H2, &H1)
         
-    If (Value And BitMask2(Count - 1)) = BitMask2(Count - 1) Then
-        LeftShiftIntegerTemp = LeftShiftIntegerTemp Or &H8000
+    If (Value And BitMask2(Cnt - 1)) = BitMask2(Cnt - 1) Then
+        Temp = Temp Or &H8000
     End If
     
-    LeftShiftInteger = LeftShiftIntegerTemp
+    LeftShiftInteger = Temp
 End Function
 
 Public Function LeftShiftLong( _
     ByVal Value As Long, _
     ByVal Count As Integer) As Long
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        LeftShiftLong = RightShiftLong(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 32) + 32
+    ElseIf Count >= 32 Then
+        Cnt = Count Mod 32
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         LeftShiftLong = Value
-        Exit Function
-    ElseIf Count > 31 Then
-        LeftShiftLong = 0
         Exit Function
     End If
     
@@ -106,29 +119,151 @@ Public Function LeftShiftLong( _
         &HFFFFFFF, &H7FFFFFF, &H3FFFFFF, &H1FFFFFF, _
         &HFFFFFF, &H7FFFFF, &H3FFFFF, &H1FFFFF, _
         &HFFFFF, &H7FFFF, &H3FFFF, &H1FFFF, _
-        &HFFFF&, &H7FFF, &H3FFF, &H1FFF, &HFFF, &H7FF, &H3FF, &H1FF, _
-        &HFF, &H7F, &H3F, &H1F, &HF, &H7, &H3, &H1, &H0)
+        &HFFFF&, &H7FFF, &H3FFF, &H1FFF, _
+        &HFFF, &H7FF, &H3FF, &H1FF, _
+        &HFF, &H7F, &H3F, &H1F, _
+        &HF, &H7, &H3, &H1, &H0)
         
-    Dim LeftShiftLongTemp As Long
-    LeftShiftLongTemp = (Value And BitMask1(Count - 1)) * 2 ^ Count
+    Dim Temp As Long
+    Temp = (Value And BitMask1(Cnt - 1)) * 2 ^ Cnt
     
     Dim BitMask2
     BitMask2 = Array(&H40000000, &H20000000, _
         &H10000000, &H8000000, &H4000000, &H2000000, _
         &H1000000, &H800000, &H400000, &H200000, _
         &H100000, &H80000, &H40000, &H20000, _
-        &H10000, &H8000&, &H4000, &H2000, &H1000, &H800, &H400, &H200, _
-        &H100, &H80, &H40, &H20, &H10, &H8, &H4, &H2, &H1)
+        &H10000, &H8000&, &H4000, &H2000, _
+        &H1000, &H800, &H400, &H200, _
+        &H100, &H80, &H40, &H20, _
+        &H10, &H8, &H4, &H2, &H1)
         
-    If (Value And BitMask2(Count - 1)) = BitMask2(Count - 1) Then
-        LeftShiftLongTemp = LeftShiftLongTemp Or &H80000000
+    If (Value And BitMask2(Cnt - 1)) = BitMask2(Cnt - 1) Then
+        Temp = Temp Or &H80000000
     End If
     
-    LeftShiftLong = LeftShiftLongTemp
+    LeftShiftLong = Temp
 End Function
 
 '
-' Right Arithmetic Shift - To Do
+' Right Arithmetic Shift
+'
+
+Public Function RightArithmeticShiftByte( _
+    ByVal Value As Byte, _
+    ByVal Count As Integer) As Byte
+    
+    Dim Cnt As Integer
+    If Count < 0 Then
+        Cnt = (Count Mod 8) + 8
+    ElseIf Count >= 8 Then
+        Cnt = Count Mod 8
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
+        RightArithmeticShiftByte = Value
+        Exit Function
+    End If
+    
+    Dim Temp As Byte
+    If Cnt < 7 Then
+        Temp = Value \ 2 ^ Cnt
+    Else
+        Temp = 0
+    End If
+    
+    If (Value And &H80) = &H80 Then
+        Dim BitPattern
+        BitPattern = Array(&HC0, &HE0, &HF0, &HF8, &HFC, &HFE, &HFF)
+        
+        Temp = Temp Or BitPattern(Cnt - 1)
+    End If
+    
+    RightArithmeticShiftByte = Temp
+End Function
+
+Public Function RightArithmeticShiftInteger( _
+    ByVal Value As Integer, _
+    ByVal Count As Integer) As Integer
+    
+    Dim Cnt As Integer
+    If Count < 0 Then
+        Cnt = (Count Mod 16) + 16
+    ElseIf Count >= 16 Then
+        Cnt = Count Mod 16
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
+        RightArithmeticShiftInteger = Value
+        Exit Function
+    End If
+    
+    Dim Temp As Integer
+    If Cnt < 15 Then
+        Temp = (Value And &H7FFF) \ 2 ^ Cnt
+    Else
+        Temp = 0
+    End If
+    
+    If (Value And &H8000) = &H8000 Then
+        Dim BitPattern
+        BitPattern = Array(&HC000, &HE000, &HF000, _
+            &HF800, &HFC00, &HFE00, &HFF00, _
+            &HFF80, &HFFC0, &HFFE0, &HFFF0, _
+            &HFFF8, &HFFFC, &HFFFE, &HFFFF)
+        
+        Temp = Temp Or BitPattern(Cnt - 1)
+    End If
+    
+    RightArithmeticShiftInteger = Temp
+End Function
+
+Public Function RightArithmeticShiftLong( _
+    ByVal Value As Long, _
+    ByVal Count As Integer) As Long
+    
+    Dim Cnt As Integer
+    If Count < 0 Then
+        Cnt = (Count Mod 32) + 32
+    ElseIf Count >= 32 Then
+        Cnt = Count Mod 32
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
+        RightArithmeticShiftLong = Value
+        Exit Function
+    End If
+    
+    Dim Temp As Long
+    If Cnt < 31 Then
+        Temp = (Value And &H7FFFFFFF) \ 2 ^ Cnt
+    Else
+        Temp = 0
+    End If
+    
+    If (Value And &H80000000) = &H80000000 Then
+        Dim BitPattern
+        BitPattern = Array(&HC0000000, &HE0000000, &HF0000000, _
+            &HF8000000, &HFC000000, &HFE000000, &HFF000000, _
+            &HFF800000, &HFFC00000, &HFFE00000, &HFFF00000, _
+            &HFFF80000, &HFFFC0000, &HFFFE0000, &HFFFF0000, _
+            &HFFFF8000, &HFFFFC000, &HFFFFE000, &HFFFFF000, _
+            &HFFFFF800, &HFFFFFC00, &HFFFFFE00, &HFFFFFF00, _
+            &HFFFFFF80, &HFFFFFFC0, &HFFFFFFE0, &HFFFFFFF0, _
+            &HFFFFFFF8, &HFFFFFFFC, &HFFFFFFFE, &HFFFFFFFF)
+        
+        Temp = Temp Or BitPattern(Cnt - 1)
+    End If
+    
+    RightArithmeticShiftLong = Temp
+End Function
+
+'
 ' Right Logical Shift
 '
 
@@ -136,84 +271,101 @@ Public Function RightShiftByte( _
     ByVal Value As Byte, _
     ByVal Count As Integer) As Byte
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        RightShiftByte = LeftShiftByte(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 8) + 8
+    ElseIf Count >= 8 Then
+        Cnt = Count Mod 8
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         RightShiftByte = Value
-        Exit Function
-    ElseIf Count > 7 Then
-        RightShiftByte = 0
         Exit Function
     End If
     
-    RightShiftByte = Value \ 2 ^ Count
+    RightShiftByte = Value \ 2 ^ Cnt
 End Function
 
 Public Function RightShiftInteger( _
     ByVal Value As Integer, _
     ByVal Count As Integer) As Integer
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        RightShiftInteger = LeftShiftInteger(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 16) + 16
+    ElseIf Count >= 16 Then
+        Cnt = Count Mod 16
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         RightShiftInteger = Value
         Exit Function
-    ElseIf Count > 15 Then
-        RightShiftInteger = 0
-        Exit Function
     End If
     
-    Dim RightShiftIntegerTemp As Integer
-    If Count < 15 Then
-        RightShiftIntegerTemp = (Value And &H7FFF) \ 2 ^ Count
+    Dim Temp As Integer
+    If Cnt < 15 Then
+        Temp = (Value And &H7FFF) \ 2 ^ Cnt
+    Else
+        Temp = 0
     End If
     
-    Dim BitPattern
-    BitPattern = Array(&H4000, &H2000, &H1000, &H800, &H400, &H200, _
-        &H100, &H80, &H40, &H20, &H10, &H8, &H4, &H2, &H1)
-        
     If (Value And &H8000) = &H8000 Then
-        RightShiftIntegerTemp = RightShiftIntegerTemp Or BitPattern(Count - 1)
+        Dim BitPattern
+        BitPattern = Array(&H4000, &H2000, &H1000, _
+            &H800, &H400, &H200, &H100, _
+            &H80, &H40, &H20, &H10, _
+            &H8, &H4, &H2, &H1)
+        
+        Temp = Temp Or BitPattern(Cnt - 1)
     End If
     
-    RightShiftInteger = RightShiftIntegerTemp
+    RightShiftInteger = Temp
 End Function
 
 Public Function RightShiftLong( _
     ByVal Value As Long, _
     ByVal Count As Integer) As Long
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        RightShiftLong = LeftShiftInteger(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 32) + 32
+    ElseIf Count >= 32 Then
+        Cnt = Count Mod 32
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         RightShiftLong = Value
         Exit Function
-    ElseIf Count > 31 Then
-        RightShiftLong = 0
-        Exit Function
     End If
     
-    Dim RightShiftLongTemp As Long
-    If Count < 31 Then
-        RightShiftLongTemp = (Value And &H7FFFFFFF) \ 2 ^ Count
+    Dim Temp As Long
+    If Cnt < 31 Then
+        Temp = (Value And &H7FFFFFFF) \ 2 ^ Cnt
+    Else
+        Temp = 0
     End If
     
-    Dim BitPattern
-    BitPattern = Array(&H40000000, &H20000000, _
-        &H10000000, &H8000000, &H4000000, &H2000000, _
-        &H1000000, &H800000, &H400000, &H200000, _
-        &H100000, &H80000, &H40000, &H20000, _
-        &H10000, &H8000&, &H4000, &H2000, &H1000, &H800, &H400, &H200, _
-        &H100, &H80, &H40, &H20, &H10, &H8, &H4, &H2, &H1)
-        
     If (Value And &H80000000) = &H80000000 Then
-        RightShiftLongTemp = RightShiftLongTemp Or BitPattern(Count - 1)
+        Dim BitPattern
+        BitPattern = Array(&H40000000, &H20000000, &H10000000, _
+            &H8000000, &H4000000, &H2000000, &H1000000, _
+            &H800000, &H400000, &H200000, &H100000, _
+            &H80000, &H40000, &H20000, &H10000, _
+            &H8000&, &H4000, &H2000, &H1000, _
+            &H800, &H400, &H200, &H100, _
+            &H80, &H40, &H20, &H10, _
+            &H8, &H4, &H2, &H1)
+        
+        Temp = Temp Or BitPattern(Cnt - 1)
     End If
     
-    RightShiftLong = RightShiftLongTemp
+    RightShiftLong = Temp
 End Function
 
 '
@@ -224,57 +376,66 @@ Public Function LeftRotateByte( _
     ByVal Value As Byte, _
     ByVal Count As Integer) As Byte
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        LeftRotateByte = RightRotateByte(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 8) + 8
+    ElseIf Count >= 8 Then
+        Cnt = Count Mod 8
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         LeftRotateByte = Value
-        Exit Function
-    ElseIf Count > 7 Then
-        LeftRotateByte = LeftRotateByte(Value, Count Mod 8)
         Exit Function
     End If
     
     LeftRotateByte = _
-        LeftShiftByte(Value, Count) Or RightShiftByte(Value, 8 - Count)
+        LeftShiftByte(Value, Cnt) Or RightShiftByte(Value, 8 - Cnt)
 End Function
 
 Public Function LeftRotateInteger( _
     ByVal Value As Integer, _
     ByVal Count As Integer) As Integer
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        LeftRotateInteger = RightRotateInteger(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 16) + 16
+    ElseIf Count >= 16 Then
+        Cnt = Count Mod 16
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         LeftRotateInteger = Value
-        Exit Function
-    ElseIf Count > 15 Then
-        LeftRotateInteger = LeftRotateInteger(Value, Count Mod 16)
         Exit Function
     End If
     
     LeftRotateInteger = _
-        LeftShiftInteger(Value, Count) Or RightShiftInteger(Value, 16 - Count)
+        LeftShiftInteger(Value, Cnt) Or RightShiftInteger(Value, 16 - Cnt)
 End Function
 
 Public Function LeftRotateLong( _
     ByVal Value As Long, _
     ByVal Count As Integer) As Long
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        LeftRotateLong = RightRotateLong(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 32) + 32
+    ElseIf Count >= 32 Then
+        Cnt = Count Mod 32
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         LeftRotateLong = Value
-        Exit Function
-    ElseIf Count > 31 Then
-        LeftRotateLong = LeftRotateLong(Value, Count Mod 32)
         Exit Function
     End If
     
     LeftRotateLong = _
-        LeftShiftLong(Value, Count) Or RightShiftLong(Value, 32 - Count)
+        LeftShiftLong(Value, Cnt) Or RightShiftLong(Value, 32 - Cnt)
 End Function
 
 '
@@ -285,55 +446,64 @@ Public Function RightRotateByte( _
     ByVal Value As Byte, _
     ByVal Count As Integer) As Byte
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        RightRotateByte = LeftRotateByte(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 8) + 8
+    ElseIf Count >= 8 Then
+        Cnt = Count Mod 8
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         RightRotateByte = Value
-        Exit Function
-    ElseIf Count > 7 Then
-        RightRotateByte = RightRotateByte(Value, Count Mod 8)
         Exit Function
     End If
     
     RightRotateByte = _
-        RightShiftByte(Value, Count) Or LeftShiftByte(Value, 8 - Count)
+        RightShiftByte(Value, Cnt) Or LeftShiftByte(Value, 8 - Cnt)
 End Function
 
 Public Function RightRotateInteger( _
     ByVal Value As Integer, _
     ByVal Count As Integer) As Integer
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        RightRotateInteger = LeftRotateInteger(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 16) + 16
+    ElseIf Count >= 16 Then
+        Cnt = Count Mod 16
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         RightRotateInteger = Value
-        Exit Function
-    ElseIf Count > 15 Then
-        RightRotateInteger = RightRotateInteger(Value, Count Mod 16)
         Exit Function
     End If
     
     RightRotateInteger = _
-        RightShiftInteger(Value, Count) Or LeftShiftInteger(Value, 16 - Count)
+        RightShiftInteger(Value, Cnt) Or LeftShiftInteger(Value, 16 - Cnt)
 End Function
 
 Public Function RightRotateLong( _
     ByVal Value As Long, _
     ByVal Count As Integer) As Long
     
+    Dim Cnt As Integer
     If Count < 0 Then
-        RightRotateLong = LeftRotateLong(Value, Abs(Count))
-        Exit Function
-    ElseIf Count = 0 Then
+        Cnt = (Count Mod 32) + 32
+    ElseIf Count >= 32 Then
+        Cnt = Count Mod 32
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
         RightRotateLong = Value
-        Exit Function
-    ElseIf Count > 31 Then
-        RightRotateLong = RightRotateLong(Value, Count Mod 32)
         Exit Function
     End If
     
     RightRotateLong = _
-        RightShiftLong(Value, Count) Or LeftShiftLong(Value, 32 - Count)
+        RightShiftLong(Value, Cnt) Or LeftShiftLong(Value, 32 - Cnt)
 End Function
