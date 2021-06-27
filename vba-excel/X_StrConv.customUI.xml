@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<customUI xmlns="http://schemas.microsoft.com/office/2009/07/customui" xmlns:mso="http://schemas.microsoft.com/office/2009/07/customui" onLoad="CustomUI.OnLoad">
+  <ribbon>
+    <tabs>
+      <tab id="rTextTab" label="Text" getVisible="X_StrConvTab_Ribbon.getVisible">
+        <group id="rStrConv" label="StrConv" centerVertically="true">
+          <box id="rStrConvCommand1" boxStyle="vertical">
+            <button 
+              id="rStrConvUpperCase" 
+              label="UpperCase" 
+              size="normal" 
+              onAction="X_StrConvTab_Ribbon.UpperCase_OnAction" />
+            <button 
+              id="rStrConvLowerCase" 
+              label="LowerCase" 
+              size="normal" 
+              onAction="X_StrConvTab_Ribbon.LowerCase_OnAction" />
+            <button 
+              id="rStrConvProperCase" 
+              label="ProperCase" 
+              size="normal" 
+              onAction="X_StrConvTab_Ribbon.ProperCase_OnAction" />
+          </box>
+          <separator id="rSeparator1" />
+          <box id="rStrConvCommand2" boxStyle="vertical">
+            <button 
+              id="rStrConvWide" 
+              label="Wide" 
+              size="normal" 
+              onAction="X_StrConvTab_Ribbon.Wide_OnAction" />
+            <button 
+              id="rStrConvNarrow" 
+              label="Narrow" 
+              size="normal" 
+              onAction="X_StrConvTab_Ribbon.Narrow_OnAction" />
+          </box>
+          <separator id="rSeparator2" />
+          <box id="rStrConvCommand3" boxStyle="vertical">
+            <button 
+              id="rStrConvHiragana" 
+              label="Hiragana" 
+              size="normal" 
+              onAction="X_StrConvTab_Ribbon.Hiragana_OnAction" />
+            <button 
+              id="rStrConvKatakana" 
+              label="Katakana" 
+              size="normal" 
+              onAction="X_StrConvTab_Ribbon.Katakana_OnAction" />
+          </box>
+        </group>
+      </tab>
+    </tabs>
+  </ribbon>
+</customUI>
