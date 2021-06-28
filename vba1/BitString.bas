@@ -41,6 +41,10 @@ Public Function Bin(ByVal Value)
         Bin = GetBinStringFromInteger(Value)
     Case "Long"
         Bin = GetBinStringFromLong(Value)
+#If Win64 Then
+    Case "LongLong"
+        Bin = GetBinStringFromLongLong(Value)
+#End If
     End Select
 End Function
 
@@ -60,6 +64,15 @@ Public Function Zeros(ByVal Count As Long) As String
         ZerosStr = ZerosStr & "0"
     Next
     Zeros = ZerosStr
+End Function
+
+Public Function Ones(ByVal Count As Long) As String
+    Dim OnesStr As String
+    Dim Index As Long
+    For Index = 1 To Count
+        OnesStr = OnesStr & "1"
+    Next
+    Ones = OnesStr
 End Function
 
 Public Function GetBinStringFromByte( _
@@ -112,6 +125,37 @@ Public Function GetBinStringFromLong( _
     GetBinStringFromLong = BinString
 End Function
 
+#If Win64 Then
+Public Function GetBinStringFromLongLong( _
+    ByVal Value As LongLong, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim BinString As String
+    'If (Value And &H8000000000000000) = &H8000000000000000 Then
+    '    BinString = "1" & _
+    '        Right(Zeros(62) & BinCore(Value And &H7FFFFFFFFFFFFFFF), 63)
+    If Value < 0 Then
+        Dim NotValue As LongLong
+        NotValue = Not Value
+        
+        Do
+            BinString = IIf((NotValue Mod 2) = 0, "1", "0") & BinString
+            NotValue = NotValue \ 2
+        Loop Until NotValue = 0
+        
+        BinString = Right(Ones(63) & BinString, 64)
+    Else
+        BinString = BinCore(Value)
+        
+        If ZeroPadding Then
+            BinString = Right(Zeros(63) & BinString, 64)
+        End If
+    End If
+    
+    GetBinStringFromLongLong = BinString
+End Function
+#End If
+
 Public Function GetOctStringFromByte( _
     ByVal Value As Byte, _
     Optional ZeroPadding As Boolean) As String
@@ -145,6 +189,19 @@ Public Function GetOctStringFromLong( _
     End If
 End Function
 
+#If Win64 Then
+Public Function GetOctStringFromLongLong( _
+    ByVal Value As LongLong, _
+    Optional ZeroPadding As Boolean) As String
+    
+    If ZeroPadding Then
+        GetOctStringFromLongLong = Right(Zeros(21) & Oct(Value), 22)
+    Else
+        GetOctStringFromLongLong = Oct(Value)
+    End If
+End Function
+#End If
+
 Public Function GetHexStringFromByte( _
     ByVal Value As Byte, _
     Optional ZeroPadding As Boolean) As String
@@ -177,3 +234,16 @@ Public Function GetHexStringFromLong( _
         GetHexStringFromLong = Hex(Value)
     End If
 End Function
+
+#If Win64 Then
+Public Function GetHexStringFromLongLong( _
+    ByVal Value As LongLong, _
+    Optional ZeroPadding As Boolean) As String
+    
+    If ZeroPadding Then
+        GetHexStringFromLongLong = Right(Zeros(15) & Hex(Value), 16)
+    Else
+        GetHexStringFromLongLong = Hex(Value)
+    End If
+End Function
+#End If
