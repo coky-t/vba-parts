@@ -115,6 +115,32 @@ Public Sub Test_GetStringB_BEFromLong()
     Test_GetStringB_BEFromLong_Core &HFFFFFFFF
 End Sub
 
+#If Win64 Then
+Public Sub Test_GetStringB_LEFromLongLong()
+    Dim Value
+    Dim Index
+    For Index = 0 To 62
+        Test_GetStringB_LEFromLongLong_Core CLngLng(2 ^ Index)
+    Next
+    For Index = 0 To 62
+        Test_GetStringB_LEFromLongLong_Core -CLngLng(2 ^ Index)
+    Next
+    Test_GetStringB_LEFromLongLong_Core -CLngLng(2 ^ 62) * 2
+End Sub
+
+Public Sub Test_GetStringB_BEFromLongLong()
+    Dim Value
+    Dim Index
+    For Index = 0 To 62
+        Test_GetStringB_BEFromLongLong_Core CLngLng(2 ^ Index)
+    Next
+    For Index = 0 To 62
+        Test_GetStringB_BEFromLongLong_Core -CLngLng(2 ^ Index)
+    Next
+    Test_GetStringB_BEFromLongLong_Core -CLngLng(2 ^ 62) * 2
+End Sub
+#End If
+
 '
 ' --- Test Core ---
 '
@@ -166,6 +192,32 @@ Public Sub Test_GetStringB_BEFromLong_Core(ByVal Value)
         GetDebugStringFromStrB(StrB) & " = " & _
         CStr(Result) & "(" & Hex(Result) & ")"
 End Sub
+
+#If Win64 Then
+Public Sub Test_GetStringB_LEFromLongLong_Core(ByVal Value)
+    Dim StrB
+    StrB = GetStringB_LEFromLongLong(Value)
+    
+    Dim Result
+    Result = GetLongLongFromStringB_LE(StrB, 1)
+    
+    Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
+        GetDebugStringFromStrB(StrB) & " = " & _
+        CStr(Result) & "(" & Hex(Result) & ")"
+End Sub
+
+Public Sub Test_GetStringB_BEFromLongLong_Core(ByVal Value)
+    Dim StrB
+    StrB = GetStringB_BEFromLongLong(Value)
+    
+    Dim Result
+    Result = GetLongLongFromStringB_BE(StrB, 1)
+    
+    Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
+        GetDebugStringFromStrB(StrB) & " = " & _
+        CStr(Result) & "(" & Hex(Result) & ")"
+End Sub
+#End If
 
 Public Function GetDebugStringFromStrB(StrB)
     Dim DebugString

@@ -55,6 +55,32 @@ Public Function GetStringB_BEFromLong(Value As Long) As String
         ChrB(Value And &HFF)
 End Function
 
+#If Win64 Then
+Public Function GetStringB_LEFromLongLong(Value As LongLong) As String
+    GetStringB_LEFromLongLong = _
+        ChrB(CByte(Value And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 8) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 16) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 24) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 32) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 40) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 48) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 56) And &HFF))
+End Function
+
+Public Function GetStringB_BEFromLongLong(Value As LongLong) As String
+    GetStringB_BEFromLongLong = _
+        ChrB(CByte(RightShiftLongLong(Value, 56) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 48) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 40) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 32) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 24) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 16) And &HFF)) & _
+        ChrB(CByte(RightShiftLongLong(Value, 8) And &HFF)) & _
+        ChrB(CByte(Value And &HFF))
+End Function
+#End If
+
 Public Function GetByteFromStringB( _
     StrB As String, Optional Pos As Long = 1) As Byte
     
@@ -94,3 +120,31 @@ Public Function GetLongFromStringB_BE( _
         LeftShiftLong(AscB(MidB(StrB_BE, Pos + 1, 1)), 16) Or _
         LeftShiftLong(AscB(MidB(StrB_BE, Pos, 1)), 24)
 End Function
+
+#If Win64 Then
+Public Function GetLongLongFromStringB_LE( _
+    StrB_LE As String, Optional Pos As Long = 1) As LongLong
+    
+    GetLongLongFromStringB_LE = AscB(MidB(StrB_LE, Pos, 1)) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_LE, Pos + 1, 1)), 8) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_LE, Pos + 2, 1)), 16) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_LE, Pos + 3, 1)), 24) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_LE, Pos + 4, 1)), 32) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_LE, Pos + 5, 1)), 40) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_LE, Pos + 6, 1)), 48) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_LE, Pos + 7, 1)), 56)
+End Function
+
+Public Function GetLongLongFromStringB_BE( _
+    StrB_BE As String, Optional Pos As Long = 1) As LongLong
+    
+    GetLongLongFromStringB_BE = AscB(MidB(StrB_BE, Pos + 7, 1)) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_BE, Pos + 6, 1)), 8) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_BE, Pos + 5, 1)), 16) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_BE, Pos + 4, 1)), 24) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_BE, Pos + 3, 1)), 32) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_BE, Pos + 2, 1)), 40) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_BE, Pos + 1, 1)), 48) Or _
+        LeftShiftLongLong(AscB(MidB(StrB_BE, Pos, 1)), 56)
+End Function
+#End If
