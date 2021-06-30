@@ -23,6 +23,26 @@ Option Explicit
 ' IN THE SOFTWARE.
 '
 
+Private Type SingleType
+    S As Single
+End Type
+
+Private Type DoubleType
+    D As Double
+End Type
+
+Private Type LongType
+    L As Long
+End Type
+
+Private Type LongLongType
+#If Win64 Then
+    LL As LongLong
+#Else
+    L(1) As Long
+#End If
+End Type
+
 Public Function Bin(ByVal Value)
     If IsNull(Value) Then
         Bin = Null
@@ -156,6 +176,43 @@ Public Function GetBinStringFromLongLong( _
 End Function
 #End If
 
+Public Function GetBinStringFromSingle( _
+    ByVal Value As Single, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim S As SingleType
+    S.S = Value
+    
+    Dim L As LongType
+    LSet L = S
+    
+    GetBinStringFromSingle = GetBinStringFromLong(L.L, ZeroPadding)
+End Function
+
+Public Function GetBinStringFromDouble( _
+    ByVal Value As Double, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim D As DoubleType
+    D.D = Value
+    
+    Dim LL As LongLongType
+    LSet LL = D
+    
+#If Win64 Then
+    GetBinStringFromDouble = GetBinStringFromLongLong(LL.LL, ZeroPadding)
+#Else
+    Dim Temp As String
+    Temp = GetBinStringFromLong(LL.L(1), ZeroPadding)
+    If Temp = "0" Then
+        Temp = GetBinStringFromLong(LL.L(0), ZeroPadding)
+    Else
+        Temp = Temp & GetBinStringFromLong(LL.L(0), True)
+    End If
+    GetBinStringFromDouble = Temp
+#End If
+End Function
+
 Public Function GetOctStringFromByte( _
     ByVal Value As Byte, _
     Optional ZeroPadding As Boolean) As String
@@ -202,6 +259,43 @@ Public Function GetOctStringFromLongLong( _
 End Function
 #End If
 
+Public Function GetOctStringFromSingle( _
+    ByVal Value As Single, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim S As SingleType
+    S.S = Value
+    
+    Dim L As LongType
+    LSet L = S
+    
+    GetOctStringFromSingle = GetOctStringFromLong(L.L, ZeroPadding)
+End Function
+
+Public Function GetOctStringFromDouble( _
+    ByVal Value As Double, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim D As DoubleType
+    D.D = Value
+    
+    Dim LL As LongLongType
+    LSet LL = D
+    
+#If Win64 Then
+    GetOctStringFromDouble = GetOctStringFromLongLong(LL.LL, ZeroPadding)
+#Else
+    Dim Temp As String
+    Temp = GetOctStringFromLong(LL.L(1), ZeroPadding)
+    If Temp = "0" Then
+        Temp = GetOctStringFromLong(LL.L(0), ZeroPadding)
+    Else
+        Temp = Temp & GetOctStringFromLong(LL.L(0), True)
+    End If
+    GetOctStringFromDouble = Temp
+#End If
+End Function
+
 Public Function GetHexStringFromByte( _
     ByVal Value As Byte, _
     Optional ZeroPadding As Boolean) As String
@@ -247,3 +341,40 @@ Public Function GetHexStringFromLongLong( _
     End If
 End Function
 #End If
+
+Public Function GetHexStringFromSingle( _
+    ByVal Value As Single, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim S As SingleType
+    S.S = Value
+    
+    Dim L As LongType
+    LSet L = S
+    
+    GetHexStringFromSingle = GetHexStringFromLong(L.L, ZeroPadding)
+End Function
+
+Public Function GetHexStringFromDouble( _
+    ByVal Value As Double, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim D As DoubleType
+    D.D = Value
+    
+    Dim LL As LongLongType
+    LSet LL = D
+    
+#If Win64 Then
+    GetHexStringFromDouble = GetHexStringFromLongLong(LL.LL, ZeroPadding)
+#Else
+    Dim Temp As String
+    Temp = GetHexStringFromLong(LL.L(1), ZeroPadding)
+    If Temp = "0" Then
+        Temp = GetHexStringFromLong(LL.L(0), ZeroPadding)
+    Else
+        Temp = Temp & GetHexStringFromLong(LL.L(0), True)
+    End If
+    GetHexStringFromDouble = Temp
+#End If
+End Function
