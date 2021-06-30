@@ -51,6 +51,16 @@ Public Sub Test_LeftShiftLongFFFFFFFF()
     Test_LeftShiftLongX &HFFFFFFFF
 End Sub
 
+#If Win64 Then
+Public Sub Test_LeftShiftLongLong0000000000000001()
+    Test_LeftShiftLongLongX &H1
+End Sub
+
+Public Sub Test_LeftShiftLongLongFFFFFFFFFFFFFFFF()
+    Test_LeftShiftLongLongX (-1)
+End Sub
+#End If
+
 Public Sub Test_RightArithmeticShiftByte80()
     Test_RightArithmeticShiftByteX &H80
 End Sub
@@ -87,6 +97,21 @@ Public Sub Test_RightArithmeticShiftLongBFFFFFFF()
     Test_RightArithmeticShiftLongX &HBFFFFFFF
 End Sub
 
+#If Win64 Then
+Public Sub Test_RightArithmeticShiftLongLong7FFFFFFFFFFFFFFF()
+    Dim Value
+    Dim Index
+    For Index = 0 To 62
+        Value = Value Or CLngLng(2 ^ Index)
+    Next
+    Test_RightArithmeticShiftLongLongX Value
+End Sub
+
+Public Sub Test_RightArithmeticShiftLongLongBFFFFFFFFFFFFFFF()
+    Test_RightArithmeticShiftLongLongX Not CLngLng(2 ^ 62)
+End Sub
+#End If
+
 Public Sub Test_RightShiftByte80()
     Test_RightShiftByteX &H80
 End Sub
@@ -110,6 +135,16 @@ End Sub
 Public Sub Test_RightShiftLongFFFFFFFF()
     Test_RightShiftLongX &HFFFFFFFF
 End Sub
+
+#If Win64 Then
+Public Sub Test_RightShiftLongLong8000000000000000()
+    Test_RightShiftLongLongX ((-CLngLng(2 ^ 62)) * 2)
+End Sub
+
+Public Sub Test_RightShiftLongLongFFFFFFFFFFFFFFFF()
+    Test_RightShiftLongLongX -1
+End Sub
+#End If
 
 Public Sub Test_LeftRotateByte0F()
     Test_LeftRotateByteX &HF
@@ -135,6 +170,16 @@ Public Sub Test_LeftRotateLongFFFF0000()
     Test_LeftRotateLongX &HFFFF0000
 End Sub
 
+#If Win64 Then
+Public Sub Test_LeftRotateLongLong00000000FFFFFFFF()
+    Test_LeftRotateLongLongX &HFFFFFFFF^
+End Sub
+
+Public Sub Test_LeftRotateLongLongFFFFFFFF00000000()
+    Test_LeftRotateLongLongX Not &HFFFFFFFF^
+End Sub
+#End If
+
 Public Sub Test_RightRotateByte0F()
     Test_RightRotateByteX &HF
 End Sub
@@ -158,6 +203,16 @@ End Sub
 Public Sub Test_RightRotateLongFFFF0000()
     Test_RightRotateLongX &HFFFF0000
 End Sub
+
+#If Win64 Then
+Public Sub Test_RightRotateLongLong00000000FFFFFFFF()
+    Test_RightRotateLongLongX &HFFFFFFFF^
+End Sub
+
+Public Sub Test_RightRotateLongFFFFFFFF00000000()
+    Test_RightRotateLongLongX Not &HFFFFFFFF^
+End Sub
+#End If
 
 '
 ' --- Test X ---
@@ -184,6 +239,15 @@ Public Sub Test_LeftShiftLongX(ByVal Value)
     Next
 End Sub
 
+#If Win64 Then
+Public Sub Test_LeftShiftLongLongX(ByVal Value)
+    Dim Count
+    For Count = -1 To 64
+        Test_LeftShiftLongLong_Core Value, Count
+    Next
+End Sub
+#End If
+
 Public Sub Test_RightArithmeticShiftByteX(ByVal Value)
     Dim Count
     For Count = -1 To 8
@@ -204,6 +268,15 @@ Public Sub Test_RightArithmeticShiftLongX(ByVal Value)
         Test_RightArithmeticShiftLong_Core Value, Count
     Next
 End Sub
+
+#If Win64 Then
+Public Sub Test_RightArithmeticShiftLongLongX(ByVal Value)
+    Dim Count
+    For Count = -1 To 64
+        Test_RightArithmeticShiftLongLong_Core Value, Count
+    Next
+End Sub
+#End If
 
 Public Sub Test_RightShiftByteX(ByVal Value)
     Dim Count
@@ -226,6 +299,15 @@ Public Sub Test_RightShiftLongX(ByVal Value)
     Next
 End Sub
 
+#If Win64 Then
+Public Sub Test_RightShiftLongLongX(ByVal Value)
+    Dim Count
+    For Count = -1 To 64
+        Test_RightShiftLongLong_Core Value, Count
+    Next
+End Sub
+#End If
+
 Public Sub Test_LeftRotateByteX(ByVal Value)
     Dim Count
     For Count = -1 To 8
@@ -247,6 +329,15 @@ Public Sub Test_LeftRotateLongX(ByVal Value)
     Next
 End Sub
 
+#If Win64 Then
+Public Sub Test_LeftRotateLongLongX(ByVal Value)
+    Dim Count
+    For Count = -1 To 64
+        Test_LeftRotateLongLong_Core Value, Count
+    Next
+End Sub
+#End If
+
 Public Sub Test_RightRotateByteX(ByVal Value)
     Dim Count
     For Count = -1 To 8
@@ -267,6 +358,15 @@ Public Sub Test_RightRotateLongX(ByVal Value)
         Test_RightRotateLong_Core Value, Count
     Next
 End Sub
+
+#If Win64 Then
+Public Sub Test_RightRotateLongLongX(ByVal Value)
+    Dim Count
+    For Count = -1 To 64
+        Test_RightRotateLongLong_Core Value, Count
+    Next
+End Sub
+#End If
 
 '
 ' --- Test Core ---
@@ -296,6 +396,16 @@ Public Sub Test_LeftShiftLong_Core( _
     DebugPrintBinOpLong Value, "<<", Count, Result
 End Sub
 
+#If Win64 Then
+Public Sub Test_LeftShiftLongLong_Core( _
+    ByVal Value, ByVal Count)
+    
+    Dim Result
+    Result = LeftShiftLongLong(Value, Count)
+    DebugPrintBinOpLongLong Value, "<<", Count, Result
+End Sub
+#End If
+
 Public Sub Test_RightArithmeticShiftByte_Core( _
     ByVal Value, ByVal Count)
     
@@ -319,6 +429,16 @@ Public Sub Test_RightArithmeticShiftLong_Core( _
     Result = RightArithmeticShiftLong(Value, Count)
     DebugPrintBinOpLong Value, ">>", Count, Result
 End Sub
+
+#If Win64 Then
+Public Sub Test_RightArithmeticShiftLongLong_Core( _
+    ByVal Value, ByVal Count)
+    
+    Dim Result
+    Result = RightArithmeticShiftLongLong(Value, Count)
+    DebugPrintBinOpLongLong Value, ">>", Count, Result
+End Sub
+#End If
 
 Public Sub Test_RightShiftByte_Core( _
     ByVal Value, ByVal Count)
@@ -344,6 +464,16 @@ Public Sub Test_RightShiftLong_Core( _
     DebugPrintBinOpLong Value, ">>", Count, Result
 End Sub
 
+#If Win64 Then
+Public Sub Test_RightShiftLongLong_Core( _
+    ByVal Value, ByVal Count)
+    
+    Dim Result
+    Result = RightShiftLongLong(Value, Count)
+    DebugPrintBinOpLongLong Value, ">>", Count, Result
+End Sub
+#End If
+
 Public Sub Test_LeftRotateByte_Core( _
     ByVal Value, ByVal Count)
     
@@ -368,6 +498,16 @@ Public Sub Test_LeftRotateLong_Core( _
     DebugPrintBinOpLong Value, "lrot", Count, Result
 End Sub
 
+#If Win64 Then
+Public Sub Test_LeftRotateLongLong_Core( _
+    ByVal Value, ByVal Count)
+    
+    Dim Result
+    Result = LeftRotateLongLong(Value, Count)
+    DebugPrintBinOpLongLong Value, "lrot", Count, Result
+End Sub
+#End If
+
 Public Sub Test_RightRotateByte_Core( _
     ByVal Value, ByVal Count)
     
@@ -391,6 +531,16 @@ Public Sub Test_RightRotateLong_Core( _
     Result = RightRotateLong(Value, Count)
     DebugPrintBinOpLong Value, "rrot", Count, Result
 End Sub
+
+#If Win64 Then
+Public Sub Test_RightRotateLongLong_Core( _
+    ByVal Value, ByVal Count)
+    
+    Dim Result
+    Result = RightRotateLongLong(Value, Count)
+    DebugPrintBinOpLongLong Value, "rrot", Count, Result
+End Sub
+#End If
 
 Public Sub DebugPrintBinOpByte( _
     Value, Op, Count, Result)
@@ -418,3 +568,14 @@ Public Sub DebugPrintBinOpLong( _
         Op & " " & CStr(Count) & " = " & _
         GetBinStringFromLong(Result, True) & " " & CStr(Result)
 End Sub
+
+#If Win64 Then
+Public Sub DebugPrintBinOpLongLong( _
+    Value, Op, Count, Result)
+    
+    Debug_Print _
+        GetBinStringFromLongLong(Value, True) & " " & _
+        Op & " " & CStr(Count) & " = " & _
+        GetBinStringFromLongLong(Result, True) & " " & CStr(Result)
+End Sub
+#End If

@@ -144,6 +144,47 @@ Public Function LeftShiftLong( _
     LeftShiftLong = Temp
 End Function
 
+#If Win64 Then
+Public Function LeftShiftLongLong( _
+    ByVal Value, _
+    ByVal Count)
+    
+    Dim Cnt
+    If Count < 0 Then
+        Cnt = (Count Mod 64) + 64
+    ElseIf Count >= 64 Then
+        Cnt = Count Mod 64
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
+        LeftShiftLongLong = Value
+        Exit Function
+    End If
+    
+    Dim BitMask1
+    Dim Index1
+    For Index1 = 0 To 64 - Cnt - 1 - 1
+        BitMask1 = BitMask1 Or CLngLng(2 ^ Index1)
+    Next
+        
+    Dim Temp
+    If Cnt < 63 Then
+        Temp = CLngLng(Value And BitMask1) * CLngLng(2 ^ Cnt)
+    End If
+    
+    Dim BitMask2
+    BitMask2 = CLngLng(2 ^ (64 - Cnt - 1))
+    
+    If (Value And BitMask2) = BitMask2 Then
+        Temp = Temp Or CLngLng((-(2 ^ 62)) * 2)
+    End If
+    
+    LeftShiftLongLong = Temp
+End Function
+#End If
+
 '
 ' Right Arithmetic Shift
 '
@@ -263,6 +304,50 @@ Public Function RightArithmeticShiftLong( _
     RightArithmeticShiftLong = Temp
 End Function
 
+#If Win64 Then
+Public Function RightArithmeticShiftLongLong( _
+    ByVal Value, _
+    ByVal Count)
+    
+    If Value = 0 Then
+        RightArithmeticShiftLongLong = 0
+        Exit Function
+    End If
+    
+    Dim Cnt
+    If Count < 0 Then
+        Cnt = (Count Mod 64) + 64
+    ElseIf Count >= 64 Then
+        Cnt = Count Mod 64
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
+        RightArithmeticShiftLongLong = Value
+        Exit Function
+    End If
+    
+    If Value > 0 Then
+        If Cnt < 63 Then
+            RightArithmeticShiftLongLong = Value \ CLngLng(2 ^ Cnt)
+            Exit Function
+        Else ' Cnt = 63
+            RightArithmeticShiftLongLong = 0
+            Exit Function
+        End If
+    Else ' Value < 0
+        If Cnt < 63 Then
+            RightArithmeticShiftLongLong = Not ((Not Value) \ CLngLng(2 ^ Cnt))
+            Exit Function
+        Else ' Cnt = 63
+            RightArithmeticShiftLongLong = -1
+            Exit Function
+        End If
+    End If
+End Function
+#End If
+
 '
 ' Right Logical Shift
 '
@@ -368,6 +453,52 @@ Public Function RightShiftLong( _
     RightShiftLong = Temp
 End Function
 
+#If Win64 Then
+Public Function RightShiftLongLong( _
+    ByVal Value, _
+    ByVal Count)
+    
+    If Value = 0 Then
+        RightShiftLongLong = 0
+        Exit Function
+    End If
+    
+    Dim Cnt
+    If Count < 0 Then
+        Cnt = (Count Mod 64) + 64
+    ElseIf Count >= 64 Then
+        Cnt = Count Mod 64
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
+        RightShiftLongLong = Value
+        Exit Function
+    End If
+    
+    If Value > 0 Then
+        If Cnt < 63 Then
+            RightShiftLongLong = Value \ CLngLng(2 ^ Cnt)
+            Exit Function
+        Else ' Cnt = 63
+            RightShiftLongLong = 0
+            Exit Function
+        End If
+    Else ' Value < 0
+        If Cnt < 63 Then
+            RightShiftLongLong = _
+                (Not ((Not Value) \ CLngLng(2 ^ Cnt))) And _
+                (Not ((-CLngLng(2 ^ (64 - Cnt - 1))) * 2))
+            Exit Function
+        Else ' Cnt = 63
+            RightShiftLongLong = 1
+            Exit Function
+        End If
+    End If
+End Function
+#End If
+
 '
 ' Left Circular Shift (Left Rotate)
 '
@@ -438,6 +569,30 @@ Public Function LeftRotateLong( _
         LeftShiftLong(Value, Cnt) Or RightShiftLong(Value, 32 - Cnt)
 End Function
 
+#If Win64 Then
+Public Function LeftRotateLongLong( _
+    ByVal Value, _
+    ByVal Count)
+    
+    Dim Cnt
+    If Count < 0 Then
+        Cnt = (Count Mod 64) + 64
+    ElseIf Count >= 64 Then
+        Cnt = Count Mod 64
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
+        LeftRotateLongLong = Value
+        Exit Function
+    End If
+    
+    LeftRotateLongLong = _
+        LeftShiftLongLong(Value, Cnt) Or RightShiftLongLong(Value, 64 - Cnt)
+End Function
+#End If
+
 '
 ' Right Circular Shift (Right Rotate)
 '
@@ -507,3 +662,27 @@ Public Function RightRotateLong( _
     RightRotateLong = _
         RightShiftLong(Value, Cnt) Or LeftShiftLong(Value, 32 - Cnt)
 End Function
+
+#If Win64 Then
+Public Function RightRotateLongLong( _
+    ByVal Value, _
+    ByVal Count)
+    
+    Dim Cnt
+    If Count < 0 Then
+        Cnt = (Count Mod 64) + 64
+    ElseIf Count >= 64 Then
+        Cnt = Count Mod 64
+    Else
+        Cnt = Count
+    End If
+    
+    If Cnt = 0 Then
+        RightRotateLongLong = Value
+        Exit Function
+    End If
+    
+    RightRotateLongLong = _
+        RightShiftLongLong(Value, Cnt) Or LeftShiftLongLong(Value, 64 - Cnt)
+End Function
+#End If
