@@ -55,6 +55,34 @@ Public Function GetByteArrayBEFromLong(Value As Long) As Variant
     GetByteArrayBEFromLong = ByteArrayBE
 End Function
 
+#If Win64 Then
+Public Function GetByteArrayLEFromLongLong(Value As LongLong) As Variant
+    Dim ByteArrayLE(7) As Byte
+    ByteArrayLE(0) = CByte(Value And &HFF^)
+    ByteArrayLE(1) = CByte(RightShiftLongLong(Value, 8) And &HFF^)
+    ByteArrayLE(2) = CByte(RightShiftLongLong(Value, 16) And &HFF^)
+    ByteArrayLE(3) = CByte(RightShiftLongLong(Value, 24) And &HFF^)
+    ByteArrayLE(4) = CByte(RightShiftLongLong(Value, 32) And &HFF^)
+    ByteArrayLE(5) = CByte(RightShiftLongLong(Value, 40) And &HFF^)
+    ByteArrayLE(6) = CByte(RightShiftLongLong(Value, 48) And &HFF^)
+    ByteArrayLE(7) = CByte(RightShiftLongLong(Value, 56) And &HFF^)
+    GetByteArrayLEFromLongLong = ByteArrayLE
+End Function
+
+Public Function GetByteArrayBEFromLongLong(Value As LongLong) As Variant
+    Dim ByteArrayBE(7) As Byte
+    ByteArrayBE(0) = CByte(RightShiftLongLong(Value, 56) And &HFF^)
+    ByteArrayBE(1) = CByte(RightShiftLongLong(Value, 48) And &HFF^)
+    ByteArrayBE(2) = CByte(RightShiftLongLong(Value, 40) And &HFF^)
+    ByteArrayBE(3) = CByte(RightShiftLongLong(Value, 32) And &HFF^)
+    ByteArrayBE(4) = CByte(RightShiftLongLong(Value, 24) And &HFF^)
+    ByteArrayBE(5) = CByte(RightShiftLongLong(Value, 16) And &HFF^)
+    ByteArrayBE(6) = CByte(RightShiftLongLong(Value, 8) And &HFF^)
+    ByteArrayBE(7) = CByte(Value And &HFF^)
+    GetByteArrayBEFromLongLong = ByteArrayBE
+End Function
+#End If
+
 Public Function GetIntegerFromByteArrayLE( _
     LE() As Byte, Optional Pos As Long) As Integer
     
@@ -84,3 +112,31 @@ Public Function GetLongFromByteArrayBE( _
         LeftShiftLong(BE(Pos + 1), 16) Or _
         LeftShiftLong(BE(Pos), 24)
 End Function
+
+#If Win64 Then
+Public Function GetLongLongFromByteArrayLE( _
+    LE() As Byte, Optional Pos As Long) As LongLong
+    
+    GetLongLongFromByteArrayLE = LE(Pos) Or _
+        LeftShiftLongLong(LE(Pos + 1), 8) Or _
+        LeftShiftLongLong(LE(Pos + 2), 16) Or _
+        LeftShiftLongLong(LE(Pos + 3), 24) Or _
+        LeftShiftLongLong(LE(Pos + 4), 32) Or _
+        LeftShiftLongLong(LE(Pos + 5), 40) Or _
+        LeftShiftLongLong(LE(Pos + 6), 48) Or _
+        LeftShiftLongLong(LE(Pos + 7), 56)
+End Function
+
+Public Function GetLongLongFromByteArrayBE( _
+    BE() As Byte, Optional Pos As Long) As LongLong
+    
+    GetLongLongFromByteArrayBE = BE(Pos + 7) Or _
+        LeftShiftLongLong(BE(Pos + 6), 8) Or _
+        LeftShiftLongLong(BE(Pos + 5), 16) Or _
+        LeftShiftLongLong(BE(Pos + 4), 24) Or _
+        LeftShiftLongLong(BE(Pos + 3), 32) Or _
+        LeftShiftLongLong(BE(Pos + 2), 40) Or _
+        LeftShiftLongLong(BE(Pos + 1), 48) Or _
+        LeftShiftLongLong(BE(Pos), 56)
+End Function
+#End If

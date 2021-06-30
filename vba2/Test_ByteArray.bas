@@ -115,6 +115,32 @@ Public Sub Test_GetByteArrayBEFromLong()
     Test_GetByteArrayBEFromLong_Core &HFFFFFFFF
 End Sub
 
+#If Win64 Then
+Public Sub Test_GetByteArrayLEFromLongLong()
+    Dim Value As LongLong
+    Dim Index As Integer
+    For Index = 0 To 62
+        Test_GetByteArrayLEFromLongLong_Core CLngLng(2 ^ Index)
+    Next
+    For Index = 0 To 62
+        Test_GetByteArrayLEFromLongLong_Core -CLngLng(2 ^ Index)
+    Next
+    Test_GetByteArrayLEFromLongLong_Core -CLngLng(2 ^ 62) * 2
+End Sub
+
+Public Sub Test_GetByteArrayBEFromLongLong()
+    Dim Value As LongLong
+    Dim Index As Integer
+    For Index = 0 To 62
+        Test_GetByteArrayBEFromLongLong_Core CLngLng(2 ^ Index)
+    Next
+    For Index = 0 To 62
+        Test_GetByteArrayBEFromLongLong_Core -CLngLng(2 ^ Index)
+    Next
+    Test_GetByteArrayBEFromLongLong_Core -CLngLng(2 ^ 62) * 2
+End Sub
+#End If
+
 '
 ' --- Test Core ---
 '
@@ -166,6 +192,32 @@ Public Sub Test_GetByteArrayBEFromLong_Core(ByVal Value As Long)
         GetByteArrayString(ByteArray) & " = " & _
         CStr(Result) & "(" & Hex(Result) & ")"
 End Sub
+
+#If Win64 Then
+Public Sub Test_GetByteArrayLEFromLongLong_Core(ByVal Value As LongLong)
+    Dim ByteArray() As Byte
+    ByteArray = GetByteArrayLEFromLongLong(Value)
+    
+    Dim Result As LongLong
+    Result = GetLongLongFromByteArrayLE(ByteArray)
+    
+    Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
+        GetByteArrayString(ByteArray) & " = " & _
+        CStr(Result) & "(" & Hex(Result) & ")"
+End Sub
+
+Public Sub Test_GetByteArrayBEFromLongLong_Core(ByVal Value As LongLong)
+    Dim ByteArray() As Byte
+    ByteArray = GetByteArrayBEFromLongLong(Value)
+    
+    Dim Result As LongLong
+    Result = GetLongLongFromByteArrayBE(ByteArray)
+    
+    Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
+        GetByteArrayString(ByteArray) & " = " & _
+        CStr(Result) & "(" & Hex(Result) & ")"
+End Sub
+#End If
 
 Public Function GetByteArrayString(ByteArray() As Byte) As String
     Dim ByteArrayString As String
