@@ -417,9 +417,9 @@ Public Function RightShiftLong( _
     
     Dim Cnt As Integer
     If Count < 0 Then
-        Cnt = (Count Mod 64) + 64
-    ElseIf Count >= 64 Then
-        Cnt = Count Mod 64
+        Cnt = (Count Mod 32) + 32
+    ElseIf Count >= 32 Then
+        Cnt = Count Mod 32
     Else
         Cnt = Count
     End If
@@ -430,7 +430,7 @@ Public Function RightShiftLong( _
     End If
     
     Dim Temp As Long
-    If Cnt < 64 Then
+    If Cnt < 31 Then
         Temp = (Value And &H7FFFFFFF) \ 2 ^ Cnt
     Else
         Temp = 0
