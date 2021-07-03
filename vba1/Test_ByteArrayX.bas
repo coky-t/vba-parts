@@ -28,91 +28,47 @@ Option Explicit
 '
 
 Public Sub Test_GetByteArrayLEFromInteger()
-    Test_GetByteArrayLEFromInteger_Core &H0
-    Test_GetByteArrayLEFromInteger_Core &H1
-    Test_GetByteArrayLEFromInteger_Core &H8
-    Test_GetByteArrayLEFromInteger_Core &H10
-    Test_GetByteArrayLEFromInteger_Core &H80
-    Test_GetByteArrayLEFromInteger_Core &H100
-    Test_GetByteArrayLEFromInteger_Core &H800
-    Test_GetByteArrayLEFromInteger_Core &H1000
-    Test_GetByteArrayLEFromInteger_Core &H8000
-    Test_GetByteArrayLEFromInteger_Core &HF000
-    Test_GetByteArrayLEFromInteger_Core &HFF00
-    Test_GetByteArrayLEFromInteger_Core &HFFF0
-    Test_GetByteArrayLEFromInteger_Core &HFFFF
+    Dim Index As Long
+    For Index = 0 To 14
+        Test_GetByteArrayLEFromInteger_Core 2 ^ Index
+    Next
+    For Index = 0 To 14
+        Test_GetByteArrayLEFromInteger_Core -(2 ^ Index)
+    Next
+    Test_GetByteArrayLEFromInteger_Core (-(2 ^ 14)) * 2
 End Sub
 
 Public Sub Test_GetByteArrayBEFromInteger()
-    Test_GetByteArrayBEFromInteger_Core &H0
-    Test_GetByteArrayBEFromInteger_Core &H1
-    Test_GetByteArrayBEFromInteger_Core &H8
-    Test_GetByteArrayBEFromInteger_Core &H10
-    Test_GetByteArrayBEFromInteger_Core &H80
-    Test_GetByteArrayBEFromInteger_Core &H100
-    Test_GetByteArrayBEFromInteger_Core &H800
-    Test_GetByteArrayBEFromInteger_Core &H1000
-    Test_GetByteArrayBEFromInteger_Core &H8000
-    Test_GetByteArrayBEFromInteger_Core &HF000
-    Test_GetByteArrayBEFromInteger_Core &HFF00
-    Test_GetByteArrayBEFromInteger_Core &HFFF0
-    Test_GetByteArrayBEFromInteger_Core &HFFFF
+    Dim Index As Long
+    For Index = 0 To 14
+        Test_GetByteArrayBEFromInteger_Core 2 ^ Index
+    Next
+    For Index = 0 To 14
+        Test_GetByteArrayBEFromInteger_Core -(2 ^ Index)
+    Next
+    Test_GetByteArrayBEFromInteger_Core (-(2 ^ 14)) * 2
 End Sub
 
 Public Sub Test_GetByteArrayLEFromLong()
-    Test_GetByteArrayLEFromLong_Core &H0
-    Test_GetByteArrayLEFromLong_Core &H1
-    Test_GetByteArrayLEFromLong_Core &H8
-    Test_GetByteArrayLEFromLong_Core &H10
-    Test_GetByteArrayLEFromLong_Core &H80
-    Test_GetByteArrayLEFromLong_Core &H100
-    Test_GetByteArrayLEFromLong_Core &H800
-    Test_GetByteArrayLEFromLong_Core &H1000
-    Test_GetByteArrayLEFromLong_Core &H8000&
-    Test_GetByteArrayLEFromLong_Core &H10000
-    Test_GetByteArrayLEFromLong_Core &H80000
-    Test_GetByteArrayLEFromLong_Core &H100000
-    Test_GetByteArrayLEFromLong_Core &H800000
-    Test_GetByteArrayLEFromLong_Core &H1000000
-    Test_GetByteArrayLEFromLong_Core &H8000000
-    Test_GetByteArrayLEFromLong_Core &H10000000
-    Test_GetByteArrayLEFromLong_Core &H80000000
-    Test_GetByteArrayLEFromLong_Core &HF0000000
-    Test_GetByteArrayLEFromLong_Core &HFF000000
-    Test_GetByteArrayLEFromLong_Core &HFFF00000
-    Test_GetByteArrayLEFromLong_Core &HFFFF0000
-    Test_GetByteArrayLEFromLong_Core &HFFFFF000
-    Test_GetByteArrayLEFromLong_Core &HFFFFFF00
-    Test_GetByteArrayLEFromLong_Core &HFFFFFFF0
-    Test_GetByteArrayLEFromLong_Core &HFFFFFFFF
+    Dim Index As Long
+    For Index = 0 To 30
+        Test_GetByteArrayLEFromLong_Core 2 ^ Index
+    Next
+    For Index = 0 To 30
+        Test_GetByteArrayLEFromLong_Core -(2 ^ Index)
+    Next
+    Test_GetByteArrayLEFromLong_Core (-(2 ^ 30)) * 2
 End Sub
 
 Public Sub Test_GetByteArrayBEFromLong()
-    Test_GetByteArrayBEFromLong_Core &H0
-    Test_GetByteArrayBEFromLong_Core &H1
-    Test_GetByteArrayBEFromLong_Core &H8
-    Test_GetByteArrayBEFromLong_Core &H10
-    Test_GetByteArrayBEFromLong_Core &H80
-    Test_GetByteArrayBEFromLong_Core &H100
-    Test_GetByteArrayBEFromLong_Core &H800
-    Test_GetByteArrayBEFromLong_Core &H1000
-    Test_GetByteArrayBEFromLong_Core &H8000&
-    Test_GetByteArrayBEFromLong_Core &H10000
-    Test_GetByteArrayBEFromLong_Core &H80000
-    Test_GetByteArrayBEFromLong_Core &H100000
-    Test_GetByteArrayBEFromLong_Core &H800000
-    Test_GetByteArrayBEFromLong_Core &H1000000
-    Test_GetByteArrayBEFromLong_Core &H8000000
-    Test_GetByteArrayBEFromLong_Core &H10000000
-    Test_GetByteArrayBEFromLong_Core &H80000000
-    Test_GetByteArrayBEFromLong_Core &HF0000000
-    Test_GetByteArrayBEFromLong_Core &HFF000000
-    Test_GetByteArrayBEFromLong_Core &HFFF00000
-    Test_GetByteArrayBEFromLong_Core &HFFFF0000
-    Test_GetByteArrayBEFromLong_Core &HFFFFF000
-    Test_GetByteArrayBEFromLong_Core &HFFFFFF00
-    Test_GetByteArrayBEFromLong_Core &HFFFFFFF0
-    Test_GetByteArrayBEFromLong_Core &HFFFFFFFF
+    Dim Index As Long
+    For Index = 0 To 30
+        Test_GetByteArrayBEFromLong_Core 2 ^ Index
+    Next
+    For Index = 0 To 30
+        Test_GetByteArrayBEFromLong_Core -(2 ^ Index)
+    Next
+    Test_GetByteArrayBEFromLong_Core (-(2 ^ 30)) * 2
 End Sub
 
 #If Win64 Then

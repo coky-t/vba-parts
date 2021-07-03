@@ -28,91 +28,47 @@ Option Explicit
 '
 
 Public Sub Test_GetStringB_LEFromInteger()
-    Test_GetStringB_LEFromInteger_Core &H0
-    Test_GetStringB_LEFromInteger_Core &H1
-    Test_GetStringB_LEFromInteger_Core &H8
-    Test_GetStringB_LEFromInteger_Core &H10
-    Test_GetStringB_LEFromInteger_Core &H80
-    Test_GetStringB_LEFromInteger_Core &H100
-    Test_GetStringB_LEFromInteger_Core &H800
-    Test_GetStringB_LEFromInteger_Core &H1000
-    Test_GetStringB_LEFromInteger_Core &H8000
-    Test_GetStringB_LEFromInteger_Core &HF000
-    Test_GetStringB_LEFromInteger_Core &HFF00
-    Test_GetStringB_LEFromInteger_Core &HFFF0
-    Test_GetStringB_LEFromInteger_Core &HFFFF
+    Dim Index As Long
+    For Index = 0 To 14
+        Test_GetStringB_LEFromInteger_Core CInt(2 ^ Index)
+    Next
+    For Index = 0 To 14
+        Test_GetStringB_LEFromInteger_Core CInt(-(2 ^ Index))
+    Next
+    Test_GetStringB_LEFromInteger_Core CInt((-(2 ^ 14)) * 2)
 End Sub
 
 Public Sub Test_GetStringB_BEFromInteger()
-    Test_GetStringB_BEFromInteger_Core &H0
-    Test_GetStringB_BEFromInteger_Core &H1
-    Test_GetStringB_BEFromInteger_Core &H8
-    Test_GetStringB_BEFromInteger_Core &H10
-    Test_GetStringB_BEFromInteger_Core &H80
-    Test_GetStringB_BEFromInteger_Core &H100
-    Test_GetStringB_BEFromInteger_Core &H800
-    Test_GetStringB_BEFromInteger_Core &H1000
-    Test_GetStringB_BEFromInteger_Core &H8000
-    Test_GetStringB_BEFromInteger_Core &HF000
-    Test_GetStringB_BEFromInteger_Core &HFF00
-    Test_GetStringB_BEFromInteger_Core &HFFF0
-    Test_GetStringB_BEFromInteger_Core &HFFFF
+    Dim Index As Long
+    For Index = 0 To 14
+        Test_GetStringB_BEFromInteger_Core CInt(2 ^ Index)
+    Next
+    For Index = 0 To 14
+        Test_GetStringB_BEFromInteger_Core CInt(-(2 ^ Index))
+    Next
+    Test_GetStringB_BEFromInteger_Core CInt((-(2 ^ 14)) * 2)
 End Sub
 
 Public Sub Test_GetStringB_LEFromLong()
-    Test_GetStringB_LEFromLong_Core &H0
-    Test_GetStringB_LEFromLong_Core &H1
-    Test_GetStringB_LEFromLong_Core &H8
-    Test_GetStringB_LEFromLong_Core &H10
-    Test_GetStringB_LEFromLong_Core &H80
-    Test_GetStringB_LEFromLong_Core &H100
-    Test_GetStringB_LEFromLong_Core &H800
-    Test_GetStringB_LEFromLong_Core &H1000
-    Test_GetStringB_LEFromLong_Core &H8000&
-    Test_GetStringB_LEFromLong_Core &H10000
-    Test_GetStringB_LEFromLong_Core &H80000
-    Test_GetStringB_LEFromLong_Core &H100000
-    Test_GetStringB_LEFromLong_Core &H800000
-    Test_GetStringB_LEFromLong_Core &H1000000
-    Test_GetStringB_LEFromLong_Core &H8000000
-    Test_GetStringB_LEFromLong_Core &H10000000
-    Test_GetStringB_LEFromLong_Core &H80000000
-    Test_GetStringB_LEFromLong_Core &HF0000000
-    Test_GetStringB_LEFromLong_Core &HFF000000
-    Test_GetStringB_LEFromLong_Core &HFFF00000
-    Test_GetStringB_LEFromLong_Core &HFFFF0000
-    Test_GetStringB_LEFromLong_Core &HFFFFF000
-    Test_GetStringB_LEFromLong_Core &HFFFFFF00
-    Test_GetStringB_LEFromLong_Core &HFFFFFFF0
-    Test_GetStringB_LEFromLong_Core &HFFFFFFFF
+    Dim Index As Long
+    For Index = 0 To 30
+        Test_GetStringB_LEFromLong_Core CLng(2 ^ Index)
+    Next
+    For Index = 0 To 30
+        Test_GetStringB_LEFromLong_Core CLng(-(2 ^ Index))
+    Next
+    Test_GetStringB_LEFromLong_Core CLng((-(2 ^ 30)) * 2)
 End Sub
 
 Public Sub Test_GetStringB_BEFromLong()
-    Test_GetStringB_BEFromLong_Core &H0
-    Test_GetStringB_BEFromLong_Core &H1
-    Test_GetStringB_BEFromLong_Core &H8
-    Test_GetStringB_BEFromLong_Core &H10
-    Test_GetStringB_BEFromLong_Core &H80
-    Test_GetStringB_BEFromLong_Core &H100
-    Test_GetStringB_BEFromLong_Core &H800
-    Test_GetStringB_BEFromLong_Core &H1000
-    Test_GetStringB_BEFromLong_Core &H8000&
-    Test_GetStringB_BEFromLong_Core &H10000
-    Test_GetStringB_BEFromLong_Core &H80000
-    Test_GetStringB_BEFromLong_Core &H100000
-    Test_GetStringB_BEFromLong_Core &H800000
-    Test_GetStringB_BEFromLong_Core &H1000000
-    Test_GetStringB_BEFromLong_Core &H8000000
-    Test_GetStringB_BEFromLong_Core &H10000000
-    Test_GetStringB_BEFromLong_Core &H80000000
-    Test_GetStringB_BEFromLong_Core &HF0000000
-    Test_GetStringB_BEFromLong_Core &HFF000000
-    Test_GetStringB_BEFromLong_Core &HFFF00000
-    Test_GetStringB_BEFromLong_Core &HFFFF0000
-    Test_GetStringB_BEFromLong_Core &HFFFFF000
-    Test_GetStringB_BEFromLong_Core &HFFFFFF00
-    Test_GetStringB_BEFromLong_Core &HFFFFFFF0
-    Test_GetStringB_BEFromLong_Core &HFFFFFFFF
+    Dim Index As Long
+    For Index = 0 To 30
+        Test_GetStringB_BEFromLong_Core CLng(2 ^ Index)
+    Next
+    For Index = 0 To 30
+        Test_GetStringB_BEFromLong_Core CLng(-(2 ^ Index))
+    Next
+    Test_GetStringB_BEFromLong_Core CLng((-(2 ^ 30)) * 2)
 End Sub
 
 #If Win64 Then
