@@ -98,20 +98,6 @@ Public Sub Test_GetBinStringFromLongLong()
 End Sub
 #End If
 
-Public Sub Test_GetBinStringFromSingle()
-    Test_GetBinStringFromSingle_Core 1!
-    Test_GetBinStringFromSingle_Core -1!
-    Test_GetBinStringFromSingle_Core 0.5
-    Test_GetBinStringFromSingle_Core 0.1
-End Sub
-
-Public Sub Test_GetBinStringFromDouble()
-    Test_GetBinStringFromDouble_Core 1#
-    Test_GetBinStringFromDouble_Core -1#
-    Test_GetBinStringFromDouble_Core 0.5
-    Test_GetBinStringFromDouble_Core 0.1
-End Sub
-
 Public Sub Test_GetOctStringFromByte()
     Test_GetOctStringFromByte_Core &H0
     Test_GetOctStringFromByte_Core &H1
@@ -182,20 +168,6 @@ Public Sub Test_GetOctStringFromLongLong()
     Test_GetOctStringFromLongLong_Core (-(2 ^ 62)) * 2
 End Sub
 #End If
-
-Public Sub Test_GetOctStringFromSingle()
-    Test_GetOctStringFromSingle_Core 1!
-    Test_GetOctStringFromSingle_Core -1!
-    Test_GetOctStringFromSingle_Core 0.5
-    Test_GetOctStringFromSingle_Core 0.1
-End Sub
-
-Public Sub Test_GetOctStringFromDouble()
-    Test_GetOctStringFromDouble_Core 1#
-    Test_GetOctStringFromDouble_Core -1#
-    Test_GetOctStringFromDouble_Core 0.5
-    Test_GetOctStringFromDouble_Core 0.1
-End Sub
 
 Public Sub Test_GetHexStringFromByte()
     Test_GetHexStringFromByte_Core &H0
@@ -268,20 +240,6 @@ Public Sub Test_GetHexStringFromLongLong()
 End Sub
 #End If
 
-Public Sub Test_GetHexStringFromSingle()
-    Test_GetHexStringFromSingle_Core 1!
-    Test_GetHexStringFromSingle_Core -1!
-    Test_GetHexStringFromSingle_Core 0.5
-    Test_GetHexStringFromSingle_Core 0.1
-End Sub
-
-Public Sub Test_GetHexStringFromDouble()
-    Test_GetHexStringFromDouble_Core 1#
-    Test_GetHexStringFromDouble_Core -1#
-    Test_GetHexStringFromDouble_Core 0.5
-    Test_GetHexStringFromDouble_Core 0.1
-End Sub
-
 '
 ' --- Test Core ---
 '
@@ -308,16 +266,6 @@ Public Sub Test_GetBinStringFromLongLong_Core(ByVal Value As LongLong)
 End Sub
 #End If
 
-Public Sub Test_GetBinStringFromSingle_Core(ByVal Value As Single)
-    Debug_Print CStr(Value) & " = " & _
-        GetBinStringFromSingle(Value, True)
-End Sub
-
-Public Sub Test_GetBinStringFromDouble_Core(ByVal Value As Double)
-    Debug_Print CStr(Value) & " = " & _
-        GetBinStringFromDouble(Value, True)
-End Sub
-
 Public Sub Test_GetOctStringFromByte_Core(ByVal Value As Byte)
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
         GetOctStringFromByte(Value, True)
@@ -340,16 +288,6 @@ Public Sub Test_GetOctStringFromLongLong_Core(ByVal Value As LongLong)
 End Sub
 #End If
 
-Public Sub Test_GetOctStringFromSingle_Core(ByVal Value As Single)
-    Debug_Print CStr(Value) & " = " & _
-        GetOctStringFromSingle(Value, True)
-End Sub
-
-Public Sub Test_GetOctStringFromDouble_Core(ByVal Value As Double)
-    Debug_Print CStr(Value) & " = " & _
-        GetOctStringFromDouble(Value, True)
-End Sub
-
 Public Sub Test_GetHexStringFromByte_Core(ByVal Value As Byte)
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
         GetHexStringFromByte(Value, True)
@@ -371,13 +309,3 @@ Public Sub Test_GetHexStringFromLongLong_Core(ByVal Value As LongLong)
         GetHexStringFromLongLong(Value, True)
 End Sub
 #End If
-
-Public Sub Test_GetHexStringFromSingle_Core(ByVal Value As Single)
-    Debug_Print CStr(Value) & " = " & _
-        GetHexStringFromSingle(Value, True)
-End Sub
-
-Public Sub Test_GetHexStringFromDouble_Core(ByVal Value As Double)
-    Debug_Print CStr(Value) & " = " & _
-        GetHexStringFromDouble(Value, True)
-End Sub

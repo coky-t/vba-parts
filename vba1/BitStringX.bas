@@ -1,4 +1,4 @@
-Attribute VB_Name = "BitString"
+Attribute VB_Name = "BitStringX"
 Option Explicit
 
 '
@@ -23,6 +23,26 @@ Option Explicit
 ' IN THE SOFTWARE.
 '
 
+Private Type LongType
+    Value As Long
+End Type
+
+Private Type LongLongType
+#If Win64 Then
+    Value As LongLong
+#Else
+    Values(1) As Long
+#End If
+End Type
+
+Private Type SingleType
+    Value As Single
+End Type
+
+Private Type DoubleType
+    Value As Double
+End Type
+
 Public Function Bin(ByVal Value)
     If IsNull(Value) Then
         Bin = Null
@@ -45,6 +65,10 @@ Public Function Bin(ByVal Value)
     Case "LongLong"
         Bin = GetBinStringFromLongLong(Value)
 #End If
+    Case "Single"
+        Bin = GetBinStringFromSingle(Value)
+    Case "Double"
+        Bin = GetBinStringFromDouble(Value)
     End Select
 End Function
 
@@ -66,15 +90,6 @@ Public Function Zeros(ByVal Count As Long) As String
     Zeros = ZerosStr
 End Function
 
-Public Function Ones(ByVal Count As Long) As String
-    Dim OnesStr As String
-    Dim Index As Long
-    For Index = 1 To Count
-        OnesStr = OnesStr & "1"
-    Next
-    Ones = OnesStr
-End Function
-
 Public Function GetBinStringFromByte( _
     ByVal Value As Byte, _
     Optional ZeroPadding As Boolean) As String
@@ -89,40 +104,50 @@ Public Function GetBinStringFromByte( _
     GetBinStringFromByte = BinString
 End Function
 
+Public Function GetBinStringFromByteArrayLE( _
+    Values() As Byte, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim LB As Long
+    Dim UB As Long
+    LB = LBound(Values)
+    UB = UBound(Values)
+    
+    Dim BinString As String
+    BinString = GetBinStringFromByte(Values(UB), ZeroPadding)
+    
+    Dim Index As Long
+    For Index = UB - 1 To LB Step -1
+        If BinString = "0" Then
+            BinString = GetBinStringFromByte(Values(Index), ZeroPadding)
+        Else
+            BinString = BinString & GetBinStringFromByte(Values(Index), True)
+        End If
+    Next
+    
+    GetBinStringFromByteArrayLE = BinString
+End Function
+
 Public Function GetBinStringFromInteger( _
     ByVal Value As Integer, _
     Optional ZeroPadding As Boolean) As String
     
-    Dim BinString As String
-    If (Value And &H8000) = &H8000 Then
-        BinString = "1" & Right(Zeros(14) & BinCore(Value And &H7FFF), 15)
-    Else
-        BinString = BinCore(Value)
-        
-        If ZeroPadding Then
-            BinString = Right(Zeros(15) & BinString, 16)
-        End If
-    End If
+    Dim ByteArray() As Byte
+    ByteArray = GetByteArrayLEFromInteger(Value)
     
-    GetBinStringFromInteger = BinString
+    GetBinStringFromInteger = _
+        GetBinStringFromByteArrayLE(ByteArray, ZeroPadding)
 End Function
 
 Public Function GetBinStringFromLong( _
     ByVal Value As Long, _
     Optional ZeroPadding As Boolean) As String
     
-    Dim BinString As String
-    If (Value And &H80000000) = &H80000000 Then
-        BinString = "1" & Right(Zeros(30) & BinCore(Value And &H7FFFFFFF), 31)
-    Else
-        BinString = BinCore(Value)
-        
-        If ZeroPadding Then
-            BinString = Right(Zeros(31) & BinString, 32)
-        End If
-    End If
+    Dim ByteArray() As Byte
+    ByteArray = GetByteArrayLEFromLong(Value)
     
-    GetBinStringFromLong = BinString
+    GetBinStringFromLong = _
+        GetBinStringFromByteArrayLE(ByteArray, ZeroPadding)
 End Function
 
 #If Win64 Then
@@ -130,31 +155,35 @@ Public Function GetBinStringFromLongLong( _
     ByVal Value As LongLong, _
     Optional ZeroPadding As Boolean) As String
     
-    Dim BinString As String
-    'If (Value And &H8000000000000000) = &H8000000000000000 Then
-    '    BinString = "1" & _
-    '        Right(Zeros(62) & BinCore(Value And &H7FFFFFFFFFFFFFFF), 63)
-    If Value < 0 Then
-        Dim NotValue As LongLong
-        NotValue = Not Value
-        
-        Do
-            BinString = IIf((NotValue Mod 2) = 0, "1", "0") & BinString
-            NotValue = NotValue \ 2
-        Loop Until NotValue = 0
-        
-        BinString = Right(Ones(63) & BinString, 64)
-    Else
-        BinString = BinCore(Value)
-        
-        If ZeroPadding Then
-            BinString = Right(Zeros(63) & BinString, 64)
-        End If
-    End If
+    Dim ByteArray() As Byte
+    ByteArray = GetByteArrayLEFromLongLong(Value)
     
-    GetBinStringFromLongLong = BinString
+    GetBinStringFromLongLong = _
+        GetBinStringFromByteArrayLE(ByteArray, ZeroPadding)
 End Function
 #End If
+
+Public Function GetBinStringFromSingle( _
+    ByVal Value As Single, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim ByteArray() As Byte
+    ByteArray = GetByteArrayLEFromSingle(Value)
+    
+    GetBinStringFromSingle = _
+        GetBinStringFromByteArrayLE(ByteArray, ZeroPadding)
+End Function
+
+Public Function GetBinStringFromDouble( _
+    ByVal Value As Double, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim ByteArray() As Byte
+    ByteArray = GetByteArrayLEFromDouble(Value)
+    
+    GetBinStringFromDouble = _
+        GetBinStringFromByteArrayLE(ByteArray, ZeroPadding)
+End Function
 
 Public Function GetOctStringFromByte( _
     ByVal Value As Byte, _
@@ -202,6 +231,43 @@ Public Function GetOctStringFromLongLong( _
 End Function
 #End If
 
+Public Function GetOctStringFromSingle( _
+    ByVal Value As Single, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim S As SingleType
+    S.Value = Value
+    
+    Dim L As LongType
+    LSet L = S
+    
+    GetOctStringFromSingle = GetOctStringFromLong(L.Value, ZeroPadding)
+End Function
+
+Public Function GetOctStringFromDouble( _
+    ByVal Value As Double, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim D As DoubleType
+    D.Value = Value
+    
+    Dim LL As LongLongType
+    LSet LL = D
+    
+#If Win64 Then
+    GetOctStringFromDouble = GetOctStringFromLongLong(LL.Value, ZeroPadding)
+#Else
+    Dim Temp As String
+    Temp = GetOctStringFromLong(LL.Values(1), ZeroPadding)
+    If Temp = "0" Then
+        Temp = GetOctStringFromLong(LL.Values(0), ZeroPadding)
+    Else
+        Temp = Temp & GetOctStringFromLong(LL.Values(0), True)
+    End If
+    GetOctStringFromDouble = Temp
+#End If
+End Function
+
 Public Function GetHexStringFromByte( _
     ByVal Value As Byte, _
     Optional ZeroPadding As Boolean) As String
@@ -247,3 +313,40 @@ Public Function GetHexStringFromLongLong( _
     End If
 End Function
 #End If
+
+Public Function GetHexStringFromSingle( _
+    ByVal Value As Single, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim S As SingleType
+    S.Value = Value
+    
+    Dim L As LongType
+    LSet L = S
+    
+    GetHexStringFromSingle = GetHexStringFromLong(L.Value, ZeroPadding)
+End Function
+
+Public Function GetHexStringFromDouble( _
+    ByVal Value As Double, _
+    Optional ZeroPadding As Boolean) As String
+    
+    Dim D As DoubleType
+    D.Value = Value
+    
+    Dim LL As LongLongType
+    LSet LL = D
+    
+#If Win64 Then
+    GetHexStringFromDouble = GetHexStringFromLongLong(LL.Value, ZeroPadding)
+#Else
+    Dim Temp As String
+    Temp = GetHexStringFromLong(LL.Values(1), ZeroPadding)
+    If Temp = "0" Then
+        Temp = GetHexStringFromLong(LL.Values(0), ZeroPadding)
+    Else
+        Temp = Temp & GetHexStringFromLong(LL.Values(0), True)
+    End If
+    GetHexStringFromDouble = Temp
+#End If
+End Function
