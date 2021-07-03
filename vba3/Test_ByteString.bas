@@ -28,7 +28,7 @@ Option Explicit
 '
 
 Public Sub Test_GetStringB_LEFromInteger()
-    Dim Index As Long
+    Dim Index
     For Index = 0 To 14
         Test_GetStringB_LEFromInteger_Core CInt(2 ^ Index)
     Next
@@ -39,7 +39,7 @@ Public Sub Test_GetStringB_LEFromInteger()
 End Sub
 
 Public Sub Test_GetStringB_BEFromInteger()
-    Dim Index As Long
+    Dim Index
     For Index = 0 To 14
         Test_GetStringB_BEFromInteger_Core CInt(2 ^ Index)
     Next
@@ -50,7 +50,7 @@ Public Sub Test_GetStringB_BEFromInteger()
 End Sub
 
 Public Sub Test_GetStringB_LEFromLong()
-    Dim Index As Long
+    Dim Index
     For Index = 0 To 30
         Test_GetStringB_LEFromLong_Core CLng(2 ^ Index)
     Next
@@ -61,7 +61,7 @@ Public Sub Test_GetStringB_LEFromLong()
 End Sub
 
 Public Sub Test_GetStringB_BEFromLong()
-    Dim Index As Long
+    Dim Index
     For Index = 0 To 30
         Test_GetStringB_BEFromLong_Core CLng(2 ^ Index)
     Next
