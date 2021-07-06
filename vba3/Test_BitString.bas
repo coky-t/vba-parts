@@ -164,67 +164,139 @@ End Sub
 '
 
 Public Sub Test_GetBinStringFromByte_Core(ByVal Value)
+    Dim BinString
+    BinString = GetBinStringFromByte(Value, True)
+    
+    Dim Result
+    Result = GetByteFromBinString(BinString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetBinStringFromByte(Value, True)
+        BinString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 Public Sub Test_GetBinStringFromInteger_Core(ByVal Value)
+    Dim BinString
+    BinString = GetBinStringFromInteger(Value, True)
+    
+    Dim Result
+    Result = GetIntegerFromBinString(BinString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetBinStringFromInteger(Value, True)
+        BinString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 Public Sub Test_GetBinStringFromLong_Core(ByVal Value)
+    Dim BinString
+    BinString = GetBinStringFromLong(Value, True)
+    
+    Dim Result
+    Result = GetLongFromBinString(BinString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetBinStringFromLong(Value, True)
+        BinString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 #If Win64 Then
 Public Sub Test_GetBinStringFromLongLong_Core(ByVal Value)
+    Dim BinString
+    BinString = GetBinStringFromLongLong(Value, True)
+    
+    Dim Result
+    Result = GetLongLongFromBinString(BinString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetBinStringFromLongLong(Value, True)
+        BinString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 #End If
 
 Public Sub Test_GetOctStringFromByte_Core(ByVal Value)
+    Dim OctString
+    OctString = GetOctStringFromByte(Value, True)
+    
+    Dim Result
+    Result = GetByteFromOctString(OctString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetOctStringFromByte(Value, True)
+        OctString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 Public Sub Test_GetOctStringFromInteger_Core(ByVal Value)
+    Dim OctString
+    OctString = GetOctStringFromInteger(Value, True)
+    
+    Dim Result
+    Result = GetIntegerFromOctString(OctString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetOctStringFromInteger(Value, True)
+        OctString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 Public Sub Test_GetOctStringFromLong_Core(ByVal Value)
+    Dim OctString
+    OctString = GetOctStringFromLong(Value, True)
+    
+    Dim Result
+    Result = GetLongFromOctString(OctString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetOctStringFromLong(Value, True)
+        OctString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 #If Win64 Then
 Public Sub Test_GetOctStringFromLongLong_Core(ByVal Value)
+    Dim OctString
+    OctString = GetOctStringFromLongLong(Value, True)
+    
+    Dim Result
+    Result = GetLongLongFromOctString(OctString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetOctStringFromLongLong(Value, True)
+        OctString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 #End If
 
 Public Sub Test_GetHexStringFromByte_Core(ByVal Value)
+    Dim HexString
+    HexString = GetHexStringFromByte(Value, True)
+    
+    Dim Result
+    Result = GetByteFromHexString(HexString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetHexStringFromByte(Value, True)
+        HexString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 Public Sub Test_GetHexStringFromInteger_Core(ByVal Value)
+    Dim HexString
+    HexString = GetHexStringFromInteger(Value, True)
+    
+    Dim Result
+    Result = GetIntegerFromHexString(HexString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetHexStringFromInteger(Value, True)
+        HexString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 Public Sub Test_GetHexStringFromLong_Core(ByVal Value)
+    Dim HexString
+    HexString = GetHexStringFromLong(Value, True)
+    
+    Dim Result
+    Result = GetLongFromHexString(HexString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetHexStringFromLong(Value, True)
+        HexString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 
 #If Win64 Then
-Public Sub Test_GetHexStringFromLongLong_Core(ByVal Value As LongLong)
+Public Sub Test_GetHexStringFromLongLong_Core(ByVal Value)
+    Dim HexString
+    HexString = GetHexStringFromLongLong(Value, True)
+    
+    Dim Result
+    Result = GetLongLongFromHexString(HexString)
+    
     Debug_Print CStr(Value) & "(" & Hex(Value) & ")" & " = " & _
-        GetHexStringFromLongLong(Value, True)
+        HexString & " = " & CStr(Value) & "(" & Hex(Value) & ")"
 End Sub
 #End If

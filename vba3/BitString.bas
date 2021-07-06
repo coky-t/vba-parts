@@ -247,3 +247,208 @@ Public Function GetHexStringFromLongLong( _
     End If
 End Function
 #End If
+
+Public Function GetBinStringFromBinString(BinString)
+    Dim Temp
+    Dim Index
+    For Index = 1 To Len(BinString)
+        Select Case Mid(BinString, Index, 1)
+        Case "0"
+            Temp = Temp & "0"
+        Case "1"
+            Temp = Temp & "1"
+        Case Else
+            ' nop
+        End Select
+    Next
+    GetBinStringFromBinString = Temp
+End Function
+
+Public Function GetByteFromBinString(BinString)
+    Dim Temp
+    Temp = Right(Zeros(8) & GetBinStringFromBinString(BinString), 8)
+    
+    Dim Value
+    Dim Index
+    For Index = 0 To 7
+        If Mid(Temp, 8 - Index, 1) = "1" Then
+            Value = Value + 2 ^ Index
+        End If
+    Next
+    GetByteFromBinString = Value
+End Function
+
+Public Function GetStringB_LEFromBinString( _
+    BinString, _
+    ByteCount)
+    
+    Dim Temp
+    Temp = GetBinStringFromBinString(BinString)
+    Temp = Right(Zeros(8 * ByteCount) & Temp, 8 * ByteCount)
+    
+    Dim StringB_LE
+    
+    Dim Index
+    For Index = 0 To ByteCount - 1
+        StringB_LE = StringB_LE & _
+            ChrB(GetByteFromBinString( _
+                Mid(Temp, 1 + (ByteCount - 1 - Index) * 8, 8)))
+    Next
+    
+    GetStringB_LEFromBinString = StringB_LE
+End Function
+
+Public Function GetIntegerFromBinString(BinString)
+    Dim StringB_LE
+    StringB_LE = GetStringB_LEFromBinString(BinString, 2)
+    
+    GetIntegerFromBinString = GetIntegerFromStringB_LE(StringB_LE, 1)
+End Function
+
+Public Function GetLongFromBinString(BinString)
+    Dim StringB_LE
+    StringB_LE = GetStringB_LEFromBinString(BinString, 4)
+    
+    GetLongFromBinString = GetLongFromStringB_LE(StringB_LE, 1)
+End Function
+
+#If Win64 Then
+Public Function GetLongLongFromBinString(BinString)
+    Dim StringB_LE
+    StringB_LE = GetStringB_LEFromBinString(BinString, 8)
+    
+    GetLongLongFromBinString = GetLongLongFromStringB_LE(StringB_LE, 1)
+End Function
+#End If
+
+Public Function GetBinStringFromOctString(OctString)
+    Dim BinString
+    Dim Index
+    For Index = 1 To Len(OctString)
+        Select Case Mid(OctString, Index, 1)
+        Case "0"
+            BinString = BinString & "000"
+        Case "1"
+            BinString = BinString & "001"
+        Case "2"
+            BinString = BinString & "010"
+        Case "3"
+            BinString = BinString & "011"
+        Case "4"
+            BinString = BinString & "100"
+        Case "5"
+            BinString = BinString & "101"
+        Case "6"
+            BinString = BinString & "110"
+        Case "7"
+            BinString = BinString & "111"
+        Case Else
+            ' nop
+        End Select
+    Next
+    GetBinStringFromOctString = BinString
+End Function
+
+Public Function GetByteFromOctString(OctString)
+    Dim BinString
+    BinString = GetBinStringFromOctString(OctString)
+    
+    GetByteFromOctString = GetByteFromBinString(BinString)
+End Function
+
+Public Function GetIntegerFromOctString(OctString)
+    Dim BinString
+    BinString = GetBinStringFromOctString(OctString)
+    
+    GetIntegerFromOctString = GetIntegerFromBinString(BinString)
+End Function
+
+Public Function GetLongFromOctString(OctString)
+    Dim BinString
+    BinString = GetBinStringFromOctString(OctString)
+    
+    GetLongFromOctString = GetLongFromBinString(BinString)
+End Function
+
+#If Win64 Then
+Public Function GetLongLongFromOctString(OctString)
+    Dim BinString
+    BinString = GetBinStringFromOctString(OctString)
+    
+    GetLongLongFromOctString = GetLongLongFromBinString(BinString)
+End Function
+#End If
+
+Public Function GetBinStringFromHexString(HexString)
+    Dim BinString
+    Dim Index
+    For Index = 1 To Len(HexString)
+        Select Case UCase(Mid(HexString, Index, 1))
+        Case "0"
+            BinString = BinString & "0000"
+        Case "1"
+            BinString = BinString & "0001"
+        Case "2"
+            BinString = BinString & "0010"
+        Case "3"
+            BinString = BinString & "0011"
+        Case "4"
+            BinString = BinString & "0100"
+        Case "5"
+            BinString = BinString & "0101"
+        Case "6"
+            BinString = BinString & "0110"
+        Case "7"
+            BinString = BinString & "0111"
+        Case "8"
+            BinString = BinString & "1000"
+        Case "9"
+            BinString = BinString & "1001"
+        Case "A"
+            BinString = BinString & "1010"
+        Case "B"
+            BinString = BinString & "1011"
+        Case "C"
+            BinString = BinString & "1100"
+        Case "D"
+            BinString = BinString & "1101"
+        Case "E"
+            BinString = BinString & "1110"
+        Case "F"
+            BinString = BinString & "1111"
+        Case Else
+            ' nop
+        End Select
+    Next
+    GetBinStringFromHexString = BinString
+End Function
+
+Public Function GetByteFromHexString(HexString)
+    Dim BinString
+    BinString = GetBinStringFromHexString(HexString)
+    
+    GetByteFromHexString = GetByteFromBinString(BinString)
+End Function
+
+Public Function GetIntegerFromHexString(HexString)
+    Dim BinString
+    BinString = GetBinStringFromHexString(HexString)
+    
+    GetIntegerFromHexString = GetIntegerFromBinString(BinString)
+End Function
+
+Public Function GetLongFromHexString(HexString)
+    Dim BinString
+    BinString = GetBinStringFromHexString(HexString)
+    
+    GetLongFromHexString = GetLongFromBinString(BinString)
+End Function
+
+#If Win64 Then
+Public Function GetLongLongFromHexString(HexString)
+    Dim BinString
+    BinString = GetBinStringFromHexString(HexString)
+    
+    GetLongLongFromHexString = GetLongLongFromBinString(BinString)
+End Function
+#End If
