@@ -328,7 +328,7 @@ Private Function GetBinStringFromDoubleSmall( _
     
     GetBinStringFromDoubleSmall = SignBinString & ExpBinString & FlacBinString
 End Function
-    
+
 Private Function GetBinStringFromDoubleNormal( _
     ByVal Value As Double, _
     Optional ZeroPadding As Boolean) As String
