@@ -122,7 +122,7 @@ Private Function GetBinStringFromSingleSmall( _
     
     GetBinStringFromSingleSmall = SignBinString & ExpBinString & FlacBinString
 End Function
-    
+
 Private Function GetBinStringFromSingleNormal( _
     ByVal Value As Single, _
     Optional ZeroPadding As Boolean) As String
