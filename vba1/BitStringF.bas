@@ -197,8 +197,6 @@ Public Function GetBinStringFromSingle( _
     AbsValue = Abs(Value)
     
     Dim SignValue As Boolean
-    Dim ExpValue As Byte
-    Dim FlacValue As Long
     SignValue = (Value < 0!)
     
     If AbsValue > CSng(&H7FFFFFFF) Then
@@ -439,8 +437,6 @@ Public Function GetBinStringFromDouble( _
     AbsValue = Abs(Value)
     
     Dim SignValue As Boolean
-    Dim ExpValue As Byte
-    Dim FlacValue As Long
     SignValue = (Value < 0#)
     
 #If Win64 Then
