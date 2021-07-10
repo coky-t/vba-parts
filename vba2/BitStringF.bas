@@ -524,7 +524,7 @@ Public Function GetHexStringFromBinString(BinString As String) As String
     Dim HexString As String
     Dim Index As Long
     For Index = 1 To Len(BinStringTemp) Step 4
-        Select Case UCase(Mid(BinStringTemp, Index, 4))
+        Select Case Mid(BinStringTemp, Index, 4)
         Case "0000"
             HexString = HexString & "0"
         Case "0001"
