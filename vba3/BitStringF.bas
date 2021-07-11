@@ -354,8 +354,8 @@ Private Function GetBinStringFromDoubleNormal( _
 #Else
     Dim TempHighValue
     Dim TempLowValue
-    TempHighValue = TempValue / CDbl(2 ^ 30)
-    TempLowValue = TempValue - CLng(TempValue / CDbl(2 ^ 30)) * (2 ^ 30)
+    TempHighValue = CLng(TempValue / CDbl(2 ^ 30))
+    TempLowValue = CLng(TempValue - CLng(TempValue / CDbl(2 ^ 30)) * (2 ^ 30))
     
     Dim FlacHighBinStringTemp
     Dim FlacLowBinStringTemp
