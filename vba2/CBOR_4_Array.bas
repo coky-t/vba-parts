@@ -243,7 +243,6 @@ End Function
 '
 
 Private Function GetCborBytesFromArray(Value) As Byte()
-#If MsgPack Then
     Dim Length As Long
     
     On Error Resume Next
@@ -278,7 +277,6 @@ Private Function GetCborBytesFromArray(Value) As Byte()
     '#End If
         
     End Select
-#End If
 End Function
 
 ''
