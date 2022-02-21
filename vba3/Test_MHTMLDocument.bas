@@ -2,7 +2,7 @@ Attribute VB_Name = "Test_MHTMLDocument"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2022 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -64,7 +64,16 @@ Public Sub Test_ParseJsonText_Core(JsonText)
     Dim JsonObject
     Set JsonObject = ParseJsonText(JsonText)
     
+    If IsJsonArray(JsonObject) Then
+        Debug_Print "=== Array ==="
+    Else
+        Debug_Print "=== Object ==="
+    End If
     Debug_Print_JsonObject JsonObject
+    
+    Debug_Print "==="
+    Debug_Print GetJsonText(JsonObject)
+    Debug_Print "==="
 End Sub
 
 Public Sub Debug_Print_JsonObject(JsonObject)
@@ -80,8 +89,14 @@ Public Sub Debug_Print_JsonObject(JsonObject)
     For Index = 0 To KeysLength - 1
         Key = GetJsonKeysItem(Keys, Index)
         If IsJsonItemObject(JsonObject, Key) Then
-            Debug_Print Key & " ---"
-            Debug_Print_JsonObject GetJsonItemObject(JsonObject, Key)
+            Dim JsonItemObject
+            Set JsonItemObject = GetJsonItemObject(JsonObject, Key)
+            If IsJsonArray(JsonItemObject) Then
+                Debug_Print Key & " --- Array ---"
+            Else
+                Debug_Print Key & " --- Object ---"
+            End If
+            Debug_Print_JsonObject JsonItemObject
             Debug_Print Key & " ---"
         Else
             Value = CStr(GetJsonItemValue(JsonObject, Key))

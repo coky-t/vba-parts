@@ -2,7 +2,7 @@ Attribute VB_Name = "MHTMLDocument"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2022 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -63,6 +63,13 @@ Public Function GetHTMLDocumentForJson() As MSHTML.HTMLDocument
                 "<script>document.GetLength=function (obj) { " & _
                 "return obj.length; }</script>"
 #End If
+            .write _
+                "<script>document.IsJsonArray=function (obj) { " & _
+                "return Object.prototype.toString.call(obj) === " & _
+                "'[object Array]'; }</script>"
+            .write _
+                "<script>document.GetJsonText=function (obj) { " & _
+                "return document.parentWindow.JSON.stringify(obj); }</script>"
         End With
     End If
     Set GetHTMLDocumentForJson = HTMLDocument
@@ -233,5 +240,51 @@ Public Function GetJsonItemObject( _
     Set GetJsonItemObject = CallByName(JsonObject, Key, VbGet)
 #Else
     Set GetJsonItemObject = GetHTMLDocumentForJson().GetItem(JsonObject, Key)
+#End If
+End Function
+
+'
+' IsJsonArray
+' - Returns whether JSON object is Array.
+'
+
+'
+' JsonObject:
+'   Required. The name of a JSON object
+'
+
+Public Function IsJsonArray(JsonObject As Object) As Boolean
+#If UseCallByName Then
+    IsJsonArray = _
+        CallByName( _
+            GetHTMLDocumentForJson(), _
+            "IsJsonArray", _
+            VbMethod, _
+            JsonObject)
+#Else
+    IsJsonArray = GetHTMLDocumentForJson().IsJsonArray(JsonObject)
+#End If
+End Function
+
+'
+' GetJsonText
+' - Returns string expression that identifies JSON data.
+'
+
+'
+' JsonObject:
+'   Required. The name of a JSON object
+'
+
+Public Function GetJsonText(JsonObject As Object) As String
+#If UseCallByName Then
+    GetJsonText = _
+        CallByName( _
+            GetHTMLDocumentForJson(), _
+            "GetJsonText", _
+            VbMethod, _
+            JsonObject)
+#Else
+    GetJsonText = GetHTMLDocumentForJson().GetJsonText(JsonObject)
 #End If
 End Function
