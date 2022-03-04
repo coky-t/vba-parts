@@ -32,9 +32,16 @@ Private m_Test_Count As Long
 Private m_Test_Success As Long
 Private m_Test_Fail As Long
 
+' Single
+#Const SINGLE_TO_FLOAT32 = True
+
+' Double
+#Const DOUBLE_TO_FLOAT64 = True
+
 Public Sub Test_Cbor()
     Test_Initialize
     
+    Test_Cbor_Float16_TestCases
     Test_Cbor_Float32_TestCases
     Test_Cbor_Float64_TestCases
     
@@ -45,18 +52,78 @@ End Sub
 ' CBOR for VBA - Test Cases
 '
 
+Private Sub Test_Cbor_Float16_TestCases()
+#If SINGLE_TO_FLOAT32 Then
+    ' nop
+#Else
+    Debug.Print "Target: Float16"
+    
+    Test_Cbor_Float_Core "F9 3C 00", 1!
+    Test_Cbor_Float_Core "F9 38 00", 0.5
+    Test_Cbor_Float_Core "F9 36 00", 0.375
+    Test_Cbor_Float_Core "F9 34 00", 0.25
+    Test_Cbor_Float_Core "F9 BC 00", -1!
+    
+    ' Positive Zero
+    Test_Cbor_Float_Core "F9 00 00", "0"
+    
+    ' Positive SubNormal Minimum
+    Test_Cbor_Float_Core "F9 00 01", "3.054738E-05"
+    
+    ' Positive SubNormal Maximum
+    Test_Cbor_Float_Core "F9 03 FF", "6.100535E-05"
+    
+    ' Positive Normal Minimum
+    Test_Cbor_Float_Core "F9 04 00", "6.103516E-05"
+    
+    ' Positive Normal Maximum
+    Test_Cbor_Float_Core "F9 7B FF", "65504"
+    
+    ' Positive Infinity
+    Test_Cbor_Float_Core "F9 7C 00", "inf"
+    
+    ' Positive NaN
+    Test_Cbor_Float_Core "F9 7F FF", "nan"
+    
+    ' Negative Zero
+    Test_Cbor_Float_Core "F9 80 00", "-0"
+    
+    ' Negative SubNormal Minimum
+    Test_Cbor_Float_Core "F9 80 01", "-3.054738E-05"
+    
+    ' Negative SubNormal Maximum
+    Test_Cbor_Float_Core "F9 83 FF", "-6.100535E-05"
+    
+    ' Negative Normal Minimum
+    Test_Cbor_Float_Core "F9 84 00", "-6.103516E-05"
+    
+    ' Negative Normal Maximum
+    Test_Cbor_Float_Core "F9 FB FF", "-65504"
+    
+    ' Negative Infinity
+    Test_Cbor_Float_Core "F9 FC 00", "-inf"
+    
+    ' Negative NaN
+    Test_Cbor_Float_Core "F9 FF FF", "-nan"
+#End If
+End Sub
+
 Private Sub Test_Cbor_Float32_TestCases()
     Debug.Print "Target: Float32"
     
+#If SINGLE_TO_FLOAT32 Then
     Test_Cbor_Float_Core "FA 41 46 00 00", 12.375!
     Test_Cbor_Float_Core "FA 3F 80 00 00", 1!
     Test_Cbor_Float_Core "FA 3F 00 00 00", 0.5
     Test_Cbor_Float_Core "FA 3E C0 00 00", 0.375
     Test_Cbor_Float_Core "FA 3E 80 00 00", 0.25
     Test_Cbor_Float_Core "FA BF 80 00 00", -1!
+#End If
     
+#If SINGLE_TO_FLOAT32 Then
     ' Positive Zero
     Test_Cbor_Float_Core "FA 00 00 00 00", 0!
+#End If
     
     ' Positive SubNormal Minimum
     Test_Cbor_Float_Core "FA 00 00 00 01", 1.401298E-45
@@ -70,14 +137,18 @@ Private Sub Test_Cbor_Float32_TestCases()
     ' Positive Normal Maximum
     Test_Cbor_Float_Core "FA 7F 7F FF FF", 3.402823E+38
     
+#If SINGLE_TO_FLOAT32 Then
     ' Positive Infinity
     Test_Cbor_Float_Core "FA 7F 80 00 00", "inf"
+#End If
     
     ' Positive NaN
     Test_Cbor_Float_Core "FA 7F FF FF FF", "nan"
     
+#If SINGLE_TO_FLOAT32 Then
     ' Negative Zero
     Test_Cbor_Float_Core "FA 80 00 00 00", -0!
+#End If
     
     ' Negative SubNormal Minimum
     Test_Cbor_Float_Core "FA 80 00 00 01", -1.401298E-45
@@ -91,8 +162,10 @@ Private Sub Test_Cbor_Float32_TestCases()
     ' Negative Normal Maximum
     Test_Cbor_Float_Core "FA FF 7F FF FF", -3.402823E+38
     
+#If SINGLE_TO_FLOAT32 Then
     ' Negative Infinity
     Test_Cbor_Float_Core "FA FF 80 00 00", "-inf"
+#End If
     
     ' Negative NaN
     Test_Cbor_Float_Core "FA FF FF FF FF", "-nan"
@@ -101,17 +174,25 @@ End Sub
 Private Sub Test_Cbor_Float64_TestCases()
     Debug.Print "Target: Float64"
     
+#If DOUBLE_TO_FLOAT64 Then
     Test_Cbor_Float_Core "FB 40 28 C0 00 00 00 00 00", 12.375
     Test_Cbor_Float_Core "FB 3F F0 00 00 00 00 00 00", 1#
     Test_Cbor_Float_Core "FB 3F E0 00 00 00 00 00 00", 0.5
     Test_Cbor_Float_Core "FB 3F D8 00 00 00 00 00 00", 0.375
     Test_Cbor_Float_Core "FB 3F D0 00 00 00 00 00 00", 0.25
+#End If
+    
     Test_Cbor_Float_Core "FB 3F B9 99 99 99 99 99 9A", 0.1
     Test_Cbor_Float_Core "FB 3F D5 55 55 55 55 55 55", 1# / 3#
+
+#If DOUBLE_TO_FLOAT64 Then
     Test_Cbor_Float_Core "FB BF F0 00 00 00 00 00 00", -1#
+#End If
     
+#If DOUBLE_TO_FLOAT64 Then
     ' Positive Zero
     Test_Cbor_Float_Core "FB 00 00 00 00 00 00 00 00", 0#
+#End If
     
     ' Positive SubNormal Minimum
     Test_Cbor_Float_Core "FB 00 00 00 00 00 00 00 01", _
@@ -129,14 +210,18 @@ Private Sub Test_Cbor_Float64_TestCases()
     Test_Cbor_Float_Core "FB 7F EF FF FF FF FF FF FF", _
         "1.79769313486232E+308"
     
+#If DOUBLE_TO_FLOAT64 Then
     ' Positive Infinity
     Test_Cbor_Float_Core "FB 7F F0 00 00 00 00 00 00", "inf"
+#End If
     
     ' Positive NaN
     Test_Cbor_Float_Core "FB 7F FF FF FF FF FF FF FF", "nan"
     
+#If DOUBLE_TO_FLOAT64 Then
     ' Negative Zero
     Test_Cbor_Float_Core "FB 80 00 00 00 00 00 00 00", -0#
+#End If
     
     ' Negative SubNormal Minimum
     Test_Cbor_Float_Core "FB 80 00 00 00 00 00 00 01", _
@@ -154,8 +239,10 @@ Private Sub Test_Cbor_Float64_TestCases()
     Test_Cbor_Float_Core "FB FF EF FF FF FF FF FF FF", _
         "-1.79769313486232E+308"
     
+#If DOUBLE_TO_FLOAT64 Then
     ' Negative Infinity
     Test_Cbor_Float_Core "FB FF F0 00 00 00 00 00 00", "-inf"
+#End If
     
     ' Negative NaN
     Test_Cbor_Float_Core "FB FF FF FF FF FF FF FF FF", "-nan"
