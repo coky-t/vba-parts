@@ -2,7 +2,7 @@ Attribute VB_Name = "Test_MRegExp"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2022 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -38,6 +38,10 @@ End Sub
 
 Public Sub Test_RegExp_Execute()
     Test_RegExp_Execute_Core "abc 123 xyz #$%", "([a-z]+)", True, True, True
+End Sub
+
+Public Sub Test_RegExp_MatchedValue()
+    Test_RegExp_MatchedValue_Core "abc 123 xyz #$%", "([a-z]+)", True, True
 End Sub
 
 '
@@ -110,4 +114,26 @@ Public Sub Test_RegExp_Execute_Core( _
     Debug_Print "--- Execute ---"
     
     Debug_Print_Matches Matches
+End Sub
+
+Public Sub Test_RegExp_MatchedValue_Core( _
+    SourceString, _
+    Pattern, _
+    IgnoreCase, _
+    MultiLine)
+    
+    Dim Result
+    Result = _
+        RegExp_MatchedValue( _
+            SourceString, _
+            Pattern, _
+            IgnoreCase, _
+            MultiLine)
+    
+    Debug_Print "=== RegExp_MatchedValue ==="
+    Debug_Print "SourceString: " & SourceString
+    Debug_Print "Pattern: " & Pattern
+    Debug_Print "IgnoreCase: " & CStr(IgnoreCase)
+    Debug_Print "MultiLine: " & CStr(MultiLine)
+    Debug_Print "MatchedValue - result: " & Result
 End Sub

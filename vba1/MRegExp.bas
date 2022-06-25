@@ -2,7 +2,7 @@ Attribute VB_Name = "MRegExp"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2022 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -139,4 +139,25 @@ Public Function RegExp_Test( _
         .MultiLine = MultiLine
         RegExp_Test = .Test(SourceString)
     End With
+End Function
+
+Public Function RegExp_MatchedValue( _
+    SourceString As String, _
+    Pattern As String, _
+    Optional IgnoreCase As Boolean, _
+    Optional MultiLine As Boolean) _
+    As String
+    
+    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Set Matches = _
+        RegExp_Execute( _
+            SourceString, Pattern, IgnoreCase, False, MultiLine)
+    
+    If Matches Is Nothing Then
+        Exit Function
+    ElseIf Matches.Count = 0 Then
+        Exit Function
+    End If
+    
+    RegExp_MatchedValue = Matches.Item(0).Value
 End Function
