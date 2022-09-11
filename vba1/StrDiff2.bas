@@ -155,7 +155,7 @@ Function LongestCommonSubsequence(Str1 As String, Str2 As String) As String
             Else
                 TempIndex2 = Index2(Index0 - 1) + 1
                 TempLCS = LCS(Index0 - 1)
-                    
+                
             End If
             
             TempIndex1 = TempIndex2 - Index0
@@ -256,7 +256,7 @@ Function ShortestEditScript(Str1 As String, Str2 As String) As String
             Else
                 TempIndex2 = Index2(Index0 - 1) + 1
                 TempSES = SES(Index0 - 1) & "+" & Mid(Str2, TempIndex2, 1)
-                    
+                
             End If
             
             TempIndex1 = TempIndex2 - Index0

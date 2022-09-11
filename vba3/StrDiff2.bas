@@ -158,7 +158,7 @@ Function LongestCommonSubsequence(Str1, Str2)
             Else
                 TempIndex2 = Index2(MaxCost + Index0 - 1) + 1
                 TempLCS = LCS(MaxCost + Index0 - 1)
-                    
+                
             End If
             
             TempIndex1 = TempIndex2 - Index0

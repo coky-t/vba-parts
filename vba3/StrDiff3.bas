@@ -92,7 +92,7 @@ Private Function EditDistanceCore(Str1, Str2)
             Index2(Len1 + Index0) = TempIndex2
         Next
         
-        For Index0 = LenDiff + TempIndex1 To LenDiff Step -1
+        For Index0 = LenDiff + TempIndex1 To LenDiff + 1 Step -1
             If Index0 = LenDiff + TempIndex1 Then
                 TempIndex2 = Index2(Len1 + Index0 - 1) + 1
                 
@@ -228,7 +228,7 @@ Private Function LongestCommonSubsequenceCore(Str1, Str2)
             LCS(Len1 + Index0) = TempLCS
         Next
         
-        For Index0 = LenDiff + TempIndex1 To LenDiff Step -1
+        For Index0 = LenDiff + TempIndex1 To LenDiff + 1 Step -1
             If Index0 = LenDiff + TempIndex1 Then
                 TempIndex2 = Index2(Len1 + Index0 - 1) + 1
                 TempLCS = LCS(Len1 + Index0 - 1)
@@ -402,7 +402,7 @@ Private Function ShortestEditScriptCore(Str1, Str2, EditChar1, EditChar2)
             SES(Len1 + Index0) = TempSES
         Next
         
-        For Index0 = LenDiff + TempIndex1 To LenDiff Step -1
+        For Index0 = LenDiff + TempIndex1 To LenDiff + 1 Step -1
             If Index0 = LenDiff + TempIndex1 Then
                 TempIndex2 = Index2(Len1 + Index0 - 1) + 1
                 TempSES = _
