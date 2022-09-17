@@ -2,7 +2,7 @@ Attribute VB_Name = "SpdxLicenseText"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2022 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -61,6 +61,27 @@ Public Function GetMatchingPattern(LicenseText As String) As String
     TempString = RegExpReplace(TempString, "https?://", "https?://")
     
     GetMatchingPattern = TempString
+End Function
+
+Public Function GetSimpleMatchingPattern(LicenseText As String) As String
+    Dim TempString As String
+    TempString = LCase(LicenseText)
+    
+    ' 3. Whitespace
+    ' 5. Punctuation
+    ' 5.1.1 Guideline: Punctuation
+    ' 5.1.2 Guideline: Hyphens, Dashes
+    ' 5.1.3 Guideline: Quotes
+    ' 6. Code Comment Indicators
+    TempString = RegExpReplace(TempString, "\W*", "\W+")
+    
+    ' 8. Varietal Word Spelling
+    TempString = RegExpReplaceWords(TempString)
+    
+    ' 13. HTTP Protocol
+    TempString = RegExpReplace(TempString, "https?", "https?")
+    
+    GetSimpleMatchingPattern = TempString
 End Function
 
 '

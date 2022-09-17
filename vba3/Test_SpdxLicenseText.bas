@@ -2,7 +2,7 @@ Attribute VB_Name = "Test_SpdxLicenseText"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2022 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -167,14 +167,23 @@ Public Sub Test_GetMatchingPattern_Core(Text)
     Dim MatchingPattern
     MatchingPattern = GetMatchingPattern(Text)
     
+    Dim SimpleMatchingPattern
+    SimpleMatchingPattern = GetSimpleMatchingPattern(Text)
+    
     Debug_Print "--- Text ---"
     Debug_Print Text
     Debug_Print "--- MatchingPattern ---"
     Debug_Print MatchingPattern
+    Debug_Print "--- SimpleMatchingPattern ---"
+    Debug_Print SimpleMatchingPattern
 End Sub
 
 Public Sub Test_GetMatchingPattern_Word(Word)
     Dim MatchingPattern
     MatchingPattern = GetMatchingPattern(Word)
-    Debug_Print Word & " : " & MatchingPattern
+    
+    Dim SimpleMatchingPattern
+    SimpleMatchingPattern = GetSimpleMatchingPattern(Word)
+    
+    Debug_Print Word & " : " & MatchingPattern & " : " & SimpleMatchingPattern
 End Sub
