@@ -72,7 +72,7 @@ Sub Test_SaveSpdxTextFile_Core( _
         OutputText = OutputText & _
             "<pre name=""" & _
             Left(File.Name, Len(File.Name) - Len(".txt")) & _
-            """>" & FileText & "</pre>" & vbCrLf
+            """>" & ReplaceChars(FileText) & "</pre>" & vbCrLf
     Next
     
     WriteTextFileUTF8 OutputFilePath, OutputText
