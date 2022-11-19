@@ -51,6 +51,30 @@ Sub Test_SaveSpdxTemplateFile()
         OutputFilePath, SpdxTextDirPath
 End Sub
 
+Sub Test_SaveSpdxTextLinesFile()
+    Dim OutputFilePath As String
+    OutputFilePath = "C:\work\data\spdx-text-lines.txt"
+    
+    ' https://github.com/spdx/license-list-data/tree/v3.18/text
+    Dim SpdxTextDirPath As String
+    SpdxTextDirPath = "C:\work\data\spdx-license-text"
+    
+    Test_SaveSpdxTextLinesFile_Core _
+        OutputFilePath, SpdxTextDirPath
+End Sub
+
+Sub Test_SaveSpdxTemplateLinesFile()
+    Dim OutputFilePath As String
+    OutputFilePath = "C:\work\data\spdx-template-lines.txt"
+    
+    ' https://github.com/spdx/license-list-data/tree/v3.18/template
+    Dim SpdxTextDirPath As String
+    SpdxTextDirPath = "C:\work\data\spdx-license-template"
+    
+    Test_SaveSpdxTemplateLinesFile_Core _
+        OutputFilePath, SpdxTextDirPath
+End Sub
+
 '
 ' --- Test Core ---
 '
@@ -97,6 +121,90 @@ Sub Test_SaveSpdxTemplateFile_Core( _
             "<pre name=""" & _
             Left(File.Name, Len(File.Name) - Len(".template.txt")) & _
             """>" & ReplaceChars(FileText) & "</pre>" & vbCrLf
+    Next
+    
+    WriteTextFileUTF8 OutputFilePath, OutputText
+    Debug_Print "... Done."
+End Sub
+
+Sub Test_SaveSpdxTextLinesFile_Core( _
+    OutputFilePath As String, DirPath As String)
+    
+    Dim OutputText As String
+    
+    Dim Folder As Object
+    Set Folder = GetFileSystemObject().GetFolder(DirPath)
+    
+    Dim File As Object
+    For Each File In Folder.Files
+        Debug_Print File.Name
+        
+        Dim FileText As String
+        FileText = ReadTextFileUTF8(File.Path)
+        
+        Dim Lines() As String
+        Lines = Split(Replace(FileText, vbCrLf, vbLf), vbLf)
+        
+        Dim LB As Long
+        Dim UB As Long
+        LB = LBound(Lines)
+        UB = UBound(Lines)
+        
+        Dim Index As Long
+        Dim Count As Long
+        Count = 1
+        For Index = LB To UB
+            If Lines(Index) <> "" Then
+                OutputText = OutputText & _
+                    "<pre name=""" & _
+                    Left(File.Name, Len(File.Name) - Len(".txt")) & _
+                    "_" & Right("00" & CStr(Count), 3) & _
+                    """>" & ReplaceChars(Lines(Index)) & "</pre>" & vbCrLf
+                Count = Count + 1
+            End If
+        Next
+    Next
+    
+    WriteTextFileUTF8 OutputFilePath, OutputText
+    Debug_Print "... Done."
+End Sub
+
+Sub Test_SaveSpdxTemplateLinesFile_Core( _
+    OutputFilePath As String, DirPath As String)
+    
+    Dim OutputText As String
+    
+    Dim Folder As Object
+    Set Folder = GetFileSystemObject().GetFolder(DirPath)
+    
+    Dim File As Object
+    For Each File In Folder.Files
+        Debug_Print File.Name
+        
+        Dim FileText As String
+        FileText = ReadTextFileUTF8(File.Path)
+        
+        Dim Lines() As String
+        Lines = Split(Replace(FileText, vbCrLf, vbLf), vbLf)
+        
+        Dim LB As Long
+        Dim UB As Long
+        LB = LBound(Lines)
+        UB = UBound(Lines)
+        
+        Dim Index As Long
+        Dim Count As Long
+        Count = 1
+        For Index = LB To UB
+            If Lines(Index) <> "" Then
+                OutputText = OutputText & _
+                    "<pre name=""" & _
+                    Left(File.Name, Len(File.Name) - Len(".template.txt")) & _
+                    "_" & Right("00" & CStr(Count), 3) & _
+                    """>" & ReplaceChars(Lines(Index)) & "</pre>" & vbCrLf
+                Count = Count + 1
+            End If
+        Next
     Next
     
     WriteTextFileUTF8 OutputFilePath, OutputText
