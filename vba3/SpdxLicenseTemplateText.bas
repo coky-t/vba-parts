@@ -2,7 +2,7 @@ Attribute VB_Name = "SpdxLicenseTemplateText"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2023 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -24,8 +24,8 @@ Option Explicit
 '
 
 '
-' SPDX License List Matching Guidelines, v2.1
-' https://spdx.org/spdx-license-list/matching-guidelines
+' SPDX License List Matching Guidelines, v2.3
+' https://spdx.github.io/spdx-spec/v2.3/license-matching-guidelines-and-templates/
 '
 
 Public Function GetMatchingLines(TemplateText)
@@ -62,8 +62,8 @@ Public Function GetMatchingText(TemplateText)
     If TemplateText = "" Then Exit Function
     
     Const Pattern = "(?:" & _
-        "<<var;name=""(.+)"";original=""(.+)"";match=""(.+)"">>" & "|" & _
-        "<<beginOptional>>(.+)<<endOptional>>" & ")"
+        "<<var;name=""([^""]+)"";original=""([^""]+)"";match=""([^""]+)"">>" & "|" & _
+        "<<beginOptional>>([^<]+)<<endOptional>>" & ")"
     
     If RegExp_Test(TemplateText, Pattern, True, False) Then
         Dim Matches
@@ -81,10 +81,10 @@ Public Function GetMatchingText(TemplateText)
         
         Dim MiddlePattern
         If Match.SubMatches.Item(0) <> "" Then
-            ' 2.1.3 Guideline: Replaceable Text
-            ' 7. Bullets and Numbering
-            ' 10. Copyright Notice
-            ' <<var;name="(.+)";original="(.+)";match="(.+)">>
+            ' B.3.4 Guideline: replaceable text
+            ' B.8 Bullets and numbering
+            ' B.11 Copyright notice
+            ' <<var;name="([^"]+)";original="([^"]+)";match="([^"]+)">>
             
             'Dim VarName
             'Dim VarOriginal
@@ -96,10 +96,10 @@ Public Function GetMatchingText(TemplateText)
             MiddlePattern = VarMatch
             
         Else
-            ' 2.1.4 Guideline: Omitable Text
-            ' 11. License Name or Title
-            ' 12. Extraneous Text At the End of a License
-            ' "<<beginOptional>>(.+)<<endOptional>>"
+            ' B.3.5 Guideline: omittable text
+            ' B.12 License name or title
+            ' B.13 Extraneous text at the end of a license
+            ' "<<beginOptional>>([^<]+)<<endOptional>>"
             
             Dim OptText
             OptText = Match.SubMatches.Item(3)
@@ -127,4 +127,18 @@ Public Function GetMatchingText(TemplateText)
         GetMatchingText = GetMatchingPattern(TemplateText)
         
     End If
+End Function
+
+Public Function GetPlainText(TemplateText)
+    If TemplateText = "" Then Exit Function
+    
+    Dim PlainText
+    PlainText = TemplateText
+    
+    PlainText = Replace(PlainText, "<<beginOptional>>", "")
+    PlainText = Replace(PlainText, "<<endOptional>>", "")
+    PlainText = RegExp_Replace(PlainText, "", "<<var;name=""([^""]+)"";original=""", False, True, False)
+    PlainText = RegExp_Replace(PlainText, "", """;match=""([^""]+)"">>", False, True, False)
+    
+    GetPlainText = PlainText
 End Function

@@ -2,7 +2,7 @@ Attribute VB_Name = "Test_SpdxTextFile"
 Option Explicit
 
 '
-' Copyright (c) 2022 Koki Takeyama
+' Copyright (c) 2022,2023 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -31,7 +31,7 @@ Sub Test_SaveSpdxTextFile()
     Dim OutputFilePath
     OutputFilePath = "C:\work\data\spdx-text.txt"
     
-    ' https://github.com/spdx/license-list-data/tree/v3.18/text
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/text
     Dim SpdxTextDirPath
     SpdxTextDirPath = "C:\work\data\spdx-license-text"
     
@@ -43,7 +43,7 @@ Sub Test_SaveSpdxTemplateFile()
     Dim OutputFilePath
     OutputFilePath = "C:\work\data\spdx-template.txt"
     
-    ' https://github.com/spdx/license-list-data/tree/v3.18/template
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/template
     Dim SpdxTextDirPath
     SpdxTextDirPath = "C:\work\data\spdx-license-template"
     
@@ -55,7 +55,7 @@ Sub Test_SaveSpdxTextLinesFile()
     Dim OutputFilePath
     OutputFilePath = "C:\work\data\spdx-text-lines.txt"
     
-    ' https://github.com/spdx/license-list-data/tree/v3.18/text
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/text
     Dim SpdxTextDirPath
     SpdxTextDirPath = "C:\work\data\spdx-license-text"
     
@@ -67,12 +67,24 @@ Sub Test_SaveSpdxTemplateLinesFile()
     Dim OutputFilePath
     OutputFilePath = "C:\work\data\spdx-template-lines.txt"
     
-    ' https://github.com/spdx/license-list-data/tree/v3.18/template
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/template
     Dim SpdxTextDirPath
     SpdxTextDirPath = "C:\work\data\spdx-license-template"
     
     Test_SaveSpdxTemplateLinesFile_Core _
         OutputFilePath, SpdxTextDirPath
+End Sub
+
+Sub Test_SaveSpdxTemplateToTextFiles()
+    Dim OutputDirPath
+    OutputDirPath = "C:\work\data\spdx-license-template-to-text"
+    
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/template
+    Dim SpdxTextDirPath
+    SpdxTextDirPath = "C:\work\data\spdx-license-template"
+    
+    Test_SaveSpdxTemplateToTextFiles_Core _
+        OutputDirPath, SpdxTextDirPath
 End Sub
 
 '
@@ -223,3 +235,42 @@ Function ReplaceChars(Str)
     
     ReplaceChars = Temp
 End Function
+
+Sub Test_SaveSpdxTemplateToTextFiles_Core( _
+    OutputDirPath, DirPath)
+    
+    Dim Folder
+    Set Folder = GetFileSystemObject().GetFolder(DirPath)
+    
+    Dim File
+    For Each File In Folder.Files
+        Debug_Print File.Name
+        
+        Dim InputFilePath
+        InputFilePath = File.Path
+        
+        Dim OutputFileName
+        OutputFileName = _
+            Left(File.Name, Len(File.Name) - Len(".template.txt")) & ".txt"
+        
+        Dim OutputFilePath
+        OutputFilePath = _
+            GetFileSystemObject().BuildPath(OutputDirPath, OutputFileName)
+        
+        Test_SaveSpdxTemplateToTextFile_Core OutputFilePath, InputFilePath
+    Next
+    
+    Debug_Print "... Done."
+End Sub
+
+Sub Test_SaveSpdxTemplateToTextFile_Core( _
+    OutputFilePath, InputFilePath)
+    
+    Dim InputText
+    InputText = ReadTextFileUTF8(InputFilePath)
+    
+    Dim OutputText
+    OutputText = GetPlainText(InputText)
+    
+    WriteTextFileUTF8 OutputFilePath, OutputText, False
+End Sub
