@@ -67,7 +67,7 @@ Sub Test_SaveSpdxTemplateLinesFile()
     Dim OutputFilePath As String
     OutputFilePath = "C:\work\data\spdx-template-lines.txt"
     
-    ' https://github.com/spdx/license-list-data/tree/vX.X/template
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/template
     Dim SpdxTextDirPath As String
     SpdxTextDirPath = "C:\work\data\spdx-license-template"
     
@@ -84,6 +84,18 @@ Sub Test_SaveSpdxTemplateToTextFiles()
     SpdxTextDirPath = "C:\work\data\spdx-license-template"
     
     Test_SaveSpdxTemplateToTextFiles_Core _
+        OutputDirPath, SpdxTextDirPath
+End Sub
+
+Sub Test_SaveSpdxTemplateToTextFilesEx()
+    Dim OutputDirPath As String
+    OutputDirPath = "C:\work\data\spdx-license-template-to-text-ex"
+    
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/template
+    Dim SpdxTextDirPath As String
+    SpdxTextDirPath = "C:\work\data\spdx-license-template"
+    
+    Test_SaveSpdxTemplateToTextFilesEx_Core _
         OutputDirPath, SpdxTextDirPath
 End Sub
 
@@ -271,6 +283,45 @@ Sub Test_SaveSpdxTemplateToTextFile_Core( _
     
     Dim OutputText As String
     OutputText = GetPlainText(InputText)
+    
+    WriteTextFileUTF8 OutputFilePath, OutputText
+End Sub
+
+Sub Test_SaveSpdxTemplateToTextFilesEx_Core( _
+    OutputDirPath As String, DirPath As String)
+    
+    Dim Folder As Object
+    Set Folder = GetFileSystemObject().GetFolder(DirPath)
+    
+    Dim File As Object
+    For Each File In Folder.Files
+        Debug_Print File.Name
+        
+        Dim InputFilePath As String
+        InputFilePath = File.Path
+        
+        Dim OutputFileName As String
+        OutputFileName = _
+            Left(File.Name, Len(File.Name) - Len(".template.txt")) & ".txt"
+        
+        Dim OutputFilePath As String
+        OutputFilePath = _
+            GetFileSystemObject().BuildPath(OutputDirPath, OutputFileName)
+        
+        Test_SaveSpdxTemplateToTextFileEx_Core OutputFilePath, InputFilePath
+    Next
+    
+    Debug_Print "... Done."
+End Sub
+
+Sub Test_SaveSpdxTemplateToTextFileEx_Core( _
+    OutputFilePath As String, InputFilePath As String)
+    
+    Dim InputText As String
+    InputText = ReadTextFileUTF8(InputFilePath)
+    
+    Dim OutputText As String
+    OutputText = GetPlainTextEx(InputText)
     
     WriteTextFileUTF8 OutputFilePath, OutputText
 End Sub

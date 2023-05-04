@@ -63,8 +63,8 @@ Public Function GetMatchingText(TemplateText As String) As String
     
     ' B.15.3 Legacy Text Template format
     Const Pattern As String = "(?:" & _
-        "<<var;name=""([^""]+)"";original=""([^""]+)"";match=""([^""]+)"">>" & "|" & _
-        "<<beginOptional>>([^<]+)<<endOptional>>" & ")"
+        "<<var;name=""([^""]+)"";original=""(.+)"";match=""(.+)"">>" & "|" & _
+        "<<beginOptional>>(.+)<<endOptional>>" & ")"
     
     If RegExp_Test(TemplateText, Pattern, True) Then
         Dim Matches As VBScript_RegExp_55.MatchCollection
@@ -85,7 +85,7 @@ Public Function GetMatchingText(TemplateText As String) As String
             ' B.3.4 Guideline: replaceable text
             ' B.8 Bullets and numbering
             ' B.11 Copyright notice
-            ' <<var;name="([^"]+)";original="([^"]+)";match="([^"]+)">>
+            ' <<var;name="([^"]+)";original="(.+)";match="(.+)">>
             
             'Dim VarName As String
             'Dim VarOriginal As String
@@ -100,7 +100,7 @@ Public Function GetMatchingText(TemplateText As String) As String
             ' B.3.5 Guideline: omittable text
             ' B.12 License name or title
             ' B.13 Extraneous text at the end of a license
-            ' "<<beginOptional>>([^<]+)<<endOptional>>"
+            ' "<<beginOptional>>(.+)<<endOptional>>"
             
             Dim OptText As String
             OptText = Match.SubMatches.Item(3)
@@ -138,8 +138,191 @@ Public Function GetPlainText(TemplateText As String) As String
     
     PlainText = Replace(PlainText, "<<beginOptional>>", "")
     PlainText = Replace(PlainText, "<<endOptional>>", "")
-    PlainText = RegExp_Replace(PlainText, "", "<<var;name=""([^""]+)"";original=""", False, True, False)
-    PlainText = RegExp_Replace(PlainText, "", """;match=""([^""]+)"">>", False, True, False)
+    PlainText = _
+        RegExp_Replace( _
+            PlainText, _
+            "", "<<var;name=""([^""]+)"";original=""", _
+            False, True, False)
+    PlainText = _
+        RegExp_Replace( _
+            PlainText, _
+            "", """;match=""([^""]+)"">>", _
+            False, True, False)
     
     GetPlainText = PlainText
+End Function
+
+Public Function GetPlainTextEx(TemplateText As String) As String
+    If TemplateText = "" Then Exit Function
+    
+    ' B.15.3 Legacy Text Template format
+    'Const Pattern As String = "(?:" & _
+    '    "<<var;name=""([^""]+)"";original=""(.+)"";match=""(.+)"">>" & "|" & _
+    '    "<<beginOptional>>(.+)<<endOptional>>" & ")"
+    Const Pattern As String = "(?:" & _
+        "<<var;name=""([^""]+)"";original=""" & "|" & _
+        "<<beginOptional>>" & ")"
+    
+    If Not RegExp_Test(TemplateText, Pattern, True) Then
+        GetPlainTextEx = TemplateText
+        Exit Function
+    End If
+    
+    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Set Matches = RegExp_Execute(TemplateText, Pattern, True, False)
+    
+    Dim Match As VBScript_RegExp_55.Match
+    Set Match = Matches.Item(0)
+    
+    Dim PreviousText As String
+    If Match.FirstIndex > 0 Then
+        PreviousText = Left(TemplateText, Match.FirstIndex)
+    End If
+    
+    Dim MiddleText As String
+    Dim MiddleTextTemp As String
+    Dim PostText As String
+    Dim PostTextTemp As String
+    
+    If Match.SubMatches.Item(0) <> "" Then
+        ' B.3.4 Guideline: replaceable text
+        ' B.8 Bullets and numbering
+        ' B.11 Copyright notice
+        ' <<var;name="([^"]+)";original="(.+)";match="(.+)">>
+        
+        'Dim VarName As String
+        'Dim VarOriginal As String
+        'Dim VarMatch As String
+        'VarName = Match.SubMatches.Item(0)
+        'VarOriginal = Match.SubMatches.Item(1)
+        'VarMatch = Match.SubMatches.Item(2)
+        
+        'MiddleText = VarOriginal
+        
+        'If Match.FirstIndex + Match.Length < Len(TemplateText) Then
+        '    PostTextTemp = _
+        '        Right( _
+        '            TemplateText, _
+        '            Len(TemplateText) - (Match.FirstIndex + Match.Length))
+        '    PostText = GetPlainTextEx(PostTextTemp)
+        'End If
+        
+        Dim VarMatchPos As Long
+        Dim VarEndPos As Long
+        
+        VarMatchPos = _
+            InStr( _
+                Match.FirstIndex + Match.Length + 1, _
+                TemplateText, _
+                """;match=""")
+        
+        If VarMatchPos > 0 Then
+            VarEndPos = _
+                InStr( _
+                    VarMatchPos + Len(""";match="""), _
+                    TemplateText, _
+                    """>>")
+        End If
+        
+        If VarEndPos > 0 Then
+            MiddleTextTemp = _
+                Mid( _
+                    TemplateText, _
+                    Match.FirstIndex + Match.Length + 1, _
+                    VarMatchPos - 1 - (Match.FirstIndex + Match.Length))
+            MiddleText = MiddleTextTemp
+            
+            If VarEndPos - 1 + Len(""">>") < Len(TemplateText) Then
+                PostTextTemp = _
+                    Right( _
+                        TemplateText, _
+                        Len(TemplateText) - (VarEndPos - 1 + Len(""">>")))
+                PostText = GetPlainTextEx(PostTextTemp)
+            End If
+            
+        End If
+        
+    Else
+        ' B.3.5 Guideline: omittable text
+        ' B.12 License name or title
+        ' B.13 Extraneous text at the end of a license
+        ' "<<beginOptional>>(.+)<<endOptional>>"
+        
+        'MiddleTextTemp = Match.SubMatches.Item(3)
+        'MiddleText = GetPlainTextEx(MiddleTextTemp)
+        
+        'If Match.FirstIndex + Match.Length < Len(TemplateText) Then
+        '    PostTextTemp = _
+        '        Right( _
+        '            TemplateText, _
+        '            Len(TemplateText) - (Match.FirstIndex + Match.Length))
+        '    PostText = GetPlainTextEx(PostTextTemp)
+        'End If
+        
+        Dim EndOptionalPos As Long
+        'EndOptionalPos = _
+        '    InStr( _
+        '        Match.FirstIndex + Match.Length + 1, _
+        '        TemplateText, _
+        '        "<<endOptional>>")
+        EndOptionalPos = _
+            GetEndOptionalPos( _
+                Match.FirstIndex + Match.Length + 1, _
+                TemplateText)
+        If EndOptionalPos > 0 Then
+            MiddleTextTemp = _
+                Mid( _
+                    TemplateText, _
+                    Match.FirstIndex + Match.Length + 1, _
+                    EndOptionalPos - 1 - (Match.FirstIndex + Match.Length))
+            MiddleText = GetPlainTextEx(MiddleTextTemp)
+            
+            If EndOptionalPos - 1 + Len("<<endOptional>>") < _
+                Len(TemplateText) Then
+                PostTextTemp = _
+                    Right( _
+                        TemplateText, _
+                        Len(TemplateText) - _
+                            (EndOptionalPos - 1 + Len("<<endOptional>>")))
+                PostText = GetPlainTextEx(PostTextTemp)
+            End If
+            
+        End If
+        
+    End If
+    
+    GetPlainTextEx = PreviousText & MiddleText & PostText
+End Function
+
+Private Function GetEndOptionalPos(StartPos As Long, TemplateText As String) _
+    As Long
+    
+    Dim BeginOptionalPos As Long
+    BeginOptionalPos = InStr(StartPos, TemplateText, "<<beginOptional>>")
+    
+    Dim EndOptionalPos As Long
+    EndOptionalPos = InStr(StartPos, TemplateText, "<<endOptional>>")
+    
+    If BeginOptionalPos = 0 Then
+        GetEndOptionalPos = EndOptionalPos
+        Exit Function
+    End If
+    
+    If BeginOptionalPos > EndOptionalPos Then
+        GetEndOptionalPos = EndOptionalPos
+        Exit Function
+    End If
+    
+    Dim EndOptionalPosTemp As Long
+    EndOptionalPosTemp = _
+        GetEndOptionalPos( _
+            BeginOptionalPos + Len("<<beginOptional>>"), _
+            TemplateText)
+    
+    EndOptionalPos = _
+        GetEndOptionalPos( _
+            EndOptionalPosTemp + Len("<<endOptional>>"), _
+            TemplateText)
+    
+    GetEndOptionalPos = EndOptionalPos
 End Function
