@@ -341,12 +341,15 @@ End Sub
 Sub Test_SaveSpdxTemplateToFontFiles_Core( _
     OutputDirPath As String, DirPath As String)
     
+    Dim OKCount As Long
+    Dim NGCount As Long
+    
     Dim Folder As Object
     Set Folder = GetFileSystemObject().GetFolder(DirPath)
     
     Dim File As Object
     For Each File In Folder.Files
-        Debug_Print File.Name
+        'Debug_Print File.Name
         
         Dim InputFilePath As String
         InputFilePath = File.Path
@@ -359,14 +362,25 @@ Sub Test_SaveSpdxTemplateToFontFiles_Core( _
         OutputFilePath = _
             GetFileSystemObject().BuildPath(OutputDirPath, OutputFileName)
         
-        Test_SaveSpdxTemplateToFontFile_Core OutputFilePath, InputFilePath
+        Dim Result As Boolean
+        Result = _
+            Test_SaveSpdxTemplateToFontFile_Core(OutputFilePath, InputFilePath)
+        
+        If Result Then
+            Debug_Print File.Name & ": OK"
+            OKCount = OKCount + 1
+        Else
+            Debug_Print File.Name & ": NG"
+            NGCount = NGCount + 1
+        End If
     Next
     
     Debug_Print "... Done."
+    Debug_Print "OK: " & CStr(OKCount) & ", NG: " & CStr(NGCount)
 End Sub
 
-Sub Test_SaveSpdxTemplateToFontFile_Core( _
-    OutputFilePath As String, InputFilePath As String)
+Function Test_SaveSpdxTemplateToFontFile_Core( _
+    OutputFilePath As String, InputFilePath As String) As Boolean
     
     Dim InputText As String
     InputText = ReadTextFileUTF8(InputFilePath)
@@ -375,4 +389,10 @@ Sub Test_SaveSpdxTemplateToFontFile_Core( _
     OutputText = GetFontText(InputText)
     
     WriteTextFileUTF8 OutputFilePath, OutputText
-End Sub
+    
+    Dim OutputTextTemp As String
+    OutputTextTemp = GetPlainTextEx(InputText)
+    
+    Test_SaveSpdxTemplateToFontFile_Core = _
+        (Len(OutputText) = Len(OutputTextTemp))
+End Function
