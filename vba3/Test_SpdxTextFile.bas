@@ -382,7 +382,7 @@ Sub Test_SaveSpdxTemplateToFontFiles_Core( _
 End Sub
 
 Function Test_SaveSpdxTemplateToFontFile_Core( _
-    OutputFilePath, InputFilePath) As Boolean
+    OutputFilePath, InputFilePath)
     
     Dim InputText
     InputText = ReadTextFileUTF8(InputFilePath)
