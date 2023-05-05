@@ -324,3 +324,159 @@ Private Function GetEndOptionalPos(StartPos, TemplateText)
     
     GetEndOptionalPos = EndOptionalPos
 End Function
+
+Public Function GetFontText(TemplateText)
+    If TemplateText = "" Then Exit Function
+    
+    ' B.15.3 Legacy Text Template format
+    'Const Pattern = "(?:" & _
+    '    "<<var;name=""([^""]+)"";original=""(.+)"";match=""(.+)"">>" & "|" & _
+    '    "<<beginOptional>>(.+)<<endOptional>>" & ")"
+    Const Pattern = "(?:" & _
+        "<<var;name=""([^""]+)"";original=""" & "|" & _
+        "<<beginOptional>>" & ")"
+    
+    If Not RegExp_Test(TemplateText, Pattern, True, False) Then
+        GetFontText = Space(Len(TemplateText))
+        Exit Function
+    End If
+    
+    Dim Matches
+    Set Matches = RegExp_Execute(TemplateText, Pattern, True, False, False)
+    
+    Dim Match
+    Set Match = Matches.Item(0)
+    
+    Dim PreviousText
+    If Match.FirstIndex > 0 Then
+        PreviousText = Space(Match.FirstIndex)
+    End If
+    
+    Dim MiddleText
+    Dim MiddleTextTemp
+    Dim PostText
+    Dim PostTextTemp
+    
+    If Match.SubMatches.Item(0) <> "" Then
+        ' B.3.4 Guideline: replaceable text
+        ' B.8 Bullets and numbering
+        ' B.11 Copyright notice
+        ' <<var;name="([^"]+)";original="(.+)";match="(.+)">>
+        
+        'Dim VarName
+        'Dim VarOriginal
+        'Dim VarMatch
+        'VarName = Match.SubMatches.Item(0)
+        'VarOriginal = Match.SubMatches.Item(1)
+        'VarMatch = Match.SubMatches.Item(2)
+        
+        'MiddleText = StrRepeat("r", Len(VarOriginal))
+        
+        'If Match.FirstIndex + Match.Length < Len(TemplateText) Then
+        '    PostTextTemp = _
+        '        Right( _
+        '            TemplateText, _
+        '            Len(TemplateText) - (Match.FirstIndex + Match.Length))
+        '    PostText = GetFontText(PostTextTemp)
+        'End If
+        
+        Dim VarMatchPos
+        Dim VarEndPos
+        
+        VarMatchPos = _
+            InStr( _
+                Match.FirstIndex + Match.Length + 1, _
+                TemplateText, _
+                """;match=""")
+        
+        If VarMatchPos > 0 Then
+            VarEndPos = _
+                InStr( _
+                    VarMatchPos + Len(""";match="""), _
+                    TemplateText, _
+                    """>>")
+        End If
+        
+        If VarEndPos > 0 Then
+            MiddleTextTemp = _
+                Mid( _
+                    TemplateText, _
+                    Match.FirstIndex + Match.Length + 1, _
+                    VarMatchPos - 1 - (Match.FirstIndex + Match.Length))
+            MiddleText = StrRepeat("r", Len(MiddleTextTemp))
+            
+            If VarEndPos - 1 + Len(""">>") < Len(TemplateText) Then
+                PostTextTemp = _
+                    Right( _
+                        TemplateText, _
+                        Len(TemplateText) - (VarEndPos - 1 + Len(""">>")))
+                PostText = GetFontText(PostTextTemp)
+            End If
+            
+        End If
+        
+    Else
+        ' B.3.5 Guideline: omittable text
+        ' B.12 License name or title
+        ' B.13 Extraneous text at the end of a license
+        ' "<<beginOptional>>(.+)<<endOptional>>"
+        
+        'MiddleTextTemp = Match.SubMatches.Item(3)
+        'MiddleText = StrRepeat("b", Len(GetFontText(MiddleTextTemp)))
+        
+        'If Match.FirstIndex + Match.Length < Len(TemplateText) Then
+        '    PostTextTemp = _
+        '        Right( _
+        '            TemplateText, _
+        '            Len(TemplateText) - (Match.FirstIndex + Match.Length))
+        '    PostText = GetFontText(PostTextTemp)
+        'End If
+        
+        Dim EndOptionalPos
+        'EndOptionalPos = _
+        '    InStr( _
+        '        Match.FirstIndex + Match.Length + 1, _
+        '        TemplateText, _
+        '        "<<endOptional>>")
+        EndOptionalPos = _
+            GetEndOptionalPos( _
+                Match.FirstIndex + Match.Length + 1, _
+                TemplateText)
+        If EndOptionalPos > 0 Then
+            MiddleTextTemp = _
+                Mid( _
+                    TemplateText, _
+                    Match.FirstIndex + Match.Length + 1, _
+                    EndOptionalPos - 1 - (Match.FirstIndex + Match.Length))
+            MiddleText = StrRepeat("b", Len(GetFontText(MiddleTextTemp)))
+            
+            If EndOptionalPos - 1 + Len("<<endOptional>>") < _
+                Len(TemplateText) Then
+                PostTextTemp = _
+                    Right( _
+                        TemplateText, _
+                        Len(TemplateText) - _
+                            (EndOptionalPos - 1 + Len("<<endOptional>>")))
+                PostText = GetFontText(PostTextTemp)
+            End If
+            
+        End If
+        
+    End If
+    
+    GetFontText = PreviousText & MiddleText & PostText
+End Function
+
+Private Function StrRepeat(Text, Length)
+    If Text = "" Then Exit Function
+    If Length <= 0 Then Exit Function
+    
+    Dim Result
+    
+    Dim Index
+    For Index = 0 To Length - 1
+        Result = Result & Text
+    Next
+    
+    StrRepeat = Result
+End Function
