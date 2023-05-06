@@ -111,6 +111,18 @@ Sub Test_SaveSpdxTemplateToFontFiles()
         OutputDirPath, SpdxTextDirPath
 End Sub
 
+Sub Test_SaveSpdxTemplateToPatternFiles()
+    Dim OutputDirPath
+    OutputDirPath = "C:\work\data\spdx-license-template-to-pattern"
+    
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/template
+    Dim SpdxTextDirPath
+    SpdxTextDirPath = "C:\work\data\spdx-license-template"
+    
+    Test_SaveSpdxTemplateToPatternFiles_Core _
+        OutputDirPath, SpdxTextDirPath
+End Sub
+
 '
 ' --- Test Core ---
 '
@@ -398,3 +410,42 @@ Function Test_SaveSpdxTemplateToFontFile_Core( _
     Test_SaveSpdxTemplateToFontFile_Core = _
         (Len(OutputText) = Len(OutputTextTemp))
 End Function
+
+Sub Test_SaveSpdxTemplateToPatternFiles_Core( _
+    OutputDirPath, DirPath)
+    
+    Dim Folder
+    Set Folder = GetFileSystemObject().GetFolder(DirPath)
+    
+    Dim File
+    For Each File In Folder.Files
+        Debug_Print File.Name
+        
+        Dim InputFilePath
+        InputFilePath = File.Path
+        
+        Dim OutputFileName
+        OutputFileName = _
+            Left(File.Name, Len(File.Name) - Len(".template.txt")) & ".txt"
+        
+        Dim OutputFilePath
+        OutputFilePath = _
+            GetFileSystemObject().BuildPath(OutputDirPath, OutputFileName)
+        
+        Test_SaveSpdxTemplateToPatternFile_Core OutputFilePath, InputFilePath
+    Next
+    
+    Debug_Print "... Done."
+End Sub
+
+Sub Test_SaveSpdxTemplateToPatternFile_Core( _
+    OutputFilePath, InputFilePath)
+    
+    Dim InputText
+    InputText = ReadTextFileUTF8(InputFilePath)
+    
+    Dim OutputText
+    OutputText = GetMatchingText(InputText)
+    
+    WriteTextFileUTF8 OutputFilePath, OutputText, True
+End Sub

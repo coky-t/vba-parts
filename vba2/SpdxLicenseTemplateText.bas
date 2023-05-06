@@ -62,72 +62,149 @@ Public Function GetMatchingText(TemplateText As String) As String
     If TemplateText = "" Then Exit Function
     
     ' B.15.3 Legacy Text Template format
+    'Const Pattern As String = "(?:" & _
+    '    "<<var;name=""([^""]+)"";original=""(.+)"";match=""(.+)"">>" & "|" & _
+    '    "<<beginOptional>>(.+)<<endOptional>>" & ")"
     Const Pattern As String = "(?:" & _
-        "<<var;name=""([^""]+)"";original=""(.+)"";match=""(.+)"">>" & "|" & _
-        "<<beginOptional>>(.+)<<endOptional>>" & ")"
+        "<<var;name=""([^""]+)"";original=""" & "|" & _
+        "<<beginOptional>>" & ")"
     
-    If RegExp_Test(TemplateText, Pattern, True) Then
-        Dim Matches As Object
-        Set Matches = RegExp_Execute(TemplateText, Pattern, True, False)
+    If Not RegExp_Test(TemplateText, Pattern, True) Then
+        GetMatchingText = GetSimpleMatchingPattern(TemplateText)
+        Exit Function
+    End If
+    
+    Dim Matches As Object
+    Set Matches = RegExp_Execute(TemplateText, Pattern, True, False)
+    
+    Dim Match As Object
+    Set Match = Matches.Item(0)
+    
+    Dim PreviousPattern As String
+    If Match.FirstIndex > 0 Then
+        Dim PreviousText As String
+        PreviousText = Left(TemplateText, Match.FirstIndex)
+        PreviousPattern = GetSimpleMatchingPattern(PreviousText)
+    End If
+    
+    Dim MiddlePattern As String
+    Dim MiddleTextTemp As String
+    Dim PostPattern As String
+    Dim PostTextTemp As String
+    
+    If Match.SubMatches.Item(0) <> "" Then
+        ' B.3.4 Guideline: replaceable text
+        ' B.8 Bullets and numbering
+        ' B.11 Copyright notice
+        ' <<var;name="([^"]+)";original="(.+)";match="(.+)">>
         
-        Dim Match As Object
-        Set Match = Matches.Item(0)
+        'Dim VarName As String
+        'Dim VarOriginal As String
+        'Dim VarMatch As String
+        'VarName = Match.SubMatches.Item(0)
+        'VarOriginal = Match.SubMatches.Item(1)
+        'VarMatch = Match.SubMatches.Item(2)
         
-        Dim PreviousPattern As String
-        If Match.FirstIndex > 0 Then
-            Dim PreviousText As String
-            PreviousText = Left(TemplateText, Match.FirstIndex)
-            PreviousPattern = GetMatchingPattern(PreviousText)
-        End If
+        'MiddlePattern = VarMatch
         
-        Dim MiddlePattern As String
-        If Match.SubMatches.Item(0) <> "" Then
-            ' B.3.4 Guideline: replaceable text
-            ' B.8 Bullets and numbering
-            ' B.11 Copyright notice
-            ' <<var;name="([^"]+)";original="(.+)";match="(.+)">>
-            
-            'Dim VarName As String
-            'Dim VarOriginal As String
-            Dim VarMatch As String
-            'VarName = Match.SubMatches.Item(0)
-            'VarOriginal = Match.SubMatches.Item(1)
-            VarMatch = Match.SubMatches.Item(2)
-            
-            MiddlePattern = VarMatch
-            
-        Else
-            ' B.3.5 Guideline: omittable text
-            ' B.12 License name or title
-            ' B.13 Extraneous text at the end of a license
-            ' "<<beginOptional>>(.+)<<endOptional>>"
-            
-            Dim OptText As String
-            OptText = Match.SubMatches.Item(3)
-            
-            Dim OptPattern As String
-            OptPattern = GetMatchingPattern(OptText)
-            
-            MiddlePattern = "(?:" & OptPattern & ")?"
-            
-        End If
+        'If Match.FirstIndex + Match.Length < Len(TemplateText) Then
+        '    PostTextTemp = _
+        '        Right( _
+        '            TemplateText, _
+        '            Len(TemplateText) - (Match.FirstIndex + Match.Length))
+        '    PostPattern = GetMatchingText(PostTextTemp)
+        'End If
         
-        Dim PostPattern As String
-        If Match.FirstIndex + Match.Length < Len(TemplateText) Then
-            Dim PostText As String
-            PostText = _
-                Right( _
+        Dim VarMatchPos As Long
+        Dim VarEndPos As Long
+        
+        VarMatchPos = _
+            InStr( _
+                Match.FirstIndex + Match.Length + 1, _
+                TemplateText, _
+                """;match=""")
+        
+        If VarMatchPos > 0 Then
+            VarEndPos = _
+                InStr( _
+                    VarMatchPos + Len(""";match="""), _
                     TemplateText, _
-                    Len(TemplateText) - (Match.FirstIndex + Match.Length))
-            PostPattern = GetMatchingText(PostText)
+                    """>>")
         End If
         
-        GetMatchingText = PreviousPattern & MiddlePattern & PostPattern
+        If VarEndPos > 0 Then
+            MiddleTextTemp = _
+                Mid( _
+                    TemplateText, _
+                    VarMatchPos + Len(""";match="""), _
+                    VarEndPos - (VarMatchPos + Len(""";match=""")))
+            MiddlePattern = MiddleTextTemp
+            
+            If VarEndPos - 1 + Len(""">>") < Len(TemplateText) Then
+                PostTextTemp = _
+                    Right( _
+                        TemplateText, _
+                        Len(TemplateText) - (VarEndPos - 1 + Len(""">>")))
+                PostPattern = GetMatchingText(PostTextTemp)
+            End If
+            
+        End If
         
     Else
-        GetMatchingText = GetMatchingPattern(TemplateText)
+        ' B.3.5 Guideline: omittable text
+        ' B.12 License name or title
+        ' B.13 Extraneous text at the end of a license
+        ' "<<beginOptional>>(.+)<<endOptional>>"
+        
+        'Dim OptText As String
+        'OptText = Match.SubMatches.Item(3)
+        
+        'Dim OptPattern As String
+        'OptPattern = GetSimpleMatchingPattern(OptText)
+        
+        'MiddlePattern = "(?:" & OptPattern & ")?"
+        
+        'If Match.FirstIndex + Match.Length < Len(TemplateText) Then
+        '    PostTextTemp = _
+        '        Right( _
+        '            TemplateText, _
+        '            Len(TemplateText) - (Match.FirstIndex + Match.Length))
+        '    PostPattern = GetMatchingText(PostTextTemp)
+        'End If
+        
+        Dim EndOptionalPos As Long
+        'EndOptionalPos = _
+        '    InStr( _
+        '        Match.FirstIndex + Match.Length + 1, _
+        '        TemplateText, _
+        '        "<<endOptional>>")
+        EndOptionalPos = _
+            GetEndOptionalPos( _
+                Match.FirstIndex + Match.Length + 1, _
+                TemplateText)
+        If EndOptionalPos > 0 Then
+            MiddleTextTemp = _
+                Mid( _
+                    TemplateText, _
+                    Match.FirstIndex + Match.Length + 1, _
+                    EndOptionalPos - 1 - (Match.FirstIndex + Match.Length))
+            MiddlePattern = "(?:" & GetMatchingText(MiddleTextTemp) & ")?"
+            
+            If EndOptionalPos - 1 + Len("<<endOptional>>") < _
+                Len(TemplateText) Then
+                PostTextTemp = _
+                    Right( _
+                        TemplateText, _
+                        Len(TemplateText) - _
+                            (EndOptionalPos - 1 + Len("<<endOptional>>")))
+                PostPattern = GetMatchingText(PostTextTemp)
+            End If
+            
+        End If
         
     End If
+    
+    GetMatchingText = PreviousPattern & MiddlePattern & PostPattern
 End Function
 
 Public Function GetPlainText(TemplateText As String) As String
