@@ -2,7 +2,7 @@ Attribute VB_Name = "SpdxLicenseText"
 Option Explicit
 
 '
-' Copyright (c) 2020,2022 Koki Takeyama
+' Copyright (c) 2020,2022,2023 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -24,8 +24,9 @@ Option Explicit
 '
 
 '
-' SPDX License List Matching Guidelines, v2.1
-' https://spdx.org/spdx-license-list/matching-guidelines
+' SPDX specification v2.3.0
+' Annex B License matching guidelines and templates (Informative)
+' https://spdx.github.io/spdx-spec/v2.3/license-matching-guidelines-and-templates/
 '
 
 Public Function GetMatchingPattern(LicenseText)
@@ -38,26 +39,26 @@ Public Function GetMatchingPattern(LicenseText)
     TempString = RegExpReplace(TempString, "\[", "\[")
     TempString = RegExpReplace(TempString, "\]", "\]")
     
-    ' 8. Varietal Word Spelling
+    ' B.9 Varietal word spelling
     TempString = RegExpReplaceWords(TempString)
     
-    ' 3. Whitespace
-    ' 6. Code Comment Indicators
+    ' B.4 Whitespace
+    ' B.7 Code Comment Indicators
     TempString = RegExpReplace(TempString, "\W+", "\s+")
     
-    ' 5.1.1 Guideline: Punctuation
+    ' B.6.2 Guideline: punctuation
     TempString = RegExpReplace(TempString, "\.", "\.")
     
-    ' 5.1.2 Guideline: Hyphens, Dashes
+    ' B.6.3 Guideline: hyphens, dashes
     ' https://en.wikipedia.org/wiki/Dash
     ' https://en.wikipedia.org/wiki/Hyphen
     TempString = RegExpReplace(TempString, "\W+", "-")
     
-    ' 5.1.3 Guideline: Quotes
+    ' B.6.4 Guideline: Quotes
     ' https://en.wikipedia.org/wiki/Quotation_mark
     TempString = RegExpReplace(TempString, "\W+", "['""]")
     
-    ' 13. HTTP Protocol
+    ' B.14 HTTP Protocol
     TempString = RegExpReplace(TempString, "https?://", "https?://")
     
     GetMatchingPattern = TempString
@@ -67,30 +68,31 @@ Public Function GetSimpleMatchingPattern(LicenseText)
     Dim TempString
     TempString = LCase(LicenseText)
     
-    ' 3. Whitespace
-    ' 5. Punctuation
-    ' 5.1.1 Guideline: Punctuation
-    ' 5.1.2 Guideline: Hyphens, Dashes
-    ' 5.1.3 Guideline: Quotes
-    ' 6. Code Comment Indicators
+    ' B.4 Whitespace
+    ' B.6 Punctuation
+    ' B.6.2 Guideline: punctuation
+    ' B.6.3 Guideline: hyphens, dashes
+    ' B.6.4 Guideline: Quotes
+    ' B.7 Code Comment Indicators
     TempString = RegExpReplace(TempString, "\W*", "\W+")
     
-    ' 8. Varietal Word Spelling
+    ' B.9 Varietal word spelling
     TempString = RegExpReplaceWords(TempString)
     
-    ' 13. HTTP Protocol
+    ' B.14 HTTP Protocol
     TempString = RegExpReplace(TempString, "https?", "https?")
     
     GetSimpleMatchingPattern = TempString
 End Function
 
 '
-' 8. Varietal Word Spelling
+' B.9 Varietal word spelling
 '
 ' | Word1 | Word2 | MatchingPattern |
 ' | --- | --- | --- |
 ' | acknowledgement | acknowledgment | acknowledge?ment |
 ' | analog | analogue | analog(?:ue)? |
+' | and | & | (?:and|&) |
 ' | analyze | analyse | analy[zs]e |
 ' | artifact | artefact | art[ie]fact |
 ' | authorization | authorisation | authori[zs]ation |
@@ -113,6 +115,7 @@ End Function
 ' | labor | labour | labou?r |
 ' | license | licence | licen[sc]e |
 ' | maximize | maximise | maximi[zs]e |
+' | merchantability | merchantibility | merchant[ai]bility |
 ' | modeled | modelled | modell?ed |
 ' | modeling | modelling | modell?ing |
 ' | noncommercial | non-commercial | non-?commercial |
@@ -141,7 +144,7 @@ Private Function RegExpReplaceWords(SourceString)
     Dim PatternAndReplaceStringArray
     PatternAndReplaceStringArray = Array( _
         "sub\W*licen[sc]e", _
-        "acknowledge?ment", "analog(?:ue)?", "analy[zs]e", _
+        "acknowledge?ment", "analog(?:ue)?", "(?:and|&)", "analy[zs]e", _
         "art[ie]fact", "authori[zs]ation", "authori[zs]ed", _
         "calib(?:er|re)", "cancell?ed", "capitali[zs]ations", _
         "catalog(?:ue)?", "categori[zs]e", "cent(?:er|re)", _
@@ -149,7 +152,7 @@ Private Function RegExpReplaceWords(SourceString)
         "favou?r", "favou?rite", "fulfill?", _
         "fulfill?ment", "initiali[zs]e", "judge?ment", _
         "labell?ing", "labou?r", "licen[sc]e", _
-        "maximi[zs]e", "modell?ed", "modell?ing", _
+        "maximi[zs]e", "merchant[ai]bility", "modell?ed", "modell?ing", _
         "non\W*commercial", "offen[sc]e", "optimi[zs]e", _
         "organi[zs]ation", "organi[zs]e", _
         "per\s*cent", "practi[cs]e", "program(?:me)?", _
@@ -185,7 +188,7 @@ Private Function RegExpReplace( _
     
     With GetRegExp()
         .Pattern = Pattern
-        .IgnoreCase = True ' 4. Capitalization
+        .IgnoreCase = True ' B.5 Capitalization
         .Global = True
         .MultiLine = False
         RegExpReplace = .Replace(SourceString, ReplaceString)
