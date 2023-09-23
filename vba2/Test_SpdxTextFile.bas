@@ -123,6 +123,30 @@ Sub Test_SaveSpdxTemplateToPatternFiles()
         OutputDirPath, SpdxTextDirPath
 End Sub
 
+Sub Test_CheckSpdxPatternFiles1()
+    Dim SpdxPatternDirPath As String
+    SpdxPatternDirPath = "C:\work\data\spdx-license-template-to-pattern"
+    
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/text
+    Dim SpdxTextDirPath As String
+    SpdxTextDirPath = "C:\work\data\spdx-license-text"
+    
+    Test_CheckSpdxPatternFiles1_Core _
+        SpdxPatternDirPath, SpdxTextDirPath
+End Sub
+
+Sub Test_CheckSpdxPatternFiles2()
+    Dim SpdxPatternDirPath As String
+    SpdxPatternDirPath = "C:\work\data\spdx-license-template-to-pattern"
+    
+    ' https://github.com/spdx/license-list-data/tree/vX.XX/text
+    Dim SpdxTextDirPath As String
+    SpdxTextDirPath = "C:\work\data\spdx-license-text"
+    
+    Test_CheckSpdxPatternFiles2_Core _
+        SpdxPatternDirPath, SpdxTextDirPath
+End Sub
+
 '
 ' --- Test Core ---
 '
@@ -446,4 +470,175 @@ Sub Test_SaveSpdxTemplateToPatternFile_Core( _
     OutputText = GetMatchingText(InputText)
     
     WriteTextFileUTF8 OutputFilePath, OutputText
+End Sub
+
+Sub Test_CheckSpdxPatternFiles1_Core( _
+    SpdxPatternDirPath As String, SpdxTextDirPath As String)
+    
+    Dim SpdxPatternFolder As Object
+    Set SpdxPatternFolder = _
+        GetFileSystemObject().GetFolder(SpdxPatternDirPath)
+    
+    Dim SpdxPatternFile As Object
+    For Each SpdxPatternFile In SpdxPatternFolder.Files
+        'Debug_Print SpdxPatternFile.Name
+        
+        Dim SpdxTextFileName As String
+        SpdxTextFileName = SpdxPatternFile.Name
+        
+        Dim SpdxTextFilePath As String
+        SpdxTextFilePath = _
+            GetFileSystemObject().BuildPath(SpdxTextDirPath, SpdxTextFileName)
+        
+        Test_CheckSpdxPatternFile1_Core _
+            SpdxPatternFile.Name, SpdxPatternFile.Path, SpdxTextFilePath
+    Next
+    
+    Debug_Print "... Done."
+End Sub
+
+Sub Test_CheckSpdxPatternFile1_Core( _
+    SpdxPatternFileName As String, SpdxPatternFilePath As String, _
+    SpdxTextFilePath As String)
+    
+    Dim IgnoredFile As Boolean
+    
+    Select Case SpdxPatternFileName
+    Case "CC-BY-SA-2.1-JP.txt", "DL-DE-BY-2.0.txt", "gSOAP-1.3b.txt", _
+        "LPPL-1.3a.txt", "LPPL-1.3c.txt", _
+        "MulanPSL-1.0.txt", "MulanPSL-2.0.txt", "NOSL.txt", _
+        "Python-2.0.txt", "UCL-1.0.txt"
+        IgnoredFile = True
+    Case Else
+        IgnoredFile = False
+    End Select
+    
+    If IgnoredFile Then
+        Debug_Print SpdxPatternFileName & ": Ignored"
+        Exit Sub
+    End If
+        
+    If Not GetFileSystemObject().FileExists(SpdxTextFilePath) Then
+        Debug_Print SpdxPatternFileName & ": Not Exist"
+        Exit Sub
+    End If
+    
+    Dim SpdxPattern As String
+    SpdxPattern = ReadTextFileUTF8(SpdxPatternFilePath)
+    
+    Dim SpdxText As String
+    SpdxText = ReadTextFileUTF8(SpdxTextFilePath)
+    
+    If RegExp_Test(SpdxText, SpdxPattern, True, False) Then
+        'Debug_Print SpdxPatternFileName & ": OK"
+    Else
+        Debug_Print SpdxPatternFileName & ": NG"
+    End If
+End Sub
+
+Sub Test_CheckSpdxPatternFiles2_Core( _
+    SpdxPatternDirPath As String, SpdxTextDirPath As String)
+    
+    Dim SpdxTextFolder As Object
+    Set SpdxTextFolder = _
+        GetFileSystemObject().GetFolder(SpdxTextDirPath)
+    
+    Dim SpdxText() As String
+    ReDim SpdxText(SpdxTextFolder.Files.Count - 1, 1)
+    
+    Dim SpdxTextIndex As Long
+    
+    Dim SpdxTextFile As Object
+    For Each SpdxTextFile In SpdxTextFolder.Files
+        Dim SpdxTextTemp As String
+        SpdxTextTemp = ReadTextFileUTF8(SpdxTextFile.Path)
+        
+        SpdxText(SpdxTextIndex, 0) = SpdxTextFile.Name
+        SpdxText(SpdxTextIndex, 1) = SpdxTextTemp
+        SpdxTextIndex = SpdxTextIndex + 1
+    Next
+    
+    ' ---
+    
+    Dim SpdxPatternFolder As Object
+    Set SpdxPatternFolder = _
+        GetFileSystemObject().GetFolder(SpdxPatternDirPath)
+    
+    Dim SpdxPatternFile As Object
+    For Each SpdxPatternFile In SpdxPatternFolder.Files
+        'Debug_Print SpdxPatternFile.Name
+        
+        Dim SpdxTextFileName As String
+        SpdxTextFileName = SpdxPatternFile.Name
+        
+        Dim SpdxTextFilePath As String
+        SpdxTextFilePath = _
+            GetFileSystemObject().BuildPath(SpdxTextDirPath, SpdxTextFileName)
+        
+        Dim SpdxPattern As String
+        SpdxPattern = ReadTextFileUTF8(SpdxPatternFile.Path)
+        
+        Test_CheckSpdxPatternFile2_Text _
+            SpdxPatternFile.Name, SpdxPattern, _
+            SpdxText
+    Next
+    
+    Debug_Print "... Done."
+End Sub
+
+Sub Test_CheckSpdxPatternFile2_Text( _
+    SpdxPatternFileName As String, SpdxPattern As String, _
+    SpdxText() As String)
+    
+    Select Case SpdxPatternFileName
+    Case "CC-BY-SA-2.1-JP.txt", "DL-DE-BY-2.0.txt", "gSOAP-1.3b.txt", _
+        "LPPL-1.3a.txt", "LPPL-1.3c.txt", _
+        "MulanPSL-1.0.txt", "MulanPSL-2.0.txt", "NOSL.txt", _
+        "Python-2.0.txt", "UCL-1.0.txt"
+        Exit Sub
+    End Select
+    
+    If Len(SpdxPattern) > 2000 Then
+        'Debug_Print SpdxPatternFileName & ": Large"
+        Exit Sub
+    End If
+    
+    Dim SpdxTextIndex As Long
+    For SpdxTextIndex = LBound(SpdxText) To UBound(SpdxText)
+        Test_CheckSpdxPatternFile2_Text_Core _
+            SpdxPatternFileName, SpdxPattern, _
+            SpdxText(SpdxTextIndex, 0), SpdxText(SpdxTextIndex, 1)
+    Next
+End Sub
+
+Sub Test_CheckSpdxPatternFile2_Text_Core( _
+    SpdxPatternFileName As String, SpdxPattern As String, _
+    SpdxTextFileName As String, SpdxText As String)
+    
+    Select Case SpdxTextFileName
+    Case "CC-BY-SA-2.1-JP.txt", "DL-DE-BY-2.0.txt", "gSOAP-1.3b.txt", _
+        "LPPL-1.3a.txt", "LPPL-1.3c.txt", _
+        "MulanPSL-1.0.txt", "MulanPSL-2.0.txt", "NOSL.txt", _
+        "Python-2.0.txt", "UCL-1.0.txt"
+        Exit Sub
+    Case "OGDL-Taiwan-1.0.txt", _
+        "AFL-2.0.txt", "AFL-2.1.txt", "AFL-3.0.txt", _
+        "MPL-2.0.txt", "MPL-2.0-no-copyleft-exception.txt"
+        Exit Sub
+    End Select
+    
+    If SpdxPatternFileName = SpdxTextFileName Then
+        Exit Sub
+    End If
+    
+    If Len(SpdxText) > 2000 Then
+        'Debug_Print SpdxPatternFileName & ": " & SpdxTextFileName & ": Large"
+        Exit Sub
+    End If
+    
+    If RegExp_Test(SpdxText, SpdxPattern, True, False) Then
+        Debug_Print SpdxPatternFileName & ": " & SpdxTextFileName & ": OK"
+    Else
+        'Debug_Print SpdxPatternFileName & ": " & SpdxTextFileName & ": NG"
+    End If
 End Sub
