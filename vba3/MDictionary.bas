@@ -55,3 +55,75 @@ Public Function StrArray_Unique(StrArray, CompareMode)
     
     StrArray_Unique = StrDic.Keys
 End Function
+
+Public Function StrMatrix_Unique(StrMatrix, CompareMode)
+    If Not IsArray(StrMatrix) Then
+        StrMatrix_Unique = StrMatrix
+        Exit Function
+    End If
+    
+    Dim StrDic
+    Set StrDic = CreateObject("Scripting.Dictionary")
+    StrDic.CompareMode = CompareMode
+    
+    ' Step1. StrMatrix to StrDic
+    
+    Dim LB1
+    Dim UB1
+    Dim LB2
+    Dim UB2
+    LB1 = LBound(StrMatrix, 1)
+    UB1 = UBound(StrMatrix, 1)
+    LB2 = LBound(StrMatrix, 2)
+    UB2 = UBound(StrMatrix, 2)
+    
+    Dim StrArray()
+    ReDim StrArray(0 To UB2 - LB2)
+    
+    Dim Index1
+    For Index1 = LB1 To UB1
+        Dim Index2
+        For Index2 = LB2 To UB2
+            StrArray(Index2 - LB2) = StrMatrix(Index1, Index2)
+        Next
+        
+        Dim StrTemp
+        StrTemp = Join(StrArray, vbTab)
+        If Not StrDic.Exists(StrTemp) Then
+            StrDic.Add StrTemp, Index1
+        End If
+    Next
+    
+    ' Strp2. StrMatrix to StrMatrixNew
+    
+    Dim Count
+    Count = StrDic.Count
+    
+    Dim LB1New
+    Dim UB1New
+    LB1New = LB1
+    UB1New = LB1 + Count - 1
+    
+    Dim StrMatrixNew()
+    ReDim StrMatrixNew(0 To UB1New - LB1New, 0 To UB2 - LB2)
+    
+    Dim Items As Variant
+    Items = StrDic.Items
+    
+    Dim LB
+    Dim UB
+    LB = LBound(Items)
+    UB = UBound(Items)
+    
+    Dim Index
+    For Index = LB To UB
+        Index1 = CLng(Items(Index))
+        Dim Index1New
+        Index1New = LB1 + Index - LB
+        For Index2 = LB2 To UB2
+            StrMatrixNew(Index1New - LB1, Index2 - LB2) = StrMatrix(Index1, Index2)
+        Next
+    Next
+    
+    StrMatrix_Unique = StrMatrixNew
+End Function
