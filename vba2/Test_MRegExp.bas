@@ -2,7 +2,7 @@ Attribute VB_Name = "Test_MRegExp"
 Option Explicit
 
 '
-' Copyright (c) 2020,2022 Koki Takeyama
+' Copyright (c) 2020,2022,2024 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -42,6 +42,13 @@ End Sub
 
 Public Sub Test_RegExp_MatchedValue()
     Test_RegExp_MatchedValue_Core "abc 123 xyz #$%", "([a-z]+)", True, True
+End Sub
+
+Public Sub Test_RegExp_ExecuteEx()
+    Test_RegExp_ExecuteEx_Core _
+        "abc" & vbCrLf & "123" & vbCrLf & "xyz" & vbCrLf & "#$%", _
+        "([a-z]+)", _
+        True, True, True, vbCrLf
 End Sub
 
 '
@@ -136,4 +143,50 @@ Public Sub Test_RegExp_MatchedValue_Core( _
     Debug_Print "IgnoreCase: " & CStr(IgnoreCase)
     Debug_Print "MultiLine: " & CStr(MultiLine)
     Debug_Print "MatchedValue - result: " & Result
+End Sub
+
+Public Sub Test_RegExp_ExecuteEx_Core( _
+    SourceString As String, _
+    Pattern As String, _
+    IgnoreCase As Boolean, _
+    GlobalMatch As Boolean, _
+    MultiLine As Boolean, _
+    LineSeparator As String)
+    
+    Dim Matches As Object
+    Set Matches = _
+        RegExp_Execute( _
+            SourceString, Pattern, IgnoreCase, GlobalMatch, MultiLine)
+    
+    Debug_Print "=== RegExp_Execute ==="
+    Debug_Print "SourceString: " & SourceString
+    Debug_Print "Pattern: " & Pattern
+    Debug_Print "IgnoreCase: " & CStr(IgnoreCase)
+    Debug_Print "GlobalMatch: " & CStr(GlobalMatch)
+    Debug_Print "MultiLine: " & CStr(MultiLine)
+    Debug_Print "--- Execute ---"
+    
+    Debug_Print_Matches Matches
+    
+    If Matches Is Nothing Then Exit Sub
+    If Matches.Count = 0 Then Exit Sub
+    
+    Debug_Print "--- LineNumber ---"
+    
+    Dim Match As Object
+    For Each Match In Matches
+        Test_RegExp_LineNumber_Core _
+            SourceString, Match.FirstIndex, LineSeparator
+    Next
+End Sub
+
+Public Sub Test_RegExp_LineNumber_Core( _
+    SourceString As String, _
+    Index As Long, _
+    LineSeparator As String)
+    
+    Dim LineNumber As Long
+    LineNumber = RegExp_LineNumber(SourceString, Index, LineSeparator)
+    
+    Debug_Print "Index: " & CStr(Index) & ", LineNumber: " & CStr(LineNumber)
 End Sub

@@ -2,7 +2,7 @@ Attribute VB_Name = "MRegExp"
 Option Explicit
 
 '
-' Copyright (c) 2020,2022 Koki Takeyama
+' Copyright (c) 2020,2022,2024 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -158,4 +158,45 @@ Public Function RegExp_MatchedValue( _
     End If
     
     RegExp_MatchedValue = Matches.Item(0).Value
+End Function
+
+Public Function RegExp_Matches_Count( _
+    SourceString, _
+    Pattern, _
+    IgnoreCase, _
+    MultiLine)
+    
+    Dim Matches
+    Set Matches = _
+        RegExp_Execute( _
+            SourceString, Pattern, IgnoreCase, True, MultiLine)
+    
+    If Matches Is Nothing Then
+        Exit Function
+    ElseIf Matches.Count = 0 Then
+        Exit Function
+    End If
+    
+    RegExp_Matches_Count = Matches.Count
+End Function
+
+Public Function RegExp_LineNumber( _
+    SourceString, _
+    Index, _
+    LineSeparator)
+    
+    Dim SourceStr
+    SourceStr = Left(SourceString, Index + 1)
+    
+    Dim LineSep
+    Select Case LineSeparator
+    Case vbCr
+        LineSep = "\r"
+    Case vbLf
+        LineSep = "\n"
+    Case Else 'vbCrLf
+        LineSep = "\r\n"
+    End Select
+    
+    RegExp_LineNumber = RegExp_Matches_Count(SourceStr, LineSep, False, False) + 1
 End Function
