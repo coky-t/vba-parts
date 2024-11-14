@@ -2,7 +2,7 @@ Attribute VB_Name = "SpdxLicenseTemplateText"
 Option Explicit
 
 '
-' Copyright (c) 2020,2023 Koki Takeyama
+' Copyright (c) 2020,2023,2024 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -213,6 +213,22 @@ Public Function GetPlainText(TemplateText As String) As String
     Dim PlainText As String
     PlainText = TemplateText
     
+    ' For Custom Template
+    PlainText = _
+        RegExp_Replace( _
+            PlainText, _
+            "", _
+            "<<var;name=""([^""]+)"";original=""([^""]+)"";" & _
+            "match=""(\(\?<![^""]+)"">>", _
+            False, True, False)
+    PlainText = _
+        RegExp_Replace( _
+            PlainText, _
+            "", _
+            "<<var;name=""([^""]+)"";original=""([^""]+)"";" & _
+            "match=""(\(\?![^""]+)"">>", _
+            False, True, False)
+    
     PlainText = Replace(PlainText, "<<beginOptional>>", "")
     PlainText = Replace(PlainText, "<<endOptional>>", "")
     PlainText = _
@@ -231,6 +247,22 @@ End Function
 
 Public Function GetPlainTextEx(TemplateText As String) As String
     If TemplateText = "" Then Exit Function
+    
+    ' For Custom Template
+    TemplateText = _
+        RegExp_Replace( _
+            TemplateText, _
+            "", _
+            "<<var;name=""([^""]+)"";original=""([^""]+)"";" & _
+            "match=""(\(\?<![^""]+)"">>", _
+            False, True, False)
+    TemplateText = _
+        RegExp_Replace( _
+            TemplateText, _
+            "", _
+            "<<var;name=""([^""]+)"";original=""([^""]+)"";" & _
+            "match=""(\(\?![^""]+)"">>", _
+            False, True, False)
     
     ' B.15.3 Legacy Text Template format
     'Const Pattern As String = "(?:" & _
@@ -406,6 +438,22 @@ End Function
 
 Public Function GetFontText(TemplateText As String) As String
     If TemplateText = "" Then Exit Function
+    
+    ' For Custom Template
+    TemplateText = _
+        RegExp_Replace( _
+            TemplateText, _
+            "", _
+            "<<var;name=""([^""]+)"";original=""([^""]+)"";" & _
+            "match=""(\(\?<![^""]+)"">>", _
+            False, True, False)
+    TemplateText = _
+        RegExp_Replace( _
+            TemplateText, _
+            "", _
+            "<<var;name=""([^""]+)"";original=""([^""]+)"";" & _
+            "match=""(\(\?![^""]+)"">>", _
+            False, True, False)
     
     ' B.15.3 Legacy Text Template format
     'Const Pattern As String = "(?:" & _
