@@ -2,7 +2,7 @@ Attribute VB_Name = "Test_StrArrayDiff_Word"
 Option Explicit
 
 '
-' Copyright (c) 2022 Koki Takeyama
+' Copyright (c) 2022,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -108,8 +108,8 @@ Sub Test_StrArrayDiff_Char_Core(Str1 As String, Str2 As String)
 End Sub
 
 Sub Test_StrArrayDiff_Word_Core(Str1 As String, Str2 As String)
-    Dim Str1Words As VBScript_RegExp_55.MatchCollection
-    Dim Str2Words As VBScript_RegExp_55.MatchCollection
+    Dim Str1Words As MatchCollection
+    Dim Str2Words As MatchCollection
     Set Str1Words = RegExp_Execute(Str1, "(\w+)\W*", False, True, False)
     Set Str2Words = RegExp_Execute(Str2, "(\w+)\W*", False, True, False)
     

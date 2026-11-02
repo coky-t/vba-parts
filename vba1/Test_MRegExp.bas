@@ -107,7 +107,7 @@ Public Sub Test_RegExp_Execute_Core( _
     GlobalMatch As Boolean, _
     MultiLine As Boolean)
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = _
         RegExp_Execute( _
             SourceString, Pattern, IgnoreCase, GlobalMatch, MultiLine)
@@ -153,7 +153,7 @@ Public Sub Test_RegExp_ExecuteEx_Core( _
     MultiLine As Boolean, _
     LineSeparator As String)
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = _
         RegExp_Execute( _
             SourceString, Pattern, IgnoreCase, GlobalMatch, MultiLine)
@@ -173,7 +173,7 @@ Public Sub Test_RegExp_ExecuteEx_Core( _
     
     Debug_Print "--- LineNumber ---"
     
-    Dim Match As VBScript_RegExp_55.Match
+    Dim Match As Match
     For Each Match In Matches
         Test_RegExp_LineNumber_Core _
             SourceString, Match.FirstIndex, LineSeparator

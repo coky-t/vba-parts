@@ -2,7 +2,7 @@ Attribute VB_Name = "MRegExp"
 Option Explicit
 
 '
-' Copyright (c) 2020,2022,2024 Koki Takeyama
+' Copyright (c) 2020,2022,2024,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -24,6 +24,11 @@ Option Explicit
 '
 
 '
+' Microsoft 365 (2508 or later)
+' - VBA.RegExp
+'
+
+'
 ' Microsoft VBScript Regular Expression 5.5
 ' - VBScript_RegExp_55.RegExp
 '
@@ -42,7 +47,7 @@ Private RegExpObject
 Public Function GetRegExp()
     'Static RegExpObject
     If IsEmpty(RegExpObject) Then
-        Set RegExpObject = CreateObject("VBScript.RegExp")
+        Set RegExpObject = New RegExp ' CreateObject("VBScript.RegExp")
     End If
     Set GetRegExp = RegExpObject
 End Function

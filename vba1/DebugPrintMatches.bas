@@ -2,7 +2,7 @@ Attribute VB_Name = "DebugPrintMatches"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -24,7 +24,7 @@ Option Explicit
 '
 
 Public Sub Debug_Print_Matches( _
-    Matches As VBScript_RegExp_55.MatchCollection)
+    Matches As MatchCollection)
     
     If Matches Is Nothing Then
         Debug_Print "Matches: Nothing"
@@ -36,13 +36,13 @@ Public Sub Debug_Print_Matches( _
         Debug_Print "Matches.Count: " & CStr(Matches.Count)
     End If
     
-    Dim Match As VBScript_RegExp_55.Match
+    Dim Match As Match
     For Each Match In Matches
         Debug_Print_Match Match
     Next
 End Sub
 
-Public Sub Debug_Print_Match(Match As VBScript_RegExp_55.Match)
+Public Sub Debug_Print_Match(Match As Match)
     Debug_Print "---"
     Debug_Print "FirstIndex: " & CStr(Match.FirstIndex)
     Debug_Print "Length: " & CStr(Match.Length)
@@ -51,7 +51,7 @@ Public Sub Debug_Print_Match(Match As VBScript_RegExp_55.Match)
 End Sub
 
 Public Sub Debug_Print_SubMatches( _
-    SubMatches As VBScript_RegExp_55.SubMatches)
+    SubMatches As SubMatches)
     
     If SubMatches Is Nothing Then
         Debug_Print "SubMatches: Nothing"

@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 '
-' Copyright (c) 2020,2021 Koki Takeyama
+' Copyright (c) 2020,2021,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -32,15 +32,20 @@ Option Explicit
 '
 
 '
+' Microsoft 365 (2508 or later)
+' - VBA.RegExp
+'
+
+'
 ' Microsoft VBScript Regular Expression 5.5
 ' - VBScript_RegExp_55.RegExp
 '
 
 Private m_PatternName As String
-Private m_RegExp As VBScript_RegExp_55.RegExp
+Private m_RegExp As RegExp
 
 Private Sub Class_Initialize()
-    Set m_RegExp = New VBScript_RegExp_55.RegExp
+    Set m_RegExp = New RegExp
 End Sub
 
 Private Sub Class_Terminate()
@@ -140,7 +145,7 @@ End Property
 '
 
 Public Function Execute(SourceString As String) _
-    As VBScript_RegExp_55.MatchCollection
+    As MatchCollection
     
     If m_RegExp Is Nothing Then Exit Function
     Set Execute = m_RegExp.Execute(SourceString)
@@ -163,7 +168,7 @@ Public Function GetCRegExpMatches(SourceString As String) As CRegExpMatches
     If m_RegExp Is Nothing Then Exit Function
     If SourceString = "" Then Exit Function
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = m_RegExp.Execute(SourceString)
     If Matches Is Nothing Then Exit Function
     If Matches.Count = 0 Then Exit Function
@@ -182,7 +187,7 @@ Public Function GetCRegExpMatch(SourceString As String) As CRegExpMatch
     If m_RegExp Is Nothing Then Exit Function
     If SourceString = "" Then Exit Function
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = m_RegExp.Execute(SourceString)
     If Matches Is Nothing Then Exit Function
     If Matches.Count = 0 Then Exit Function

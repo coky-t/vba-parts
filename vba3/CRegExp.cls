@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 '
-' Copyright (c) 2020,2021 Koki Takeyama
+' Copyright (c) 2020,2021,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -32,6 +32,11 @@ Option Explicit
 '
 
 '
+' Microsoft 365 (2508 or later)
+' - VBA.RegExp
+'
+
+'
 ' Microsoft VBScript Regular Expression 5.5
 ' - VBScript_RegExp_55.RegExp
 '
@@ -40,7 +45,7 @@ Private m_PatternName
 Private m_RegExp
 
 Private Sub Class_Initialize()
-    Set m_RegExp = CreateObject("VBScript.RegExp")
+    Set m_RegExp = New RegExp ' CreateObject("VBScript.RegExp")
 End Sub
 
 Private Sub Class_Terminate()

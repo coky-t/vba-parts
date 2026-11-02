@@ -2,7 +2,7 @@ Attribute VB_Name = "SpdxLicenseTemplateText"
 Option Explicit
 
 '
-' Copyright (c) 2020,2023,2024 Koki Takeyama
+' Copyright (c) 2020,2023,2024,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -74,10 +74,10 @@ Public Function GetMatchingText(TemplateText As String) As String
         Exit Function
     End If
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = RegExp_Execute(TemplateText, Pattern, True, False)
     
-    Dim Match As VBScript_RegExp_55.Match
+    Dim Match As Match
     Set Match = Matches.Item(0)
     
     Dim PreviousPattern As String
@@ -277,10 +277,10 @@ Public Function GetPlainTextEx(TemplateText As String) As String
         Exit Function
     End If
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = RegExp_Execute(TemplateText, Pattern, True, False)
     
-    Dim Match As VBScript_RegExp_55.Match
+    Dim Match As Match
     Set Match = Matches.Item(0)
     
     Dim PreviousText As String
@@ -468,10 +468,10 @@ Public Function GetFontText(TemplateText As String) As String
         Exit Function
     End If
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = RegExp_Execute(TemplateText, Pattern, True, False)
     
-    Dim Match As VBScript_RegExp_55.Match
+    Dim Match As Match
     Set Match = Matches.Item(0)
     
     Dim PreviousText As String

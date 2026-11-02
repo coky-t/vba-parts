@@ -2,7 +2,7 @@ Attribute VB_Name = "MRegExps"
 Option Explicit
 
 '
-' Copyright (c) 2020 Koki Takeyama
+' Copyright (c) 2020,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -21,6 +21,11 @@ Option Explicit
 ' LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 ' FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 ' IN THE SOFTWARE.
+'
+
+'
+' Microsoft 365 (2508 or later)
+' - VBA.RegExp
 '
 
 '
@@ -149,7 +154,7 @@ Public Function CRegExp_Execute(CRegExp_ As CRegExp, SourceString As String) _
     If CRegExp_.Pattern = "" Then Exit Function
     If SourceString = "" Then Exit Function
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = CRegExp_.Execute(SourceString)
     If Matches Is Nothing Then Exit Function
     If Matches.Count = 0 Then Exit Function

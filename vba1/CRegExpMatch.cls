@@ -10,7 +10,7 @@ Attribute VB_Exposed = False
 Option Explicit
 
 '
-' Copyright (c) 2021 Koki Takeyama
+' Copyright (c) 2021,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -32,4 +32,4 @@ Option Explicit
 '
 
 Public PatternName As String
-Public Match As VBScript_RegExp_55.Match
+Public Match As Match

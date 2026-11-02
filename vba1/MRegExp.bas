@@ -2,7 +2,7 @@ Attribute VB_Name = "MRegExp"
 Option Explicit
 
 '
-' Copyright (c) 2020,2022,2024 Koki Takeyama
+' Copyright (c) 2020,2022,2024,2026 Koki Takeyama
 '
 ' Permission is hereby granted, free of charge, to any person obtaining
 ' a copy of this software and associated documentation files (the "Software"),
@@ -24,6 +24,11 @@ Option Explicit
 '
 
 '
+' Microsoft 365 (2508 or later)
+' - VBA.RegExp
+'
+
+'
 ' Microsoft VBScript Regular Expression 5.5
 ' - VBScript_RegExp_55.RegExp
 '
@@ -37,10 +42,10 @@ Option Explicit
 ' - Returns a RegExp object.
 '
 
-Public Function GetRegExp() As VBScript_RegExp_55.RegExp
-    Static RegExpObject As VBScript_RegExp_55.RegExp
+Public Function GetRegExp() As RegExp
+    Static RegExpObject As RegExp
     If RegExpObject Is Nothing Then
-        Set RegExpObject = New VBScript_RegExp_55.RegExp
+        Set RegExpObject = New RegExp
     End If
     Set GetRegExp = RegExpObject
 End Function
@@ -91,7 +96,7 @@ Public Function RegExp_Execute( _
     Optional IgnoreCase As Boolean, _
     Optional GlobalMatch As Boolean, _
     Optional MultiLine As Boolean) _
-    As VBScript_RegExp_55.MatchCollection
+    As MatchCollection
     
     On Error Resume Next
     
@@ -148,7 +153,7 @@ Public Function RegExp_MatchedValue( _
     Optional MultiLine As Boolean) _
     As String
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = _
         RegExp_Execute( _
             SourceString, Pattern, IgnoreCase, False, MultiLine)
@@ -169,7 +174,7 @@ Public Function RegExp_Matches_Count( _
     Optional MultiLine As Boolean) _
     As Long
     
-    Dim Matches As VBScript_RegExp_55.MatchCollection
+    Dim Matches As MatchCollection
     Set Matches = _
         RegExp_Execute( _
             SourceString, Pattern, IgnoreCase, True, MultiLine)
