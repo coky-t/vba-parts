@@ -75,7 +75,7 @@ End Function
 '
 ' Pattern:
 '   Required. Regular string expression being searched for.
-'   https://docs.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/scripting-articles/f97kw5ka(v=vs.84)
+'   https://learn.microsoft.com/en-us/previous-versions/windows/internet-explorer/ie-developer/scripting-articles/f97kw5ka(v=vs.84)
 '
 ' IgnoreCase:
 '   Optional. The value is False if the search is case-sensitive,
